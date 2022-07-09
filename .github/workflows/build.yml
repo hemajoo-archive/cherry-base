@@ -52,7 +52,7 @@ jobs:
             }]
 
       - name: Build with Maven
-        run: mvn -B clean package -f pom.xml -Pjava.${{ matrix.Java }} -Pcherry.postgres.dev
+        run: mvn -B clean package -f pom.xml -Pjava.${{ matrix.Java }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -104,7 +104,7 @@ jobs:
             }]
 
       - name: Analyze with SonarCloud
-        run: mvn -B verify sonar:sonar -f pom.xml -Pjava.17 -Pcherry.postgres.dev
+        run: mvn -B verify sonar:sonar -f pom.xml -Pjava.17
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

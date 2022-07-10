@@ -21,6 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Identity;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.AbstractStatusEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.base.validation.EntityValidator;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import lombok.*;
@@ -30,6 +31,10 @@ import org.hibernate.annotations.Type;
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import javax.persistence.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
@@ -74,6 +79,8 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
      */
     @Getter
     @Setter
+    @NotEmpty
+    @NotBlank
     @Column(name = "NAME")
     private String name;
 
@@ -156,7 +163,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
             throw new DataModelEntityException("Cannot set itself as parent!");
         }
 
-        this.parent = (DataModelEntity) parent;
+        this.parent = parent;
         this.parentType = parent != null ? parent.getEntityType() : null;
 
         if (parent != null)
@@ -244,7 +251,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     {
         if (convertTagAsList().stream().noneMatch(element -> element.equals(tag)))
         {
-            tags = tags.isEmpty() ? tag : tags + ", " + tag;
+            tags = tags == null || tags.isEmpty() ? tag : tags + ", " + tag;
         }
     }
 
@@ -298,26 +305,29 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         return convertTagAsList().size();
     }
 
+    protected final void validate() throws ConstraintViolationException
+    {
+        Set<ConstraintViolation<DataModelEntity>> violations = EntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
+        if (!violations.isEmpty())
+        {
+            throw new ConstraintViolationException(violations);
+        }
+    }
+
     /**
      * Converts a string of tags (separated by comma) to a list of tags.
      * @return List of tags.
      */
     private List<String> convertTagAsList()
     {
-        List<String> values;
-
-        if (tags.isEmpty())
+        if (tags == null || tags.isEmpty())
         {
             return new ArrayList<>();
         }
 
-        values = Arrays.asList(tags.split(",", -1));
-        for (String tag : values)
-        {
-            tag = tag.trim();
-        }
-
-        return values;
+        return Arrays.stream(tags.split(","))
+                .map(String::trim)
+                .toList();
     }
 
     /**

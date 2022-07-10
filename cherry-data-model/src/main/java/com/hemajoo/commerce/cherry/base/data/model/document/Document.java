@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -53,7 +54,7 @@ public class Document extends DataModelEntity implements IDocument
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "DOCUMENT_TYPE", length = 50)
-    private DocumentType documentType;
+    private DocumentType documentType = DocumentType.DOCUMENT_GENERIC;
 
     /**
      * Document file extension.
@@ -109,7 +110,7 @@ public class Document extends DataModelEntity implements IDocument
     private long contentLength;
 
     /**
-     * File MIME type.
+     * File <b>MIME</b> type.
      */
     @Getter
     @Setter
@@ -117,7 +118,7 @@ public class Document extends DataModelEntity implements IDocument
     private String mimeType = "text/plain";
 
     /**
-     * File path (in the content store).
+     * File path of the document in the <b>content store</b>.
      */
     @Getter
     @Setter
@@ -134,7 +135,7 @@ public class Document extends DataModelEntity implements IDocument
     private transient InputStream content;
 
     /**
-     * Creates a new document.
+     * Create a new document.
      */
     public Document()
     {
@@ -142,133 +143,131 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     /**
-     * Creates a new document.
-     * @param owner Document owner.
+     * Create a new document.
+     * @param name Document name.
+     * @param description Document description.
      * @param documentType Document type.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
+     * @param owner Document owner.
+     * @param filename Document file name representing the document content.
+     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
      */
-    public Document(final @NonNull IDataModelEntity owner, final @NonNull DocumentType documentType) throws DataModelEntityException
+    @Builder(setterPrefix = "with")
+    public Document(final String name, final String description, final DocumentType documentType, final IDataModelEntity owner, final String reference, final String filename, final String... tags) throws DocumentException
+    {
+        this(documentType, owner);
+
+        setName(name);
+        setDescription(description);
+        setReference(reference);
+
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
+        }
+
+        if (filename != null)
+        {
+            setContent(filename);
+        }
+
+        super.validate(); // Validate the document data
+    }
+
+    /**
+     * Create a new document.
+     * @param documentType Document type.
+     * @param owner Document owner.
+     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
+     */
+    protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
     {
         super(EntityType.DOCUMENT);
 
         setActive();
-        this.documentType = documentType;
+
+        if (documentType != null)
+        {
+            this.documentType = documentType;
+        }
 
         try
         {
             setParent(owner);
+            if (owner != null)
+            {
+                owner.addDocument(this);
+            }
         }
         catch (DataModelEntityException e)
         {
             throw new DocumentException(e);
         }
-
-        owner.addDocument(this);
     }
 
-    /**
-     * Creates a new document given its path name.
-     * @param owner Document owner.
-     * @param documentType Document type.
-     * @param filename File name.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
-     */
-    public Document(final @NonNull IDataModelEntity owner, final @NonNull DocumentType documentType, final @NonNull String filename) throws DataModelEntityException
-    {
-        this(owner, documentType);
-
-        this.filename = filename;
-        setName(FilenameUtils.getName(FilenameUtils.removeExtension(filename)));
-        setExtension(FilenameUtils.getExtension(this.filename));
-
-        detectMimeType(filename);
-    }
-
-    /**
-     * Creates a new document given an associated media file.
-     * @param owner Document owner.
-     * @param documentType Document type.
-     * @param file File.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
-     */
-    public Document(final @NonNull IDataModelEntity owner, final @NonNull DocumentType documentType, final @NonNull File file) throws DataModelEntityException
-    {
-        this(owner, documentType);
-
-        this.filename = file.getName();
-        setName(FilenameUtils.getName(FilenameUtils.removeExtension(filename)));
-        setExtension(FilenameUtils.getExtension(this.filename));
-
-        detectMimeType(file);
-    }
-
-    /**
-     * Creates a new document given its path name.
-     * @param owner Document owner.
-     * @param documentType Document type.
-     * @param multiPartFile Multipart file.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
-     */
-    public Document(final @NonNull IDataModelEntity owner, final @NonNull DocumentType documentType, final @NonNull MultipartFile multiPartFile) throws DataModelEntityException
-    {
-        this(owner, documentType);
-
-        this.filename = multiPartFile.getOriginalFilename();
-        this.multiPartFile = multiPartFile;
-        setName(FilenameUtils.getName(FilenameUtils.removeExtension(filename)));
-        setExtension(FilenameUtils.getExtension(filename));
-        detectMimeType(multiPartFile);
-    }
-
-    /**
-     * Sets the document content.
-     * @param filename File name of the media file to store as the document content.
-     * @throws DocumentContentException Raised when an error occurred while trying to set the document content.
-     */
-    public final void setContent(final @NonNull String filename) throws DocumentContentException
+    @SuppressWarnings("java:S1163")
+    @Override
+    public final void setContent(final @NonNull String filename) throws DocumentException
     {
         try
         {
-            detectMimeType(filename);
-            this.baseFilename = filename;
-            this.filename = FilenameUtils.getName(filename);
+            File file = FileHelper.getFile(filename);
+            if (file == null)
+            {
+                throw new DocumentException(String.format("Cannot find file: '%s'", filename));
+            }
+
+            try (FileInputStream stream = new FileInputStream(file))
+            {
+                setContent(stream, file.getAbsolutePath());
+            }
+        }
+        catch (Exception e)
+        {
+            throw new DocumentException(e);
+        }
+    }
+
+    @Override
+    public final void setContent(final @NonNull File file) throws DocumentException
+    {
+        setContent(file.getAbsolutePath());
+    }
+
+    /**
+     * Set the document content.
+     * @param inputStream Input stream.
+     * @param absolutePath Absolute file path.
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
+     */
+    private void setContent(final @NonNull InputStream inputStream, final @NonNull String absolutePath) throws DocumentException
+    {
+        try
+        {
+            detectMimeType(absolutePath);
+            this.baseFilename = absolutePath;
+            this.filename = FilenameUtils.getName(baseFilename);
             this.extension = FilenameUtils.getExtension(filename);
-            content = new FileInputStream(FileHelper.getFile(filename));
-            this.contentLength = content.available();
+            this.content = inputStream;
+            this.contentLength = inputStream.available();
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            throw new DocumentContentException(e);
+            throw new DocumentException(e);
         }
     }
 
-    /**
-     * Sets the document content.
-     * @param file File representing the media file to store as the document content.
-     * @throws DocumentContentException Raised when an error occurred while trying to set the document content.
-     */
-    public final void setContent(final @NonNull File file) throws DocumentContentException
+    @Override
+    public final void setContent() throws DocumentException
     {
-        try
+        if (this.baseFilename == null)
         {
-            detectMimeType(file.getName());
-            this.filename = FilenameUtils.getName(file.getName());
-            this.extension = FilenameUtils.getExtension(file.getName());
-            content = new FileInputStream(FileHelper.getFile(file.getName()));
+            throw new DocumentException("Cannot load document content as no file as been attached yet!");
         }
-        catch (Exception e)
-        {
-            throw new DocumentContentException(e);
-        }
-    }
 
-    /**
-     * Sets the document content.
-     * @param inputStream Input stream of the file representing the media file to store as the document content.
-     */
-    public final void setContent(final InputStream inputStream)
-    {
-        this.content = inputStream;
+        setContent(this.baseFilename);
     }
 
     /**

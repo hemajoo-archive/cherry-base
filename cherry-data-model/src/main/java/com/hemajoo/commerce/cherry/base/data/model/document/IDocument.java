@@ -16,7 +16,9 @@ package com.hemajoo.commerce.cherry.base.data.model.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import lombok.NonNull;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -69,28 +71,42 @@ public interface IDocument extends IDataModelEntity
     String DOCUMENT_TAGS = "tags";
 
     /**
-     * Returns the document type.
+     * Return the document type.
      * @return Document type.
      */
     DocumentType getDocumentType();
 
     /**
-     * Sets the document type.
+     * Set the document type.
      * @param type Document type.
      */
     void setDocumentType(final DocumentType type);
 
     /**
-     * Returns the document content.
+     * Return the document content.
      * @return Document content.
      */
     InputStream getContent();
 
     /**
-     * Sets the document content.
-     * @param content Document content.
+     * Set the document content.
+     * @param file File.
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
-    void setContent(final InputStream content);
+    void setContent(final @NonNull File file) throws DocumentException;
+
+    /**
+     * Set the document content.
+     * @param filename File name.
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
+     */
+    void setContent(final @NonNull String filename) throws DocumentException;
+
+    /**
+     * Set the document content (based on the information provided at document creation time).
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
+     */
+    void setContent() throws DocumentException;
 
     /**
      * Returns the document extension.

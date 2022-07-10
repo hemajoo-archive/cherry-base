@@ -36,9 +36,19 @@ public enum DocumentType
     DOCUMENT_GENERIC,
 
     /**
-     * <b>Photo</b> document type.
+     * Document is a <b>photo</b>.
      */
-    DOCUMENT_PHOTO,
+    MEDIA_PHOTO,
+
+    /**
+     * Document is a <b>video</b>.
+     */
+    MEDIA_VIDEO,
+
+    /**
+     * Document is an <b>audio</b>.
+     */
+    MEDIA_AUDIO,
 
     /**
      * <b>Invoice</b> document type.

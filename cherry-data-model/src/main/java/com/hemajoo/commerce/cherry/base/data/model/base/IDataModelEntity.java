@@ -187,6 +187,18 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     void setReference(String reference);
 
     /**
+     * Returns the document tags.
+     * @return Document tags.
+     */
+    String getTags();
+
+    /**
+     * Sets the document tags.
+     * @param tags Document tags.
+     */
+    void setTags(final String tags);
+
+    /**
      * Adds a tag.
      * @param tag Tag.
      */

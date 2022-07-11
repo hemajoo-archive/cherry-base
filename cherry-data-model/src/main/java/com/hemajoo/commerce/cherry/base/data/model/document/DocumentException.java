@@ -19,11 +19,10 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import java.io.Serial;
 
 /**
- * Exception thrown to indicate an error occurred with a data model document entity.
+ * Exception thrown to indicate an error occurred with a <b>document</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-@SuppressWarnings("java:S110")
 public class DocumentException extends DataModelEntityException
 {
     /**

@@ -12,18 +12,18 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.data.model.person.address.email;
+package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 
 import java.io.Serial;
 
 /**
- * Checked exception thrown to indicate an error occurred with an <b>email address</b> data model entity.
+ * Exception thrown to indicate an error occurred with a <b>person</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class EmailAddressException extends DataModelEntityException
+public class PersonException extends DataModelEntityException
 {
     /**
      * Default serialization identifier.
@@ -32,29 +32,29 @@ public class EmailAddressException extends DataModelEntityException
     private static final long serialVersionUID = 1L;
 
     /**
-     * Thrown to indicate that an error occurred with an <b>email address</b> data model entity.
-     * @param exception Parent {@link Exception}.
+     * Thrown to indicate that an error occurred with a data model <b>person</b> entity.
+     * @param exception Parent exception.
      */
-    public EmailAddressException(final Exception exception)
+    public PersonException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred with an <b>email address</b> data model entity.
+     * Thrown to indicate that an error occurred with a data model <b>person</b> entity.
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public EmailAddressException(final String message)
+    public PersonException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred with an <b>email address</b> data model entity.
+     * Thrown to indicate that an error occurred with a data model <b>person</b> entity.
      * @param message Message describing the error being the cause of the raised exception.
-     * @param exception Parent {@link Exception}.
+     * @param exception Parent exception.
      */
-    public EmailAddressException(final String message, final Exception exception)
+    public PersonException(final String message, final Exception exception)
     {
         super(message, exception);
     }

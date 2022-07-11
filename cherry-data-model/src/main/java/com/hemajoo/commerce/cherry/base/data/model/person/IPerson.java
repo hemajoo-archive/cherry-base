@@ -15,7 +15,6 @@
 package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
-import me.xdrop.jrand.model.person.PersonType;
 
 import java.util.Date;
 

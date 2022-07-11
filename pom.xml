@@ -263,6 +263,12 @@
             </dependency>
 
             <dependency>
+                <groupId>dev.fuxing</groupId>
+                <artifactId>hibernate-validator-enum</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.github.javafaker</groupId>
                 <artifactId>javafaker</artifactId>
                 <version>${version.javafaker}</version>

@@ -305,6 +305,10 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         return convertTagAsList().size();
     }
 
+    /**
+     * Validates the data model entity data.
+     * @throws ConstraintViolationException Thrown in case some constraint violations have been detected.
+     */
     protected final void validate() throws ConstraintViolationException
     {
         Set<ConstraintViolation<DataModelEntity>> violations = EntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);

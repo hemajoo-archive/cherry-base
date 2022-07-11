@@ -32,7 +32,7 @@ public class PhoneNumberException extends DataModelEntityException
     private static final long serialVersionUID = 1L;
 
     /**
-     * Thrown to indicate that an error occurred with a phone number data model entity.
+     * Thrown to indicate that an error occurred with a <b>phone number</b> data model entity.
      * @param exception Parent exception.
      */
     public PhoneNumberException(final Exception exception)
@@ -41,7 +41,7 @@ public class PhoneNumberException extends DataModelEntityException
     }
 
     /**
-     * Thrown to indicate that an error occurred with a phone number data model entity.
+     * Thrown to indicate that an error occurred with a <b>phone number</b> data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      */
     public PhoneNumberException(final String message)
@@ -50,7 +50,7 @@ public class PhoneNumberException extends DataModelEntityException
     }
 
     /**
-     * Thrown to indicate that an error occurred with a phone number data model entity.
+     * Thrown to indicate that an error occurred with a <b>phone number</b> data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent exception.
      */

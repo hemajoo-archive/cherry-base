@@ -121,18 +121,6 @@ public interface IDocument extends IDataModelEntity
     void setExtension(final String extension);
 
     /**
-     * Returns the document tags.
-     * @return Document tags.
-     */
-    String getTags();
-
-    /**
-     * Sets the document tags.
-     * @param tags Document tags.
-     */
-    void setTags(final String tags);
-
-    /**
      * Returns the document filename.
      * @return Document filename.
      */

@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
@@ -28,18 +29,20 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalA
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberType;
+import dev.fuxing.hibernate.ValidEnum;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
-import me.xdrop.jrand.model.person.PersonType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Represents a server data model <b>person</b> entity.
+ * Represents a <b>person</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -55,7 +58,8 @@ public class Person extends DataModelEntity implements IPerson
      * Person last name.
      */
     @Getter
-    @NotNull(message = "Person: 'lastName' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "LASTNAME")
     private String lastName;
 
@@ -63,7 +67,8 @@ public class Person extends DataModelEntity implements IPerson
      * Person first name.
      */
     @Getter
-    @NotNull(message = "Person: 'firstName' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "FIRSTNAME")
     private String firstName;
 
@@ -72,7 +77,6 @@ public class Person extends DataModelEntity implements IPerson
      */
     @Getter
     @Setter
-    @NotNull(message = "Person: 'birthDate' cannot be null!")
     @Column(name = "BIRTHDATE")
     private Date birthDate;
 
@@ -81,6 +85,7 @@ public class Person extends DataModelEntity implements IPerson
      */
     @Getter
     @Setter
+    @ValidEnum(message = "{javax.validation.constraints.ValidEnum.message}")
     @Enumerated(EnumType.STRING)
     @Column(name = "PERSON_TYPE", length = 50)
     private PersonType personType;
@@ -137,10 +142,81 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
+     * Create a new person.
+     * @param lastName Person last name.
+     * @param firstName Person first name.
+     * @param description Person description.
+     * @param personType Person type.
+     * @param genderType Person gender type.
+     * @param owner Person owner.
+     * @param reference Reference.
+     * @param tags Person tags.
+     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
+     */
+    @Builder(setterPrefix = "with")
+    public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
+    {
+        this(personType, owner);
+
+        setLastName(lastName);
+        setFirstName(firstName);
+        setDescription(description);
+        setReference(reference);
+
+        this.genderType = genderType;
+
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
+        }
+
+        super.validate(); // Validate the data
+
+        if (personType == PersonType.PHYSICAL && genderType == null)
+        {
+            throw new ConstraintViolationException("genderType: value cannot be null when attribute: personType is set to: PHYSICAL", null);
+        }
+    }
+
+    /**
+     * Create a new person.
+     * @param personType Person type.
+     * @param owner Person owner.
+     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
+     */
+    protected Person(final PersonType personType, final IDataModelEntity owner) throws PersonException
+    {
+        super(EntityType.PERSON);
+
+        setActive();
+
+        if (personType != null)
+        {
+            this.personType = personType;
+        }
+
+        try
+        {
+            setParent(owner);
+            if (owner != null)
+            {
+                //owner.addPerson(this); //TODO Fix it!
+            }
+        }
+        catch (DataModelEntityException e)
+        {
+            throw new PersonException(e);
+        }
+    }
+
+    /**
      * Sets the person last name.
      * @param lastName Last name.
      */
-    public void setLastName(final @NonNull String lastName)
+    public void setLastName(final String lastName)
     {
         this.lastName = lastName;
         setName(this.lastName + ", " + this.firstName);
@@ -150,7 +226,7 @@ public class Person extends DataModelEntity implements IPerson
      * Sets the person first name.
      * @param firstName First name.
      */
-    public void setFirstName(final @NonNull String firstName)
+    public void setFirstName(final String firstName)
     {
         this.firstName = firstName;
         setName(this.lastName + ", " + this.firstName);

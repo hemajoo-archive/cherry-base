@@ -1,0 +1,2 @@
+# Cherry Base - Sonar Infrastructure
+

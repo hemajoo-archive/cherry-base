@@ -143,18 +143,19 @@ public class Person extends DataModelEntity implements IPerson
 
     /**
      * Create a new person.
-     * @param lastName Person last name.
-     * @param firstName Person first name.
-     * @param description Person description.
+     * @param lastName Last name.
+     * @param firstName First name.
+     * @param description Description.
      * @param personType Person type.
-     * @param genderType Person gender type.
+     * @param genderType Gender type.
+     * @param birthDate Birthdate.
      * @param owner Person owner.
      * @param reference Reference.
      * @param tags Person tags.
      * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
      */
     @Builder(setterPrefix = "with")
-    public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
+    public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final Date birthDate, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
     {
         this(personType, owner);
 
@@ -162,6 +163,7 @@ public class Person extends DataModelEntity implements IPerson
         setFirstName(firstName);
         setDescription(description);
         setReference(reference);
+        setBirthDate(birthDate);
 
         this.genderType = genderType;
 
@@ -308,11 +310,7 @@ public class Person extends DataModelEntity implements IPerson
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Adds an email address.
-     * @param emailAddress Email address.
-     * @throws EmailAddressException Raised if the email address already belongs to another person!
-     */
+    @Override
     public final void addEmailAddress(final @NonNull IEmailAddress emailAddress) throws EmailAddressException
     {
         // An email address cannot be shared!

@@ -17,7 +17,9 @@ package com.hemajoo.commerce.cherry.base.data.model.document;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.utilities.UuidGenerator;
 import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
@@ -147,18 +149,24 @@ public class Document extends DataModelEntity implements IDocument
      * @param name Document name.
      * @param description Document description.
      * @param documentType Document type.
+     * @param statusType Status type.
      * @param owner Document owner.
      * @param filename Document file name representing the document content.
      * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
      */
     @Builder(setterPrefix = "with")
-    public Document(final String name, final String description, final DocumentType documentType, final IDataModelEntity owner, final String reference, final String filename, final String... tags) throws DocumentException
+    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final String filename, final String... tags) throws DocumentException
     {
         this(documentType, owner);
 
         setName(name);
         setDescription(description);
         setReference(reference);
+
+        if (statusType == EntityStatusType.INACTIVE)
+        {
+            setInactive();
+        }
 
         if (tags != null)
         {
@@ -186,6 +194,7 @@ public class Document extends DataModelEntity implements IDocument
     {
         super(EntityType.DOCUMENT);
 
+        setId(UuidGenerator.getUuid());
         setActive();
 
         if (documentType != null)

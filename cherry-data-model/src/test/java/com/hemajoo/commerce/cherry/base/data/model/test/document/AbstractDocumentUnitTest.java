@@ -14,7 +14,10 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
-import com.hemajoo.commerce.cherry.base.data.model.document.*;
+import com.hemajoo.commerce.cherry.base.data.model.document.Document;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 
 /**
@@ -83,14 +86,7 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
      */
     protected IDocument getRandomDocument() throws DocumentException
     {
-        return DocumentRandomizer.generate(true);
-//        return Document.builder()
-//                .withName(DOCUMENT_NAME)
-//                .withDescription(DOCUMENT_DESCRIPTION)
-//                .withReference(DOCUMENT_REFERENCE)
-//                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-//                .withFilename(DOCUMENT_FILENAME)
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
+//        return DocumentRandomizer.generate(true);
+        return null;
     }
 }

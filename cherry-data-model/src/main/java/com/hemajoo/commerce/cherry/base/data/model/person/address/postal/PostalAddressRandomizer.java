@@ -16,9 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.person.address.postal;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentContentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
-import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import lombok.experimental.UtilityClass;
 import org.ressec.avocado.core.random.EnumRandomGenerator;
@@ -44,12 +42,13 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
     private static final EnumRandomGenerator ADDRESS_CATEGORY_TYPE_GENERATOR = new EnumRandomGenerator(PostalAddressCategoryType.class);
 
     /**
-     * Generates a new random postal address.
-     * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
-     * <br>Generally set to <b>true</b> for unit tests.
+     * Generate a random postal address.
+     * @param withRandomId Does a random identifier has to be generated?
+     * @param withDocument Does a random document has to be generated?
+     * @param withContent Does a random content (file) has to be attached to the document?
      * @return Postal address.
      */
-    public static IPostalAddress generate(final boolean withRandomId)
+    public static IPostalAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
         IPostalAddress postal = new PostalAddress();
         populateBaseFields(postal);
@@ -59,44 +58,12 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
             postal.setId(UUID.randomUUID());
         }
 
-        postal.setIsDefault(RANDOM.nextBoolean());
-        postal.setStreetName(FAKER.address().streetName());
-        postal.setStreetNumber(FAKER.address().streetAddressNumber());
-        postal.setLocality(FAKER.address().cityName());
-        postal.setArea(FAKER.address().state());
-        String zipCode = FAKER.address().zipCode();
-        postal.setZipCode(zipCode.length() <= 7 ? zipCode : zipCode.substring(0, 7));
-        postal.setCountryCode(FAKER.address().countryCode().toUpperCase());
-        postal.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
-        postal.setCategoryType((PostalAddressCategoryType) ADDRESS_CATEGORY_TYPE_GENERATOR.gen());
-
-        return postal;
-    }
-
-    /**
-     * Generates a new random postal address containing some random documents.
-     * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
-     * <br>Generally set to <b>true</b> for unit tests.
-     * @param count Number of random documents to generate.
-     * @return Postal address.
-     * @throws DocumentContentException Thrown in case an error occurred while trying to generate a document.
-     */
-    public static IPostalAddress generateWithDocument(final boolean withRandomId, final int count) throws DataModelEntityException
-    {
-        IDocument document;
-
-        IPostalAddress postal = new PostalAddress();
-        populateBaseFields(postal);
-
-        if (withRandomId)
+        if (withDocument)
         {
-            postal.setId(UUID.randomUUID());
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            document = DocumentRandomizer.generate(true);
-            postal.addDocument(document);
+            for (int i = 0; i < count; i++)
+            {
+                postal.addDocument(DocumentRandomizer.generate(withRandomId, withContent));
+            }
         }
 
         postal.setIsDefault(RANDOM.nextBoolean());

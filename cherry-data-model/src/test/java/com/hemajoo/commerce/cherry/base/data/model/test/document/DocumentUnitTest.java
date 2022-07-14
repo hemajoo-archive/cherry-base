@@ -253,8 +253,8 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @Timeout(value = 500, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 500 ms!
-    @DisplayName("Create 10'000 documents with tags and validation of data")
-    final void testCreateMultipleDocumentWithTags() throws DocumentException
+    @DisplayName("Create 10'000 documents")
+    final void testPerformanceCreateMultipleDocuments() throws DocumentException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();

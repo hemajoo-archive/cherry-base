@@ -16,9 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.person.address.email;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentContentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
-import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import lombok.experimental.UtilityClass;
 import org.ressec.avocado.core.random.EnumRandomGenerator;
@@ -39,47 +37,34 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     private static final EnumRandomGenerator ADDRESS_TYPE_GENERATOR = new EnumRandomGenerator(AddressType.class);
 
     /**
-     * Generates a new random email address.
-     * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
-     * <br>Generally set to <b>true</b> for unit tests.
+     * Generate a random email address.
+     * @param withRandomId Does a random entity identifier has to be generated?
+     * @param withDocument Does a random document has to be generated?
+     * @param withContent Does a random content (file) has to be attached to the document?
      * @return Email address.
      */
-    public static IEmailAddress generate(final boolean withRandomId)
+    public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IEmailAddress entity = new EmailAddress();
-        populateBaseFields(entity);
+        IEmailAddress emailAddress = new EmailAddress();
+        populateBaseFields(emailAddress);
 
         if (withRandomId)
         {
-            entity.setId(UUID.randomUUID());
+            emailAddress.setId(UUID.randomUUID());
         }
 
-        entity.setEmail(FAKER.internet().emailAddress());
-        entity.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
-        entity.setIsDefaultEmail(RANDOM.nextBoolean());
-
-        return entity;
-    }
-
-    /**
-     * Generates a new random email address containing some random documents.
-     * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
-     * <br>Generally set to <b>true</b> for unit tests.
-     * @param count Number of random documents to generate.
-     * @return Email address.
-     * @throws DocumentContentException Thrown in case an error occurred while trying to generate a document.
-     */
-    public static IEmailAddress generateWithDocument(final boolean withRandomId, final int count) throws DataModelEntityException
-    {
-        IDocument document;
-        IEmailAddress email = generate(withRandomId);
-
-        for (int i = 0; i < count; i++)
+        if (withDocument)
         {
-            document = DocumentRandomizer.generate(true);
-            email.addDocument(document);
+            for (int i = 0; i < count; i++)
+            {
+                emailAddress.addDocument(DocumentRandomizer.generate(withRandomId, withContent));
+            }
         }
 
-        return email;
+        emailAddress.setEmail(FAKER.internet().emailAddress());
+        emailAddress.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
+        emailAddress.setIsDefaultEmail(RANDOM.nextBoolean());
+
+        return emailAddress;
     }
 }

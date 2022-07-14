@@ -27,7 +27,7 @@ import java.util.UUID;
  * @version 1.0.0
  */
 @UtilityClass
-public final class DocumentRandomizer extends AbstractDataModelEntityRandomizer
+public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
 {
     /**
      * Document type enumeration generator.
@@ -40,11 +40,24 @@ public final class DocumentRandomizer extends AbstractDataModelEntityRandomizer
     private static final EnumRandomGenerator TEST_MEDIA_TYPE_GENERATOR = new EnumRandomGenerator(TestMediaType.class);
 
     /**
-     * Generates a new random document data model entity.
+     * Generate a random document data model entity.
+     * <br>
+     * A content (file) will be automatically attached to the document.
      * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
      * @return Random document.
      */
     public static IDocument generate(final boolean withRandomId) throws DocumentException
+    {
+        return generate(withRandomId, true);
+    }
+
+    /**
+     * Generates a new random document data model entity.
+     * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
+     * @param withContent Does a content (file) has to be attached to the document?
+     * @return Random document.
+     */
+    public static IDocument generate(final boolean withRandomId, final boolean withContent) throws DocumentException
     {
         IDocument document = new Document();
         AbstractDataModelEntityRandomizer.populateBaseFields(document);
@@ -55,7 +68,12 @@ public final class DocumentRandomizer extends AbstractDataModelEntityRandomizer
         }
 
         document.setName(FAKER.name().title());
-        document.setContent(((TestMediaType) TEST_MEDIA_TYPE_GENERATOR.gen()).getPath());
+
+        if (withContent)
+        {
+            document.setContent(((TestMediaType) TEST_MEDIA_TYPE_GENERATOR.gen()).getPath());
+        }
+
         document.setTags(FAKER.elderScrolls().creature());
         document.setDocumentType((DocumentType) DOCUMENT_TYPE_GENERATOR.gen());
 

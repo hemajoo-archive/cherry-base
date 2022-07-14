@@ -17,17 +17,22 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.configuration.DataModelConfiguration;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,10 +42,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-@DirtiesContext
 @SpringBootTest
 class PersonUnitTest extends AbstractDataModelEntityUnitTest
 {
+    /**
+     * Data model configuration.
+     */
+    @Autowired
+    private DataModelConfiguration configuration;
+
     @Test
     @DisplayName("Create an empty person")
     final void testCreateEmptyPerson()
@@ -194,7 +204,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withFirstName(FIRST_NAME)
                 .build();
 
-        person.addDocument(DocumentRandomizer.generate(true));
+        person.addDocument(DocumentRandomizer.generate(true, true));
 
         assertThat(person).isNotNull();
         assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
@@ -217,7 +227,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withFirstName(FIRST_NAME)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true);
+        IDocument document = DocumentRandomizer.generate(true, true);
         person.addDocument(document);
 
         assertThat(person.getDocumentCount()).isPositive();
@@ -245,7 +255,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withFirstName(FIRST_NAME)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true);
+        IDocument document = DocumentRandomizer.generate(true, true);
         person.addDocument(document);
 
         assertThat(person.getDocumentCount()).isEqualTo(1);
@@ -273,7 +283,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withFirstName(FIRST_NAME)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true);
+        IDocument document = DocumentRandomizer.generate(true, true);
         person.addDocument(document);
 
         assertThat(person.getDocumentCount()).isEqualTo(1);
@@ -301,7 +311,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withFirstName(FIRST_NAME)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true);
+        IDocument document = DocumentRandomizer.generate(true, true);
         person.addDocument(document);
 
         assertThat(person.getDocumentCount()).isEqualTo(1);
@@ -311,5 +321,47 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
 
         assertThat(person.existDocument(document)).isTrue();
+    }
+
+    @Test
+    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 100 persons with light dependencies, no document and no content")
+    final void testPerformanceCreateMultiplePersonsWithoutDocumentContent() throws DataModelEntityException
+    {
+        final int COUNT = 100;
+        List<IPerson> list = new ArrayList<>();
+
+        for (int i = 0; i < COUNT; i++)
+        {
+            // For each person entity created, we also create:
+            // - X documents
+            // - X email addresses  with X documents for each
+            // - X postal addresses with X documents for each
+            // - X phone numbers    with X documents for each
+            list.add(PersonRandomizer.generate(true,true, true, true, false, false, 5));
+        }
+
+        assertThat(list).hasSize(COUNT);
+    }
+
+    @Test
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 100 persons with full dependencies (with document and content)")
+    final void testPerformanceCreateMultiplePersonsWithDocumentContent() throws DataModelEntityException
+    {
+        final int COUNT = 100;
+        List<IPerson> list = new ArrayList<>();
+
+        for (int i = 0; i < COUNT; i++)
+        {
+            // For each person entity created, we also create:
+            // - X documents
+            // - X email addresses  with X documents for each
+            // - X postal addresses with X documents for each
+            // - X phone numbers    with X documents for each
+            list.add(PersonRandomizer.generate(true,true, true, true, true, true, 5));
+        }
+
+        assertThat(list).hasSize(COUNT);
     }
 }

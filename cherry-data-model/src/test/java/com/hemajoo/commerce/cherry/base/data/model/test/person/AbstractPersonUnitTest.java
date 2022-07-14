@@ -14,6 +14,7 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
@@ -27,6 +28,11 @@ import java.util.Date;
  */
 public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
 {
+    /**
+     * Number of dependencies to generate when generating a random person.
+     */
+    protected final int COUNT_PERSON_DEPENDENCY = 5;
+
     /**
      * Test person first name.
      */
@@ -88,12 +94,12 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
     }
 
     /**
-     * Return a randomly generated test person.
+     * Return a new random person.
      * @return Person.
-     * @throws DocumentException Thrown in case an error occurred while creating a new document.
+     * @throws DataModelEntityException Thrown in case an error occurred while generating a new random person.
      */
-    protected IPerson getRandomPerson() throws DocumentException
+    protected IPerson getRandomPerson() throws DataModelEntityException
     {
-        return PersonRandomizer.generate(true);
+        return PersonRandomizer.generate(true, true, true, true, true, true, COUNT_PERSON_DEPENDENCY);
     }
 }

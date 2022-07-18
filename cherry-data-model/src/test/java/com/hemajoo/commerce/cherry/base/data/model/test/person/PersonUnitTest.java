@@ -345,11 +345,11 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
     }
 
     @Test
-    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
-    @DisplayName("Create 100 persons with full dependencies (with document and content)")
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 10 persons with full dependencies (with document and content)")
     final void testPerformanceCreateMultiplePersonsWithDocumentContent() throws DataModelEntityException
     {
-        final int COUNT = 100;
+        final int COUNT = 10;
         List<IPerson> list = new ArrayList<>();
 
         for (int i = 0; i < COUNT; i++)

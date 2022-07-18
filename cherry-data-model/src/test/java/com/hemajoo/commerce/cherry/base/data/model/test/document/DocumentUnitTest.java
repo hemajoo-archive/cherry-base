@@ -252,7 +252,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 500 ms!
+    @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 2 seconds!
     @DisplayName("Create 10'000 documents")
     final void testPerformanceCreateMultipleDocuments() throws DocumentException
     {

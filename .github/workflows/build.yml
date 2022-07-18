@@ -1,4 +1,4 @@
-name: Cherry Server - CI
+name: CI/CD
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
 
   build:
-    name: Build with Java ${{ matrix.Java }}
+    name: Build Code with Java ${{ matrix.Java }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonar:
-    name: Sonar Analysis
+    name: Code Analysis with Sonar
     runs-on: ubuntu-latest
     needs: [ build ]
 

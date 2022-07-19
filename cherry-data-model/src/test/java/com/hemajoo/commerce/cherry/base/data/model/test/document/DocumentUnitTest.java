@@ -293,7 +293,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 8000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 10'000 documents with content")
     final void testPerformanceCreateMultipleDocumentsWithContent() throws DocumentException
     {

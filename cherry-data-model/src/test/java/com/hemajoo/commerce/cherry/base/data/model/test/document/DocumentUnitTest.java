@@ -126,7 +126,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @DisplayName("Cannot create duplicate tag!")
+    @DisplayName("Cannot create duplicate tag")
     final void testCannotAddDuplicateTag() throws DocumentException
     {
         IDocument document = Document.builder()
@@ -164,7 +164,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @DisplayName("Create a document with a file")
+    @DisplayName("Create a document with a content (file)")
     final void testCreateDocumentWithFile() throws DocumentException
     {
         IDocument document = Document.builder()
@@ -180,7 +180,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @DisplayName("Cannot set document content without a file!")
+    @DisplayName("Cannot set document content without a content (file)")
     final void testCannotSetDocumentContentWithoutFile() throws DocumentException
     {
         IDocument document = Document.builder()
@@ -252,9 +252,30 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 2 seconds!
-    @DisplayName("Create 10'000 documents")
-    final void testPerformanceCreateMultipleDocuments() throws DocumentException
+    @DisplayName("Reactivate a document")
+    final void testReactivateDocument() throws DocumentException
+    {
+        IDocument document = Document.builder()
+                .withName(DOCUMENT_NAME)
+                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withStatusType(EntityStatusType.INACTIVE)
+                .build();
+
+        assertThat(document).isNotNull();
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
+        assertThat(document.getSince()).isNotNull();
+
+        document.setStatusType(EntityStatusType.ACTIVE);
+
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
+        assertThat(document.getSince()).isNull();
+    }
+
+    @Test
+    @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 10'000 documents without content")
+    final void testPerformanceCreateMultipleDocumentsWithoutContent() throws DocumentException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();
@@ -266,6 +287,30 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                     .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
                     .withDocumentType(DocumentType.MEDIA_VIDEO)
                     .build());
+        }
+
+        assertThat(list).hasSize(COUNT);
+    }
+
+    @Test
+    @Timeout(value = 8000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 10'000 documents with content")
+    final void testPerformanceCreateMultipleDocumentsWithContent() throws DocumentException
+    {
+        final int COUNT = 10000;
+        List<IDocument> list = new ArrayList<>();
+        IDocument document;
+
+        for (int i = 0; i < COUNT; i++)
+        {
+            document = Document.builder()
+                    .withName(DOCUMENT_NAME)
+                    .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                    .withDocumentType(DocumentType.MEDIA_VIDEO)
+//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf")
+                    .build();
+            document.setContent("./media/java-8-streams-cheat-sheet.pdf");
+            list.add(document);
         }
 
         assertThat(list).hasSize(COUNT);

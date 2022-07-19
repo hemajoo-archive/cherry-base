@@ -118,6 +118,7 @@ jobs:
             -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
             -Dsonar.java.binaries=**/target/classes
             -Dsonar.exclusions=**/target/site/**/*,**/apidocs/**/*,**/test/resources/**/*
+            -Dsonar.coverage.jacoco.xmlReportPaths=/cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

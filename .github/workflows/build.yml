@@ -116,7 +116,7 @@ jobs:
           args: >
             -Dsonar.organization=hemajoo-commerce
             -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
-            -Dsonar.java.binaries=target/classes
+            -Dsonar.java.binaries=**/target/classes
             -Dsonar.exclusions=**/target/site/**/*,**/apidocs/**/*
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

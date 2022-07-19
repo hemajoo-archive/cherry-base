@@ -1,4 +1,4 @@
-name: Cherry Server - CI
+name: CI/CD
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
 
   build:
-    name: Build with Java ${{ matrix.Java }}
+    name: Build Code with Java ${{ matrix.Java }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonar:
-    name: Sonar Analysis
+    name: Code Analysis with Sonar
     runs-on: ubuntu-latest
     needs: [ build ]
 
@@ -108,6 +108,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: Sonar Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.organization=hemajoo-commerce
+            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
+            -Dsonar.java.binaries=**/target/classes
+            -Dsonar.exclusions=**/target/site/**/*,**/apidocs/**/*,**/test/resources/**/*
+            -Dsonar.coverage.jacoco.xmlReportPaths=./cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # Check the Quality Gate status.
+      - name: Sonar Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
   deploy:
 

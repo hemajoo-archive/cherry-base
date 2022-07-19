@@ -20,6 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Referable;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.IStatusEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import lombok.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -86,6 +87,10 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     @JsonIgnore
     public static final String BASE_TAGS = "tags";
 
+    UUID getId();
+
+    void setId(final @NonNull UUID id);
+
     /**
      * Returns the parent entity of this entity (can be null).
      * @return Parent entity if set, <b>null</b>> otherwise.
@@ -118,6 +123,24 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     <T extends IDataModelEntity> List<T> getDocuments();
 
     /**
+     * Return the document matching the given name.
+     * @return Document if found, <b>null</b> otherwise.
+     */
+    <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name);
+
+    /**
+     * Return the document matching the given identifier.
+     * @return Document if found, <b>null</b> otherwise.
+     */
+    <T extends IDataModelEntity> T getDocumentById(final @NonNull String id);
+
+    /**
+     * Return the document matching the given UUID.
+     * @return Document if found, <b>null</b> otherwise.
+     */
+    <T extends IDataModelEntity> T getDocumentById(final @NonNull UUID uuid);
+
+    /**
      * Add a document to this entity.
      * @param document Document to add.
      * @throws DataModelEntityException Thrown to indicate an error when trying to add a document.
@@ -132,23 +155,39 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     <T extends IDataModelEntity> boolean existDocument(T document);
 
     /**
-     * Check if the given document identifier exist in the list of documents for this entity?
-     * @param documentId Document identifier to check.
+     * Check if a document exist given its identifier.
+     * @param id Document identifier.
      * @return <b>True</b>> if the document exist, <b>false</b> otherwise.
      */
-    boolean existDocument(UUID documentId);
+    boolean existDocument(final @NonNull UUID id);
+
+    /**
+     * Check if a document exist given its identifier.
+     * @param id Document identifier.
+     * @return <b>True</b>> if the document exist, <b>false</b> otherwise.
+     */
+    boolean existDocument(final @NonNull String id);
 
     /**
      * Remove a document from the list of documents for this entity.
      * @param document Document to remove.
+     * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
-    <T extends IDataModelEntity> void removeDocument(T document);
+    <T extends IDataModelEntity> boolean removeDocument(T document);
 
     /**
-     * Remove a document from the list of documents for this entity.
-     * @param documentId Document identifier to remove.
+     * Remove a document given its identifier.
+     * @param id Document identifier.
+     * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
-    void removeDocument(UUID documentId);
+    boolean removeDocumentById(final @NonNull String id);
+
+    /**
+     * Remove a document given its identifier.
+     * @param id Document identifier.
+     * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
+     */
+    boolean removeDocumentById(final @NonNull UUID id);
 
     /**
      * Returns the entity name.
@@ -190,7 +229,13 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * Returns the document tags.
      * @return Document tags.
      */
-    String getTags();
+    List<String> getTags();
+
+    /**
+     * Returns the document tags as a string with values separated by commas.
+     * @return Document tags.
+     */
+    String getTagsAsString();
 
     /**
      * Sets the document tags.

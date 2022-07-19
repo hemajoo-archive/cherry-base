@@ -15,14 +15,24 @@
 package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.configuration.DataModelConfiguration;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
+import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,10 +42,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-@DirtiesContext
 @SpringBootTest
-class PersonUnitTest
+class PersonUnitTest extends AbstractDataModelEntityUnitTest
 {
+    /**
+     * Data model configuration.
+     */
+    @Autowired
+    private DataModelConfiguration configuration;
+
     @Test
     @DisplayName("Create an empty person")
     final void testCreateEmptyPerson()
@@ -50,14 +65,14 @@ class PersonUnitTest
     @DisplayName("Create a person with mandatory fields")
     final void testCreatePersonWithName() throws PersonException
     {
-        final String LAST_NAME = "Doe";
-        final String FIRST_NAME = "John";
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
 
         IPerson person = Person.builder()
                 .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
-                .withGenderType(GenderType.MALE)
                 .build();
 
         assertThat(person).isNotNull();
@@ -71,7 +86,7 @@ class PersonUnitTest
     @DisplayName("Creating a person without a last name should raise a ConstraintViolationException")
     final void testCannotCreatePersonWithoutLastName()
     {
-        final String FIRST_NAME = "John";
+        final String FIRST_NAME = FAKER.name().firstName();
 
         assertThrows(ConstraintViolationException.class, () ->
                 Person.builder()
@@ -86,7 +101,7 @@ class PersonUnitTest
     @DisplayName("Creating a person without a first name should raise a ConstraintViolationException")
     final void testCannotCreatePersonWithoutFirstName()
     {
-        final String LAST_NAME = "Doe";
+        final String LAST_NAME = FAKER.name().lastName();
 
         assertThrows(ConstraintViolationException.class, () ->
                 Person.builder()
@@ -101,8 +116,8 @@ class PersonUnitTest
     @DisplayName("Creating a person without a person type should raise a ConstraintViolationException")
     final void testCannotCreatePersonWithoutPersonType()
     {
-        final String LAST_NAME = "Doe";
-        final String FIRST_NAME = "John";
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
 
         assertThrows(ConstraintViolationException.class, () ->
                 Person.builder()
@@ -115,10 +130,10 @@ class PersonUnitTest
     @SuppressWarnings("java:S5778")
     @Test
     @DisplayName("Creating a person without a gender type when person type is physical should raise a ConstraintViolationException")
-    final void testCannotCreatePersonWithoutGenderTypeForPhysical()
+    final void testCannotCreatePersonWithoutGenderTypeForPhysicalPerson()
     {
-        final String LAST_NAME = "Doe";
-        final String FIRST_NAME = "John";
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
 
         assertThrows(ConstraintViolationException.class, () ->
                 Person.builder()
@@ -132,8 +147,9 @@ class PersonUnitTest
     @DisplayName("Create a person with all attributes")
     final void testCreatePersonWithAllAttributes() throws PersonException
     {
-        final String LAST_NAME = "Doe";
-        final String FIRST_NAME = "John";
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+        final Date BIRTH_DATE = FAKER.date().birthday();
         final String DESCRIPTION = "An unknown person";
         final String REFERENCE = "UJHH-4589663";
         final String TAG1 = "USA";
@@ -151,6 +167,7 @@ class PersonUnitTest
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
                 .withDescription(DESCRIPTION)
+                .withBirthDate(BIRTH_DATE)
                 .withPersonType(PersonType.PHYSICAL)
                 .withGenderType(GenderType.MALE)
                 .withTags(new String[]{ TAG1, TAG2, TAG3 })
@@ -163,6 +180,7 @@ class PersonUnitTest
         assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
         assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
         assertThat(person.getGenderType()).isEqualTo(GenderType.MALE);
+        assertThat(person.getBirthDate()).isEqualTo(BIRTH_DATE);
         assertThat(person.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(person.getReference()).isEqualTo(REFERENCE);
         assertThat(person.getTags()).containsOnlyOnce(TAG1);
@@ -172,205 +190,178 @@ class PersonUnitTest
         assertThat(((IPerson) person.getParent()).getLastName()).isEqualTo("Einstein");
     }
 
-//    @Test
-//    @DisplayName("Create a document with a reference")
-//    final void testCreateDocumentWithReference() throws DocumentException
-//    {
-//        final String NAME = "Into the wild";
-//        final String REFERENCE = "Release date: September 21, 2007";
-//
-//        IDocument document = Document.builder()
-//                .withName(NAME)
-//                .withReference(REFERENCE)
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getName()).isEqualTo(NAME);
-//        assertThat(document.getReference()).isEqualTo(REFERENCE);
-//    }
-//
-//    @Test
-//    @DisplayName("Create a document with several tags")
-//    final void testCreateDocumentWithTags() throws DocumentException
-//    {
-//        final String NAME = "Into the wild";
-//        final String TAG1 = "Sean Penn";
-//        final String TAG2 = "Mickael Brook";
-//        final String TAG3 = "Emile Hirsch";
-//
-//        IDocument document = Document.builder()
-//                .withName(NAME)
-//                .withTags(new String[]{ TAG1, TAG2, TAG3 })
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getName()).isEqualTo(NAME);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-//    }
-//
-//    @Test
-//    @DisplayName("Count the document tags")
-//    final void testCountDocumentTags() throws DocumentException
-//    {
-//        final String NAME = "Into the wild";
-//        final String TAG1 = "Sean Penn";
-//        final String TAG2 = "Mickael Brook";
-//        final String TAG3 = "Emile Hirsch";
-//
-//        IDocument document = Document.builder()
-//                .withName(NAME)
-//                .withTags(new String[]{ TAG1, TAG2, TAG3 })
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getName()).isEqualTo(NAME);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-//        assertThat(document.getTagCount()).isEqualTo(3);
-//    }
-//
-//    @Test
-//    @DisplayName("Cannot create duplicate tag!")
-//    final void testCannotAddDuplicateTag() throws DocumentException
-//    {
-//        final String NAME = "Into the wild";
-//        final String TAG1 = "Sean Penn";
-//        final String TAG3 = "Emile Hirsch";
-//
-//        IDocument document = Document.builder()
-//                .withName(NAME)
-//                .withTags(new String[]{ TAG1, TAG1, TAG3, TAG1 })
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getName()).isEqualTo(NAME);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-//    }
-//
-//    @Test
-//    @DisplayName("Delete a document tag")
-//    final void testDeleteDocumentTag() throws DocumentException
-//    {
-//        final String NAME = "Into the wild";
-//        final String TAG1 = "Sean Penn";
-//        final String TAG2 = "Mickael Brook";
-//        final String TAG3 = "Emile Hirsch";
-//
-//        IDocument document = Document.builder()
-//                .withName(NAME)
-//                .withTags(new String[]{ TAG1, TAG2, TAG3 })
-//                .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getName()).isEqualTo(NAME);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-//        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-//        assertThat(document.getTagCount()).isEqualTo(3);
-//
-//        document.removeTag(TAG2);
-//        assertThat(document.getTagCount()).isEqualTo(2);
-//        assertThat(document.getTags()).doesNotContain(TAG2);
-//    }
-//
-//    @Test
-//    @DisplayName("Create a document with a file")
-//    final void testDocumentCreateWithFile() throws DocumentException
-//    {
-//        IDocument document = Document.builder()
-//                .withName("Java 8 Sheet")
-//                .withDescription("A Java 8 reference sheet.")
-//                .withReference("2021")
-//                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-//                .withFilename("./media/java-8-streams-cheat-sheet.pdf")
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThat(document.getContentLength()).isPositive();
-//    }
-//
-//    @Test
-//    @DisplayName("Cannot set document content without a file!")
-//    final void testCannotSetDocumentContentWithoutFile() throws DocumentException
-//    {
-//        IDocument document = Document.builder()
-//                .withName("Java 8 Sheet")
-//                .withDescription("A Java 8 reference sheet.")
-//                .withReference("2021")
-//                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//        assertThrows(DocumentException.class, document::setContent);
-//    }
-//
-//    @Test
-//    @DisplayName("Set a document content given a file name")
-//    final void testSetDocumentContentWithFilename() throws DocumentException
-//    {
-//        IDocument document = Document.builder()
-//                .withName("Java 8 Sheet")
-//                .withDescription("A Java 8 reference sheet.")
-//                .withReference("2021")
-//                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//
-//        document.setContent("./media/java-8-streams-cheat-sheet.pdf");
-//
-//        assertThat(document.getContent()).isNotNull();
-//    }
-//
-//    @Test
-//    @DisplayName("Set a document content given a file")
-//    final void testSetDocumentContentWithFile() throws DocumentException, FileException
-//    {
-//        IDocument document = Document.builder()
-//                .withName("Java 8 Sheet")
-//                .withDescription("A Java 8 reference sheet.")
-//                .withReference("2021")
-//                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-//                .build();
-//
-//        assertThat(document).isNotNull();
-//
-//        document.setContent(FileHelper.getFile("./media/java-8-streams-cheat-sheet.pdf"));
-//
-//        assertThat(document.getContent()).isNotNull();
-//    }
-//
-//    @Test
-//    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 500 ms!
-//    @DisplayName("Create 10'000 documents with tags and validation of data")
-//    final void testCreateMultipleDocumentWithTags() throws DocumentException
-//    {
-//        final int COUNT = 10000;
-//        List<IDocument> list = new ArrayList<>();
-//
-//        final String NAME = "Into the wild";
-//        final String TAG1 = "Sean Penn";
-//        final String TAG2 = "Mickael Brook";
-//        final String TAG3 = "Emile Hirsch";
-//
-//        for (int i = 0; i < COUNT; i++)
-//        {
-//            list.add(Document.builder()
-//                    .withName(NAME)
-//                    .withTags(new String[]{ TAG1, TAG2, TAG3 })
-//                    .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                    .build());
-//        }
-//
-//        assertThat(list).hasSize(COUNT);
-//    }
+    @Test
+    @DisplayName("Add a document")
+    final void testAddDocument() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        person.addDocument(DocumentRandomizer.generate(true, true));
+
+        assertThat(person).isNotNull();
+        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
+        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getDocumentCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Remove a document")
+    final void testRemoveDocument() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        IDocument document = DocumentRandomizer.generate(true, true);
+        person.addDocument(document);
+
+        assertThat(person.getDocumentCount()).isPositive();
+
+        person.removeDocument(document);
+
+        assertThat(person).isNotNull();
+        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
+        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getDocumentCount()).isZero();
+    }
+
+    @Test
+    @DisplayName("Get a document by its name")
+    final void testGetDocumentByName() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        IDocument document = DocumentRandomizer.generate(true, true);
+        person.addDocument(document);
+
+        assertThat(person.getDocumentCount()).isEqualTo(1);
+        assertThat(person).isNotNull();
+        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
+        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+
+        IDocument other = person.getDocumentByName(document.getName());
+        assertThat(other).isNotNull();
+        assertThat(other.getName()).isEqualTo(document.getName());
+    }
+
+    @Test
+    @DisplayName("Get a document by its identifier")
+    final void testGetDocumentById() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        IDocument document = DocumentRandomizer.generate(true, true);
+        person.addDocument(document);
+
+        assertThat(person.getDocumentCount()).isEqualTo(1);
+        assertThat(person).isNotNull();
+        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
+        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+
+        IDocument other = person.getDocumentById(document.getId());
+        assertThat(other).isNotNull();
+        assertThat(other.getId().toString()).isEqualTo(document.getId().toString());
+    }
+
+    @Test
+    @DisplayName("Check if a document exist")
+    final void testExistDocument() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        IDocument document = DocumentRandomizer.generate(true, true);
+        person.addDocument(document);
+
+        assertThat(person.getDocumentCount()).isEqualTo(1);
+        assertThat(person).isNotNull();
+        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
+        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+
+        assertThat(person.existDocument(document)).isTrue();
+    }
+
+    @Test
+    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 100 persons with light dependencies, no document and no content")
+    final void testPerformanceCreateMultiplePersonsWithoutDocumentContent() throws DataModelEntityException
+    {
+        final int COUNT = 100;
+        List<IPerson> list = new ArrayList<>();
+
+        for (int i = 0; i < COUNT; i++)
+        {
+            // For each person entity created, we also create:
+            // - X documents
+            // - X email addresses  with X documents for each
+            // - X postal addresses with X documents for each
+            // - X phone numbers    with X documents for each
+            list.add(PersonRandomizer.generate(true,true, true, true, false, false, 5));
+        }
+
+        assertThat(list).hasSize(COUNT);
+    }
+
+    @Test
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 10 persons with full dependencies (with document and content)")
+    final void testPerformanceCreateMultiplePersonsWithDocumentContent() throws DataModelEntityException
+    {
+        final int COUNT = 10;
+        List<IPerson> list = new ArrayList<>();
+
+        for (int i = 0; i < COUNT; i++)
+        {
+            // For each person entity created, we also create:
+            // - X documents
+            // - X email addresses  with X documents for each
+            // - X postal addresses with X documents for each
+            // - X phone numbers    with X documents for each
+            list.add(PersonRandomizer.generate(true,true, true, true, true, true, 5));
+        }
+
+        assertThat(list).hasSize(COUNT);
+    }
 }

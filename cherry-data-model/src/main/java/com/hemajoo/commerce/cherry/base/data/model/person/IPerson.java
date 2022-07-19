@@ -15,6 +15,14 @@
 package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressException;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.IPostalAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressException;
+import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
+import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberException;
+import lombok.NonNull;
 
 import java.util.Date;
 
@@ -109,4 +117,25 @@ public interface IPerson extends IDataModelEntity
      * @param type Gender type.
      */
     void setGenderType(final GenderType type);
+
+    /**
+     * Add an email address.
+     * @param email Email address.
+     * @throws EmailAddressException Thrown in case an error occurred while trying to add an email address.
+     */
+    void addEmailAddress(final @NonNull IEmailAddress email) throws DataModelEntityException;
+
+    /**
+     * Add a postal address.
+     * @param postal Postal address.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to add a postal address.
+     */
+    void addPostalAddress(final @NonNull IPostalAddress postal) throws DataModelEntityException;
+
+    /**
+     * Add a phone number.
+     * @param phone Phone number.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to add a phone number.
+     */
+    void addPhoneNumber(final @NonNull IPhoneNumber phone) throws DataModelEntityException;
 }

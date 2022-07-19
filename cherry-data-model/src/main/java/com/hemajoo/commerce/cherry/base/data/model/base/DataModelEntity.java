@@ -24,6 +24,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.base.validation.EntityValidator;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
+import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.GenericGenerator;
@@ -53,6 +54,11 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class DataModelEntity extends AbstractStatusEntity implements IDataModelEntity
 {
+    /**
+     * Tag separator character.
+     */
+    private static final String TAG_SEPARATOR = ",";
+
     /**
      * DataModelEntity identifier.
      */
@@ -191,20 +197,49 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final <T extends IDataModelEntity> boolean existDocument(final @NonNull T document)
+    public final <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name)
     {
-        return existDocument(document.getId());
+        Optional<Document> document = documents.stream().filter(e -> e.getName().equals(name)).findFirst();
+        return document.isEmpty() ? null : (T) document.get();
     }
 
     @Override
-    public final boolean existDocument(final UUID documentId)
+    public final <T extends IDataModelEntity> T getDocumentById(final @NonNull String uuid)
     {
-        if (documentId != null)
-        {
-            return documents.stream().anyMatch(doc -> doc.getId().equals(documentId));
-        }
+        Optional<Document> document = documents.stream().filter(e -> e.getId().toString().equals(uuid)).findFirst();
+        return document.isEmpty() ? null : (T) document.get();
+    }
 
-        return false; // Random documents do not have a UUID assigned yet by the database!
+    @Override
+    public final <T extends IDataModelEntity> T getDocumentById(final @NonNull UUID uuid)
+    {
+        Optional<Document> document = documents.stream().filter(e -> e.getId().toString().equals(uuid.toString())).findFirst();
+        return document.isEmpty() ? null : (T) document.get();
+    }
+
+    @Override
+    public final <T extends IDataModelEntity> boolean existDocument(final @NonNull T document)
+    {
+        if (document.getId() != null)
+        {
+            return existDocument(document.getId());
+        }
+        else
+        {
+            return documents.stream().anyMatch(doc -> doc.getName().equals(document.getName()));
+        }
+    }
+
+    @Override
+    public final boolean existDocument(final @NonNull UUID id)
+    {
+        return documents.stream().anyMatch(doc -> doc.getId().equals(id));
+    }
+
+    @Override
+    public final boolean existDocument(final @NonNull String id)
+    {
+        return documents.stream().anyMatch(doc -> doc.getId().toString().equals(id));
     }
 
     @Override
@@ -235,21 +270,46 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final <T extends IDataModelEntity> void removeDocument(final @NonNull T document)
+    public final <T extends IDataModelEntity> boolean removeDocument(final @NonNull T document)
     {
-        removeDocument(document.getId());
+        if (document.getId() != null)
+        {
+            return removeDocumentById(document.getId());
+        }
+        else
+        {
+            return documents.removeIf(doc -> doc.getName().equals(document.getName()));
+        }
     }
 
     @Override
-    public final void removeDocument(final @NonNull UUID documentId)
+    public final boolean removeDocumentById(final @NonNull String id)
     {
-        documents.removeIf(doc -> doc.getId().equals(documentId));
+        return documents.removeIf(doc -> doc.getId().toString().equals(id));
+    }
+
+    @Override
+    public final boolean removeDocumentById(final @NonNull UUID id)
+    {
+        return documents.removeIf(doc -> doc.getId().equals(id));
+    }
+
+    @Override
+    public final List<String> getTags()
+    {
+        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
+    }
+
+    @Override
+    public final String getTagsAsString()
+    {
+        return tags;
     }
 
     @Override
     public final void addTag(String tag)
     {
-        if (convertTagAsList().stream().noneMatch(element -> element.equals(tag)))
+        if (StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
         {
             tags = tags == null || tags.isEmpty() ? tag : tags + ", " + tag;
         }
@@ -258,7 +318,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final void removeTag(String tag)
     {
-        List<String> sourceTags = convertTagAsList();
+        List<String> sourceTags = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
         List<String> targetTags = new ArrayList<>();
 
         for (String element : sourceTags)
@@ -269,13 +329,13 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
             }
         }
 
-        setTags(convertTagAsString(targetTags));
+        setTags(StringHelper.convertListValuesAsString(targetTags, TAG_SEPARATOR));
     }
 
     @Override
     public final String getRandomTag() throws DataModelEntityException
     {
-        List<String> tagList = convertTagAsList();
+        List<String> tagList = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
 
         if (tagList.isEmpty())
         {
@@ -296,13 +356,13 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final boolean existTag(String tag)
     {
-        return convertTagAsList().stream().anyMatch(element -> element.equals(tag));
+        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
     }
 
     @Override
     public final int getTagCount()
     {
-        return convertTagAsList().size();
+        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).size();
     }
 
     /**
@@ -316,44 +376,5 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         {
             throw new ConstraintViolationException(violations);
         }
-    }
-
-    /**
-     * Converts a string of tags (separated by comma) to a list of tags.
-     * @return List of tags.
-     */
-    private List<String> convertTagAsList()
-    {
-        if (tags == null || tags.isEmpty())
-        {
-            return new ArrayList<>();
-        }
-
-        return Arrays.stream(tags.split(","))
-                .map(String::trim)
-                .toList();
-    }
-
-    /**
-     * Converts a list of tags to a string of tags (separated by comma).
-     * @return String of tags.
-     */
-    private String convertTagAsString(final List<String> tagList)
-    {
-        StringBuilder builder = new StringBuilder();
-
-        for (String tag : tagList)
-        {
-            if (builder.length() == 0)
-            {
-                builder.append(tag);
-            }
-            else
-            {
-                builder.append(", ").append(tag);
-            }
-        }
-
-        return builder.toString();
     }
 }

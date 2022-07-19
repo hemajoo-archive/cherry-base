@@ -14,6 +14,7 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
@@ -42,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @DirtiesContext
 @SpringBootTest
-class DocumentUnitTest
+class DocumentUnitTest extends AbstractDocumentUnitTest
 {
     @Test
     @DisplayName("Create an empty document")
@@ -55,179 +56,116 @@ class DocumentUnitTest
     }
 
     @Test
-    @DisplayName("Create a document with a name")
-    final void testCreateDocumentWithName() throws DocumentException
+    @DisplayName("Create a document with the minimal set of attributes")
+    final void testCreateDocument() throws DocumentException
     {
-        final String NAME = "Into the wild";
-
         IDocument document = Document.builder()
-                .withName(NAME)
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withName(DOCUMENT_NAME)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-    }
-
-    @SuppressWarnings("java:S5778")
-    @Test
-    @DisplayName("Create a document without a name should raise a ConstraintViolationException")
-    final void testCannotCreateDocumentWithoutName()
-    {
-        assertThrows(ConstraintViolationException.class, () ->
-                Document.builder()
-                    .withReference("2021")
-                    .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                    .withFilename("./media/java-8-streams-cheat-sheet.pdf")
-                    .build());
-    }
-
-    @SuppressWarnings("java:S5778")
-    @Test
-    @DisplayName("Create a document without a document type should set the document type to: DOCUMENT_GENERIC")
-    final void testCreateDocumentWithoutType() throws DocumentException
-    {
-        final String NAME = "Into the wild";
-
-            IDocument document = Document.builder()
-                    .withName(NAME)
-                    .build();
-
-        assertThat(document).isNotNull();
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_GENERIC);
     }
 
+    @SuppressWarnings("java:S5778")
     @Test
-    @DisplayName("Create a document with a description")
-    final void testCreateDocumentWithDescription() throws DocumentException
+    @DisplayName("Cannot create a document without mandatory attributes")
+    final void testCannotCreateDocumentWithoutName()
     {
-        final String NAME = "Into the wild";
-        final String DESCRIPTION = "A great movie distributed from Paramount Vantage";
-
-        IDocument document = Document.builder()
-                .withName(NAME)
-                .withDescription(DESCRIPTION)
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
-                .build();
-
-        assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getDescription()).isEqualTo(DESCRIPTION);
+        // Name is mandatory
+        assertThrows(ConstraintViolationException.class, () ->
+                Document.builder()
+                    .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                    .build());
     }
 
     @Test
-    @DisplayName("Create a document with a reference")
-    final void testCreateDocumentWithReference() throws DocumentException
+    @DisplayName("Create a document with all attributes")
+    final void testCreateDocumentWithAllAttributes() throws DocumentException
     {
-        final String NAME = "Into the wild";
-        final String REFERENCE = "Release date: September 21, 2007";
-
         IDocument document = Document.builder()
-                .withName(NAME)
-                .withReference(REFERENCE)
+                .withName(DOCUMENT_NAME)
+                .withDescription(DOCUMENT_DESCRIPTION)
+                .withReference(DOCUMENT_REFERENCE)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withFilename("./media/java-8-streams-cheat-sheet.pdf")
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getReference()).isEqualTo(REFERENCE);
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getDescription()).isEqualTo(DOCUMENT_DESCRIPTION);
+        assertThat(document.getReference()).isEqualTo(DOCUMENT_REFERENCE);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.MEDIA_VIDEO);
     }
 
     @Test
-    @DisplayName("Create a document with several tags")
-    final void testCreateDocumentWithTags() throws DocumentException
+    @DisplayName("Count the tags")
+    final void testCountTags() throws DocumentException
     {
-        final String NAME = "Into the wild";
-        final String TAG1 = "Sean Penn";
-        final String TAG2 = "Mickael Brook";
-        final String TAG3 = "Emile Hirsch";
-
         IDocument document = Document.builder()
-                .withName(NAME)
-                .withTags(new String[]{ TAG1, TAG2, TAG3 })
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-    }
-
-    @Test
-    @DisplayName("Count the document tags")
-    final void testCountDocumentTags() throws DocumentException
-    {
-        final String NAME = "Into the wild";
-        final String TAG1 = "Sean Penn";
-        final String TAG2 = "Mickael Brook";
-        final String TAG3 = "Emile Hirsch";
-
-        IDocument document = Document.builder()
-                .withName(NAME)
-                .withTags(new String[]{ TAG1, TAG2, TAG3 })
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
-                .build();
-
-        assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(TAG3);
-        assertThat(document.getTagCount()).isEqualTo(3);
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTags()).hasSize(3);
     }
 
     @Test
     @DisplayName("Cannot create duplicate tag!")
     final void testCannotAddDuplicateTag() throws DocumentException
     {
-        final String NAME = "Into the wild";
-        final String TAG1 = "Sean Penn";
-        final String TAG3 = "Emile Hirsch";
-
         IDocument document = Document.builder()
-                .withName(NAME)
-                .withTags(new String[]{ TAG1, TAG1, TAG3, TAG1 })
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG1, DOCUMENT_TAG3, DOCUMENT_TAG1})
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(TAG3);
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
     }
 
     @Test
     @DisplayName("Delete a document tag")
-    final void testDeleteDocumentTag() throws DocumentException
+    final void testDeleteTag() throws DocumentException
     {
-        final String NAME = "Into the wild";
-        final String TAG1 = "Sean Penn";
-        final String TAG2 = "Mickael Brook";
-        final String TAG3 = "Emile Hirsch";
-
         IDocument document = Document.builder()
-                .withName(NAME)
-                .withTags(new String[]{ TAG1, TAG2, TAG3 })
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(NAME);
-        assertThat(document.getTags()).containsOnlyOnce(TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(TAG3);
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getTagCount()).isEqualTo(3);
 
-        document.removeTag(TAG2);
+        document.removeTag(DOCUMENT_TAG2);
         assertThat(document.getTagCount()).isEqualTo(2);
-        assertThat(document.getTags()).doesNotContain(TAG2);
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
     }
 
     @Test
     @DisplayName("Create a document with a file")
-    final void testDocumentCreateWithFile() throws DocumentException
+    final void testCreateDocumentWithFile() throws DocumentException
     {
         IDocument document = Document.builder()
                 .withName("Java 8 Sheet")
@@ -293,23 +231,39 @@ class DocumentUnitTest
     }
 
     @Test
-    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 500 ms!
-    @DisplayName("Create 10'000 documents with tags and validation of data")
-    final void testCreateMultipleDocumentWithTags() throws DocumentException
+    @DisplayName("Inactivate a document")
+    final void testInactivateDocument() throws DocumentException
+    {
+        IDocument document = Document.builder()
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withStatusType(EntityStatusType.INACTIVE)
+                .build();
+
+        assertThat(document).isNotNull();
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTags()).hasSize(3);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
+        assertThat(document.getSince()).isNotNull();
+    }
+
+    @Test
+    @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS) // Creating 10'000 instances must not exceed 2 seconds!
+    @DisplayName("Create 10'000 documents")
+    final void testPerformanceCreateMultipleDocuments() throws DocumentException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();
 
-        final String NAME = "Into the wild";
-        final String TAG1 = "Sean Penn";
-        final String TAG2 = "Mickael Brook";
-        final String TAG3 = "Emile Hirsch";
-
         for (int i = 0; i < COUNT; i++)
         {
             list.add(Document.builder()
-                    .withName(NAME)
-                    .withTags(new String[]{ TAG1, TAG2, TAG3 })
+                    .withName(DOCUMENT_NAME)
+                    .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
                     .withDocumentType(DocumentType.MEDIA_VIDEO)
                     .build());
         }

@@ -45,6 +45,7 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
      * A content (file) will be automatically attached to the document.
      * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
      * @return Random document.
+     * @throws DocumentException Thrown to indicate an error occurred while generating a document.
      */
     public static IDocument generate(final boolean withRandomId) throws DocumentException
     {
@@ -56,6 +57,7 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
      * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
      * @param withContent Does a content (file) has to be attached to the document?
      * @return Random document.
+     * @throws DocumentException Thrown to indicate an error occurred while generating a document.
      */
     public static IDocument generate(final boolean withRandomId, final boolean withContent) throws DocumentException
     {

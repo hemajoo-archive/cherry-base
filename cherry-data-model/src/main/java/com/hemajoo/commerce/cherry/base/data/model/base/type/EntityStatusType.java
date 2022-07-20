@@ -15,19 +15,19 @@
 package com.hemajoo.commerce.cherry.base.data.model.base.type;
 
 /**
- * Enumeration representing the several possible entity status types.
+ * Enumeration containing a definition for the several possible <b>entity status types</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 public enum EntityStatusType
 {
     /**
-     * DataModelEntity has an <b>active</b> status.
+     * Entity is <b>active</b>.
      */
     ACTIVE,
 
     /**
-     * DataModelEntity has an <b>inactive</b> status.
+     * Entity is <b>inactive</b>.
      */
     INACTIVE
 }

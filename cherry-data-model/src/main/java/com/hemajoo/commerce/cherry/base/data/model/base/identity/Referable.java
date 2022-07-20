@@ -19,15 +19,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 /**
- * Classes implementing this interface gain the ability to expose their <b>identity</b>.
+ * Provide services to access the <b>identity</b> of an entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 public interface Referable extends Serializable
 {
     /**
-     * Returns the identity of the entity.
-     * @return DataModelEntity identity.
+     * Return the identity of the entity.
+     * @return Identity.
      */
     @JsonIgnore
     IIdentity getIdentity();

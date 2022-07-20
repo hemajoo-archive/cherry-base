@@ -15,7 +15,7 @@
 package com.hemajoo.commerce.cherry.base.data.model.base.type;
 
 /**
- * Enumeration representing the several possible <b>query</b> data model entity's field types that can be handled by the <b>query mechanism</b>.
+ * Enumeration containing a definition for the several possible <b>query field data types</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

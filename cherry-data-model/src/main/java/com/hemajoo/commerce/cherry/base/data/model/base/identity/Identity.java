@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Represents the <b>identity</b> of a data model entity.
  * <br>
- * It is used to store a lightweight reference to an entity with enough information for the persistence layer to be able to retrieve the entity in the backend.
+ * It is used to store a lightweight reference to an entity with enough information for the persistence layer to be able to retrieve the entity from the backend.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -49,8 +49,8 @@ public class Identity implements IIdentity
     private UUID id;
 
     /**
-     * Creates a new entity identity given an identity.
-     * @param identity IIdentity.
+     * Create a new identity given an identity.
+     * @param identity Identity.
      */
     public Identity(final IIdentity identity)
     {
@@ -63,8 +63,8 @@ public class Identity implements IIdentity
 
     /**
      * Creates a new entity identity given an entity type and identifier.
-     * @param entityType DataModelEntity type.
-     * @param id DataModelEntity identifier.
+     * @param entityType Entity type.
+     * @param id Entity identifier.
      */
     public Identity(final EntityType entityType, final UUID id)
     {
@@ -74,9 +74,9 @@ public class Identity implements IIdentity
 
     /**
      * Creates an entity identifier statically given an entity type and identifier.
-     * @param type DataModelEntity type.
-     * @param id DataModelEntity identifier.
-     * @return DataModelEntity identity.
+     * @param type Entity type.
+     * @param id Entity identifier.
+     * @return Entity identity.
      */
     public static IIdentity from(final EntityType type, final UUID id)
     {

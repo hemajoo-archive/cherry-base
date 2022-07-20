@@ -15,30 +15,33 @@
 package com.hemajoo.commerce.cherry.base.data.model.base.identity;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Classes implementing this interface gain the ability to expose their <b>identity</b>.
- * <br><br>
- * An entity identity is composed of:<br>
- *  - the entity identifier (UUID)<br>
- *  - the entity type
+ * Provide services to access the data composing the <b>identity</b> of an entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 public interface IIdentity extends Serializable
 {
     /**
-     * Returns the entity identifier.
-     * @return DataModelEntity identifier.
+     * Return the entity identifier.
+     * @return Identifier.
      */
     UUID getId();
 
     /**
-     * Returns the entity type.
-     * @return DataModelEntity type.
+     * Set the entity identifier.
+     * @param uuid Unique identifier.
+     */
+    void setId(final @NonNull UUID uuid);
+
+    /**
+     * Return the entity type.
+     * @return Type.
      */
     EntityType getEntityType();
 }

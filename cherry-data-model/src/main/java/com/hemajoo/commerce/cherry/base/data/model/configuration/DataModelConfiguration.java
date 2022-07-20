@@ -19,8 +19,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration for the <b>data model</b>.
+ * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+ * @version 1.0.0
+ */
+
 @Configuration
-//@Component
 @ComponentScan(basePackages = "com.hemajoo.commerce.cherry.base.data.model")
 public class DataModelConfiguration
 {

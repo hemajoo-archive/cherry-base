@@ -15,7 +15,7 @@
 package com.hemajoo.commerce.cherry.base.data.model.base.type;
 
 /**
- * Enumeration representing the several possible entity types.
+ * Enumeration containing a definition for the several possible <b>entity types</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -27,72 +27,72 @@ public enum EntityType
     UNKNOWN,
 
     /**
-     * <b>Media</b> entity type.
+     * Entity is a <b>media</b> entity.
      */
     MEDIA,
 
     /**
-     * <b>Document</b> entity type.
+     * Entity is a <b>document</b> entity.
      */
     DOCUMENT,
 
     /**
-     * <b>Document Content</b> entity type.
+     * Entity is a <b>document content</b> entity.
      */
     DOCUMENT_CONTENT,
 
     /**
-     * <b>Person</b> entity type.
+     * Entity is a <b>person</b> entity.
      */
     PERSON,
 
     /**
-     * <b>Email Address</b> entity type.
+     * Entity is an <b>email address</b> entity.
      */
     EMAIL_ADDRESS,
 
     /**
-     * <b>Postal Address</b> entity type.
+     * Entity is a <b>postal address</b> entity.
      */
     POSTAL_ADDRESS,
 
     /**
-     * <b>Phone Number</b> entity type.
+     * Entity is a <b>phone number</b> entity.
      */
     PHONE_NUMBER,
 
     /**
-     * <b>Account</b> entity type.
+     * Entity is an <b>account</b> entity.
      */
     ACCOUNT,
 
     /**
-     * <b>Customer</b> entity type.
+     * Entity is a <b>customer</b> entity.
      */
     CUSTOMER,
 
     /**
-     * <b>Organization</b> entity type.
+     * Entity is an <b>organization</b> entity.
      */
     ORGANIZATION,
 
     /**
-     * <b>Company</b> entity type.
+     * Entity is a <b>company</b> entity.
      */
     COMPANY,
 
     /**
-     * <b>Department</b> entity type.
+     * Entity is a <b>department</b> entity.
      */
     DEPARTMENT,
 
     /**
-     * <b>Shop</b> entity type.
+     * Entity is a <b>shop</b> entity.
      */
     SHOP,
 
     /**
-     * <b>Employee</b> entity type.
+     * Entity is an <b>employee</b> entity.
      */
     EMPLOYEE,
 }

@@ -91,7 +91,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                 .withDescription(DOCUMENT_DESCRIPTION)
                 .withReference(DOCUMENT_REFERENCE)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withFilename("./media/java-8-streams-cheat-sheet.pdf")
+                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
 
@@ -172,7 +172,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                 .withDescription("A Java 8 reference sheet.")
                 .withReference("2021")
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFilename("./media/java-8-streams-cheat-sheet.pdf")
+                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
                 .build();
 
         assertThat(document).isNotNull();
@@ -207,7 +207,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
 
-        document.setContent("./media/java-8-streams-cheat-sheet.pdf");
+        document.setContent(TEST_DOCUMENT_CONTENT_PDF);
 
         assertThat(document.getContent()).isNotNull();
     }
@@ -225,7 +225,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
 
-        document.setContent(FileHelper.getFile("./media/java-8-streams-cheat-sheet.pdf"));
+        document.setContent(FileHelper.getFile(TEST_DOCUMENT_CONTENT_PDF));
 
         assertThat(document.getContent()).isNotNull();
     }
@@ -236,7 +236,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     {
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
@@ -248,7 +248,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getTags()).hasSize(3);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
-        assertThat(document.getSince()).isNotNull();
+        assertThat(document.getInactiveSince()).isNotNull();
     }
 
     @Test
@@ -264,12 +264,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
-        assertThat(document.getSince()).isNotNull();
+        assertThat(document.getInactiveSince()).isNotNull();
 
         document.setStatusType(EntityStatusType.ACTIVE);
 
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
-        assertThat(document.getSince()).isNull();
+        assertThat(document.getInactiveSince()).isNull();
     }
 
     @Test
@@ -284,7 +284,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         {
             list.add(Document.builder()
                     .withName(DOCUMENT_NAME)
-                    .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                    .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
                     .withDocumentType(DocumentType.MEDIA_VIDEO)
                     .build());
         }
@@ -305,11 +305,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         {
             document = Document.builder()
                     .withName(DOCUMENT_NAME)
-                    .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                    .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
                     .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf")
+//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf") //TODO Add to builder
                     .build();
-            document.setContent("./media/java-8-streams-cheat-sheet.pdf");
+            document.setContent(TEST_DOCUMENT_CONTENT_PDF);
             list.add(document);
         }
 

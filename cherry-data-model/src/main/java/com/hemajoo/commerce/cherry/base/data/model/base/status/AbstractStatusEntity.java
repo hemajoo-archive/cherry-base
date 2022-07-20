@@ -24,7 +24,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Represents an abstract <b>status aware</b> data model entity.
+ * Represent an abstract data model entity containing <b>status</b> information.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -50,7 +50,7 @@ public abstract class AbstractStatusEntity extends AbstractAuditEntity implement
     @Schema(hidden = true)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "SINCE", length = 26)
-    private Date since;
+    private Date inactiveSince;
 
     /**
      * Returns if this entity is active?
@@ -67,7 +67,7 @@ public abstract class AbstractStatusEntity extends AbstractAuditEntity implement
     public final void setActive()
     {
         statusType = EntityStatusType.ACTIVE;
-        since = null;
+        inactiveSince = null;
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class AbstractStatusEntity extends AbstractAuditEntity implement
     public final void setInactive()
     {
         statusType = EntityStatusType.INACTIVE;
-        since = new Date(System.currentTimeMillis());
+        inactiveSince = new Date(System.currentTimeMillis());
     }
 
     /**

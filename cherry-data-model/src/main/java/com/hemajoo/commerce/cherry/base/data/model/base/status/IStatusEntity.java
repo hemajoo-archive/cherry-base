@@ -21,7 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import java.util.Date;
 
 /**
- * Entities implementing this interface gain the ability to expose their status.
+ * Provide services to manipulate the status data composing an <b>entity</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -31,13 +31,13 @@ public interface IStatusEntity extends IAuditEntity
      * Data model entity attribute: <b>status type</b>.
      */
     @JsonIgnore
-    public static final String BASE_STATUS_TYPE = "statusType";
+    String BASE_STATUS_TYPE = "statusType";
 
     /**
      * Data model entity attribute: <b>since</b> (inactive date).
      */
     @JsonIgnore
-    public static final String BASE_SINCE = "since";
+    String BASE_SINCE = "since";
 
     /**
      * Returns the status type.
@@ -46,24 +46,30 @@ public interface IStatusEntity extends IAuditEntity
     EntityStatusType getStatusType();
 
     /**
-     * Sets the status type date.
+     * Set the entity status type.
      * @param status Status type.
      */
     void setStatusType(final EntityStatusType status);
 
     /**
-     * Returns the inactivation date.
-     * <br>
-     * When status is <b>INACTIVE</b> status, invoking this service will return the date this entity has been de-activated.
-     * @return Inactivation since date.
+     * Return if this entity is active?
+     * @return <b>True</b> if the entity is active, <b>false</b> otherwise.
      */
-    Date getSince(); //TODO Should be changed to a ZonedDateTime
+    boolean isActive();
 
     /**
-     * Sets the inactivation date.
+     * Returns the inactive date.
      * <br>
-     * When status is set to <b>INACTIVE</b> status, invoking this service will set the date this entity has been de-activated.
-     * @param date Inactivation date.
+     * When status is set to {@link EntityStatusType#INACTIVE}, invoking this service will return the date this entity has been set to inactive.
+     * @return Inactive date.
      */
-    void setSince(final Date date);
+    Date getInactiveSince(); //TODO Should be changed to a ZonedDateTime
+
+    /**
+     * Sets the inactive date.
+     * <br>
+     * When status is set to {@link EntityStatusType#INACTIVE}, invoking this service will set the date this entity has been set to inactive.
+     * @param date Inactive date.
+     */
+    void setInactiveSince(final Date date);
 }

@@ -20,12 +20,15 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
 /**
- * Entity (data model entity) validator.
+ * Validator for <b>data model entities</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 @UtilityClass
-public class EntityValidator
+public class DataModelEntityValidator
 {
-    public static ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+    /**
+     * Validator factory.
+     */
+    public static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 }

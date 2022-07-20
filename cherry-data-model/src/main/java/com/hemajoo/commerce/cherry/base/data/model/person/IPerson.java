@@ -27,7 +27,7 @@ import lombok.NonNull;
 import java.util.Date;
 
 /**
- * Entities implementing this interface are tagged as a server <b>person</b> data model entity.
+ * Provide services to manipulate the data composing a <b>person</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

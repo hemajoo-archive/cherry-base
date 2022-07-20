@@ -14,6 +14,8 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.base.exception;
 
+import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
+
 import java.io.Serial;
 
 /**

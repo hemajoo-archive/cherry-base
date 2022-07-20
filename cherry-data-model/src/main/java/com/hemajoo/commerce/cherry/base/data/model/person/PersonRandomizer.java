@@ -16,7 +16,6 @@ package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressRandomizer;
@@ -54,7 +53,9 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      * @param withPhoneNumber Phone number have to be generated?
      * @param withDocument Random documents have to be generated?
      * @param withContent Documents content (file) have to be attached to the document?
+     * @param count Number of child entities to generate.
      * @return Random person.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
      */
     public static IPerson generate(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
@@ -130,7 +131,7 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      * @param withContent Documents content (file) have to be attached to the document?
      * @param count Number of entities to generate.
      * @return List of random persons.
-     * @throws DocumentException Thrown in case an error occurred when trying to generate a list of random documents.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
      */
     public static List<IPerson> generateList(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {

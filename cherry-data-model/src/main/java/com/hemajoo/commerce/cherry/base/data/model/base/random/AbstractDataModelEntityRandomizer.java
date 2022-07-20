@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Abstract data model entity randomizer.
+ * Provide an abstract implementation of a data model entity <b>randomizer</b> used to randomly generate data model entities.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -65,6 +65,7 @@ public abstract class AbstractDataModelEntityRandomizer
     /**
      * Populate the base fields of a data model entity with random values.
      * @param parent Parent entity.
+     * @param <T> Entity type.
      */
     public static <T extends IDataModelEntity> void populateBaseFields(final @NonNull T parent)
     {
@@ -86,7 +87,7 @@ public abstract class AbstractDataModelEntityRandomizer
 
         if (parent.getStatusType() == EntityStatusType.INACTIVE)
         {
-            parent.setSince(FAKER.date().between(Date.from(zonedDateTime.toInstant()), Date.from(dateEnd)));
+            parent.setInactiveSince(FAKER.date().between(Date.from(zonedDateTime.toInstant()), Date.from(dateEnd)));
         }
 
         parent.setCreatedBy(FAKER.internet().emailAddress());

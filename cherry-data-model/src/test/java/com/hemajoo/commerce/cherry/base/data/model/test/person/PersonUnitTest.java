@@ -22,6 +22,7 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -324,6 +325,29 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
     }
 
     @Test
+    @DisplayName("Retrieve all documents")
+    final void testRetrieveAllDocuments() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        for (int i = 0; i < 10; i++)
+        {
+            person.addDocument(DocumentRandomizer.generate(true));
+        }
+
+        assertThat(person).isNotNull();
+        assertThat(person.getDocumentCount()).isEqualTo(10);
+    }
+
+    @Test
     @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 100 persons with light dependencies, no document and no content")
     final void testPerformanceCreateMultiplePersonsWithoutDocumentContent() throws DataModelEntityException
@@ -363,5 +387,167 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         }
 
         assertThat(list).hasSize(COUNT);
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Add an email address")
+    final void testAddEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Delete an email address")
+    final void testDeleteEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Delete all email address")
+    final void testDeleteAllEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Retrieve an email address")
+    final void testRetrieveEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Retrieve all email addresses")
+    final void testRetrieveAllEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Count the email addresses")
+    final void testCountEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Check if an email address exist")
+    final void testExistEmailAddress() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Check if an email address exist given its email")
+    final void testExistEmailAddressByEmail() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
+    }
+
+    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    @Test
+    @DisplayName("Check if an email address exist given its identifier")
+    final void testExistEmailAddressById() throws DataModelEntityException
+    {
+        final String LAST_NAME = FAKER.name().lastName();
+        final String FIRST_NAME = FAKER.name().firstName();
+
+        IPerson person = Person.builder()
+                .withPersonType(PersonType.PHYSICAL)
+                .withGenderType(GenderType.MALE)
+                .withLastName(LAST_NAME)
+                .withFirstName(FIRST_NAME)
+                .build();
+
+        assertThat(person).isNotNull();
     }
 }

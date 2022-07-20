@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * Entities implementing this interface are tagged as a <b>document</b> data model entity.
+ * Provide services to manipulate the data composing a data model entity <b>document</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

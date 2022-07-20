@@ -14,10 +14,7 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
-import com.hemajoo.commerce.cherry.base.data.model.document.Document;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
-import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
+import com.hemajoo.commerce.cherry.base.data.model.document.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 
 /**
@@ -30,37 +27,37 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     /**
      * Test document name.
      */
-    protected final String DOCUMENT_NAME = FAKER.funnyName().name();
+    protected final String DOCUMENT_NAME = FAKER.funnyName().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG1 = FAKER.animal().name();
+    protected final String DOCUMENT_TAG1 = FAKER.animal().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG2 = FAKER.artist().name();
+    protected final String DOCUMENT_TAG2 = FAKER.artist().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG3 = FAKER.book().genre();
+    protected final String DOCUMENT_TAG3 = FAKER.book().genre().trim();
 
     /**
      * Test description.
      */
-    protected final String DOCUMENT_DESCRIPTION = FAKER.book().title();
+    protected final String DOCUMENT_DESCRIPTION = FAKER.book().title().trim();
 
     /**
      * Test reference.
      */
-    protected final String DOCUMENT_REFERENCE = FAKER.aviation().METAR();
+    protected final String DOCUMENT_REFERENCE = FAKER.aviation().METAR().trim();
 
     /**
      * Test filename.
      */
-    protected final String DOCUMENT_FILENAME = "./media/java-8-streams-cheat-sheet.pdf";
+    protected final String TEST_DOCUMENT_CONTENT_PDF = "./media/java-8-streams-cheat-sheet.pdf";
 
     /**
      * Create a test document.
@@ -73,20 +70,29 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
                 .withName(DOCUMENT_NAME)
                 .withDescription(DOCUMENT_DESCRIPTION)
                 .withReference(DOCUMENT_REFERENCE)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withFilename(DOCUMENT_FILENAME)
+                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
+                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
                 .withDocumentType(DocumentType.MEDIA_VIDEO)
                 .build();
     }
 
     /**
-     * Return a randomly generated test document.
+     * Return a randomly generated document with a content (file) attached.
      * @return Document.
-     * @throws DocumentException Thrown in case an error occurred while creating a new document.
+     * @throws DocumentException Thrown in case an error occurred while creating a document.
+     */
+    protected IDocument getRandomDocumentWithContent() throws DocumentException
+    {
+        return DocumentRandomizer.generate(true, true);
+    }
+
+    /**
+     * Return a randomly generated document without a content (file) attached.
+     * @return Document.
+     * @throws DocumentException Thrown in case an error occurred while creating a document.
      */
     protected IDocument getRandomDocument() throws DocumentException
     {
-//        return DocumentRandomizer.generate(true);
-        return null;
+        return DocumentRandomizer.generate(true, false);
     }
 }

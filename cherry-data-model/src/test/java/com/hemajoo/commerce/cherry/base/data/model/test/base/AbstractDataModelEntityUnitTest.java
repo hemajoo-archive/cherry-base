@@ -23,5 +23,12 @@ import com.hemajoo.commerce.cherry.base.commons.test.AbstractCherryUnitTest;
  */
 public abstract class AbstractDataModelEntityUnitTest extends AbstractCherryUnitTest
 {
-    // Empty
+    /**
+     * Create a new abstract <b>data model entity</b> unit test.
+     */
+    protected AbstractDataModelEntityUnitTest()
+    {
+        super();
+    }
+
 }

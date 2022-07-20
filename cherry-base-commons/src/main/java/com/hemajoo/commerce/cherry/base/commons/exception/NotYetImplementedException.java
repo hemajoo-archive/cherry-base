@@ -12,17 +12,16 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.data.model.base.exception;
+package com.hemajoo.commerce.cherry.base.commons.exception;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
- * High level exception thrown to indicate an error occurred with the <b>Cherry</b> solution.
+ * Exception thrown to indicate a service is not yet implemented.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class CherryException extends Exception implements Serializable
+public class NotYetImplementedException extends RuntimeException
 {
     /**
      * Default serialization identifier.
@@ -31,29 +30,37 @@ public class CherryException extends Exception implements Serializable
     private static final long serialVersionUID = 1L;
 
     /**
-     * Thrown to indicate that an error occurred with the <b>Cherry</b> solution.
+     * Thrown to indicate a service is not yet implemented.
+     */
+    public NotYetImplementedException()
+    {
+        super();
+    }
+
+    /**
+     * Thrown to indicate a service is not yet implemented.
      * @param exception Parent exception.
      */
-    public CherryException(final Exception exception)
+    public NotYetImplementedException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred with the <b>Cherry</b> solution.
+     * Thrown to indicate a service is not yet implemented.
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public CherryException(final String message)
+    public NotYetImplementedException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred with the <b>Cherry</b> solution.
+     * Thrown to indicate a service is not yet implemented.
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent exception.
      */
-    public CherryException(final String message, final Exception exception)
+    public NotYetImplementedException(final String message, final Exception exception)
     {
         super(message, exception);
     }

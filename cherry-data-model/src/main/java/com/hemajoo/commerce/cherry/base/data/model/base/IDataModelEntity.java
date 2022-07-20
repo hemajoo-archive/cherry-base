@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Entities implementing this interface are tagged as a <b>Cherry</b> data model entity.
+ * Provide services to manipulate the base data composing a <b>data model entity</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @since Cherry 0.1.0
  * @version 1.0.0
@@ -37,37 +37,37 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * Data model entity attribute: <b>id</b>.
      */
     @JsonIgnore
-    public static final String BASE_ENTITY_ID = "id";
+    String BASE_ENTITY_ID = "id";
 
     /**
      * Data model entity attribute: <b>entity type</b>.
      */
     @JsonIgnore
-    public static final String BASE_ENTITY_TYPE = "entityType";
+    String BASE_ENTITY_TYPE = "entityType";
 
     /**
      * Data model entity attribute: <b>name</b>.
      */
     @JsonIgnore
-    public static final String BASE_NAME = "name";
+    String BASE_NAME = "name";
 
     /**
      * Data model entity attribute: <b>description</b>.
      */
     @JsonIgnore
-    public static final String BASE_DESCRIPTION = "description";
+    String BASE_DESCRIPTION = "description";
 
     /**
      * Data model entity attribute: <b>reference</b>.
      */
     @JsonIgnore
-    public static final String BASE_REFERENCE = "reference";
+    String BASE_REFERENCE = "reference";
 
     /**
      * Data model entity attribute: <b>parent id</b>.
      */
     @JsonIgnore
-    public static final String BASE_PARENT_ID = "parentId";
+    String BASE_PARENT_ID = "parentId";
 
 //    /**
 //     * Data model entity attribute: <b>id</b>.
@@ -79,20 +79,23 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * Data model entity attribute: <b>parent type</b>.
      */
     @JsonIgnore
-    public static final String BASE_PARENT_TYPE = "parentType";
+    String BASE_PARENT_TYPE = "parentType";
 
     /**
      * Data model entity attribute: <b>tags</b>.
      */
     @JsonIgnore
-    public static final String BASE_TAGS = "tags";
+    String BASE_TAGS = "tags";
 
+    @Override
     UUID getId();
 
+    @Override
     void setId(final @NonNull UUID id);
 
     /**
      * Returns the parent entity of this entity (can be null).
+     * @param <T> Entity type.
      * @return Parent entity if set, <b>null</b>> otherwise.
      */
     <T extends IDataModelEntity> T getParent();
@@ -100,6 +103,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     /**
      * Sets the parent entity for this entity (can be null).
      * @param parent Parent entity.
+     * @param <T> Entity type.
      * @throws DataModelEntityException Thrown to indicate an error occurred when trying to set the parent entity.
      */
     <T extends IDataModelEntity> void setParent(T parent) throws DataModelEntityException;
@@ -118,24 +122,31 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
 
     /**
      * Return the complete list of documents this entity holds.
+     * @param <T> Entity type.
      * @return List of documents.
      */
     <T extends IDataModelEntity> List<T> getDocuments();
 
     /**
      * Return the document matching the given name.
+     * @param name Document name.
+     * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
      */
     <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name);
 
     /**
      * Return the document matching the given identifier.
+     * @param id Document identifier.
+     * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
      */
     <T extends IDataModelEntity> T getDocumentById(final @NonNull String id);
 
     /**
      * Return the document matching the given UUID.
+     * @param uuid Document UUID.
+     * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
      */
     <T extends IDataModelEntity> T getDocumentById(final @NonNull UUID uuid);
@@ -143,6 +154,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     /**
      * Add a document to this entity.
      * @param document Document to add.
+     * @param <T> Entity type.
      * @throws DataModelEntityException Thrown to indicate an error when trying to add a document.
      */
     <T extends IDataModelEntity> void addDocument(T document) throws DataModelEntityException;
@@ -150,6 +162,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     /**
      * Check if the given document exist in the list of documents for this entity?
      * @param document Document to check.
+     * @param <T> Entity type.
      * @return <b>True</b>> if the document exist, <b>false</b>> otherwise.
      */
     <T extends IDataModelEntity> boolean existDocument(T document);
@@ -171,6 +184,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     /**
      * Remove a document from the list of documents for this entity.
      * @param document Document to remove.
+     * @param <T> Entity type.
      * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
     <T extends IDataModelEntity> boolean removeDocument(T document);

@@ -17,7 +17,7 @@ package com.hemajoo.commerce.cherry.base.data.model.person.phone;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 
 /**
- * Entities implementing this interface are tagged as a <b>phone number</b> data model entity.
+ * Provide services to manipulate the data composing a <b>phone number</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

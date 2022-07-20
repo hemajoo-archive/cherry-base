@@ -41,7 +41,9 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      * @param withRandomId Does a random entity identifier has to be generated?
      * @param withDocument Does a random document has to be generated?
      * @param withContent Does a random content (file) has to be attached to the document?
+     * @param count Number of documents to generate.
      * @return Email address.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
      */
     public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {

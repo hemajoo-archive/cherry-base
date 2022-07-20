@@ -18,7 +18,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 
 /**
- * Entities implementing this interface are tagged as a <b>postal address</b> data model entity.
+ * Provide services to manipulate the data composing a <b>postal address</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

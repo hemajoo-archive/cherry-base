@@ -151,9 +151,12 @@ public class Document extends DataModelEntity implements IDocument
      * @param documentType Document type.
      * @param statusType Status type.
      * @param owner Document owner.
+     * @param reference Document reference.
      * @param filename Document file name representing the document content.
+     * @param tags Document tags.
      * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
      */
+    @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
     public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final String filename, final String... tags) throws DocumentException
     {

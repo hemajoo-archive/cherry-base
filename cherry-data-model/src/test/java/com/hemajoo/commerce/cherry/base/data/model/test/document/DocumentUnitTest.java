@@ -248,7 +248,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getTags()).hasSize(3);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
-        assertThat(document.getSince()).isNotNull();
+        assertThat(document.getInactiveSince()).isNotNull();
     }
 
     @Test
@@ -264,12 +264,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
-        assertThat(document.getSince()).isNotNull();
+        assertThat(document.getInactiveSince()).isNotNull();
 
         document.setStatusType(EntityStatusType.ACTIVE);
 
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
-        assertThat(document.getSince()).isNull();
+        assertThat(document.getInactiveSince()).isNull();
     }
 
     @Test
@@ -307,7 +307,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                     .withName(DOCUMENT_NAME)
                     .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
                     .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf")
+//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf") //TODO Add to builder
                     .build();
             document.setContent("./media/java-8-streams-cheat-sheet.pdf");
             list.add(document);

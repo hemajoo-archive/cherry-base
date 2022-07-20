@@ -21,7 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Identity;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.AbstractStatusEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
-import com.hemajoo.commerce.cherry.base.data.model.base.validation.EntityValidator;
+import com.hemajoo.commerce.cherry.base.data.model.base.validation.DataModelEntityValidator;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
@@ -41,7 +41,7 @@ import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * Represents a data model <b>entity</b>.
+ * Represent a <b>data model entity</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -109,7 +109,6 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     /**
      * Tags.
      */
-    @Getter
     @Setter
     @Column(name = "TAGS")
     private String tags;
@@ -366,12 +365,12 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     /**
-     * Validates the data model entity data.
+     * Validate the data of the underlying data model entity.
      * @throws ConstraintViolationException Thrown in case some constraint violations have been detected.
      */
     protected final void validate() throws ConstraintViolationException
     {
-        Set<ConstraintViolation<DataModelEntity>> violations = EntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
+        Set<ConstraintViolation<DataModelEntity>> violations = DataModelEntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
         if (!violations.isEmpty())
         {
             throw new ConstraintViolationException(violations);

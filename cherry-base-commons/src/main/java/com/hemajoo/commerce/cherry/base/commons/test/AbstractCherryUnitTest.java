@@ -24,7 +24,20 @@ import com.github.javafaker.Faker;
 public abstract class AbstractCherryUnitTest
 {
     /**
+     * Test is not yet implemented.
+     */
+    protected static final String TEST_NOT_YET_IMPLEMENTED = "Test not yet implemented";
+
+    /**
      * Java data faker.
      */
-    protected final static Faker FAKER = new Faker();
+    protected static final Faker FAKER = new Faker();
+
+    /**
+     * Create a new abstract <b>Cherry</b> unit test.
+     */
+    protected AbstractCherryUnitTest()
+    {
+        // Empty!
+    }
 }

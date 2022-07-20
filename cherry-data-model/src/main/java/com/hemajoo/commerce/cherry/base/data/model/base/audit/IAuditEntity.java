@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Classes implementing this interface gain the ability to expose and manage their audit information (creation and modification dates and who created and modified the entity).
+ * Provide services to manipulate the audit data composing an <b>entity</b>.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @since Cherry 0.1.0
  * @version 1.0.0
@@ -31,25 +31,25 @@ public interface IAuditEntity extends Serializable
      * Data model entity attribute: <b>created date</b>.
      */
     @JsonIgnore
-    public static final String BASE_CREATED_DATE = "createdDate";
+    String BASE_CREATED_DATE = "createdDate";
 
     /**
      * Data model entity attribute: <b>modified date</b>.
      */
     @JsonIgnore
-    public static final String BASE_MODIFIED_DATE = "modifiedDate";
+    String BASE_MODIFIED_DATE = "modifiedDate";
 
     /**
      * Data model entity attribute: <b>created by</b>.
      */
     @JsonIgnore
-    public static final String BASE_CREATED_BY = "createdBy";
+    String BASE_CREATED_BY = "createdBy";
 
     /**
      * Data model entity attribute: <b>modified by</b>.
      */
     @JsonIgnore
-    public static final String BASE_MODIFIED_BY = "modifiedBy";
+    String BASE_MODIFIED_BY = "modifiedBy";
 
     /**
      * Returns the creation date.

@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Represents a <b>document</b> data model entity.
+ * Represent a <b>document</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -62,14 +62,14 @@ public class Document extends DataModelEntity implements IDocument
      * Document file extension.
      */
     @Getter
-    @Setter
+    //@Setter
     private String extension;
 
     /**
      * Document file name.
      */
     @Getter
-    @Setter
+    //@Setter
     @Column(name = "FILENAME")
     private String filename;
 
@@ -107,7 +107,7 @@ public class Document extends DataModelEntity implements IDocument
      * File content length.
      */
     @Getter
-    @Setter
+    //@Setter
     @ContentLength
     private long contentLength;
 
@@ -115,7 +115,7 @@ public class Document extends DataModelEntity implements IDocument
      * File <b>MIME</b> type.
      */
     @Getter
-    @Setter
+    //@Setter
     @MimeType
     private String mimeType = "text/plain";
 
@@ -123,7 +123,7 @@ public class Document extends DataModelEntity implements IDocument
      * File path of the document in the <b>content store</b>.
      */
     @Getter
-    @Setter
+    //@Setter
     private String contentPath;
 
     /**
@@ -152,13 +152,14 @@ public class Document extends DataModelEntity implements IDocument
      * @param statusType Status type.
      * @param owner Document owner.
      * @param reference Document reference.
-     * @param filename Document file name representing the document content.
+     * @param filename Document file name representing the document content. If <b>withFilename()</b> is used invoking the builder, the <b>withFile()</b> is not supposed to be invoked!
+     * @param file Document file representing the document content. If <b>withFile()</b> is used invoking the builder, the <b>withFilename()</b> is not supposed to be invoked!
      * @param tags Document tags.
      * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
-    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final String filename, final String... tags) throws DocumentException
+    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final File file, final String filename, final String... tags) throws DocumentException
     {
         this(documentType, owner);
 
@@ -179,9 +180,16 @@ public class Document extends DataModelEntity implements IDocument
             }
         }
 
-        if (filename != null)
+        if (file != null)
         {
-            setContent(filename);
+            setContent(file);
+        }
+        else
+        {
+            if (filename != null)
+            {
+                setContent(filename);
+            }
         }
 
         super.validate(); // Validate the document data
@@ -248,10 +256,21 @@ public class Document extends DataModelEntity implements IDocument
         setContent(file.getAbsolutePath());
     }
 
+    //@Override
+//    private void setContent() throws DocumentException
+//    {
+//        if (this.baseFilename == null)
+//        {
+//            throw new DocumentException("Cannot load document content as no file as been attached yet!");
+//        }
+//
+//        setContent(this.baseFilename);
+//    }
+
     /**
      * Set the document content.
      * @param inputStream Input stream.
-     * @param absolutePath Absolute file path.
+     * @param absolutePath Absolute path of the file.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     private void setContent(final @NonNull InputStream inputStream, final @NonNull String absolutePath) throws DocumentException
@@ -271,27 +290,16 @@ public class Document extends DataModelEntity implements IDocument
         }
     }
 
-    @Override
-    public final void setContent() throws DocumentException
-    {
-        if (this.baseFilename == null)
-        {
-            throw new DocumentException("Cannot load document content as no file as been attached yet!");
-        }
-
-        setContent(this.baseFilename);
-    }
-
     /**
-     * Detects the media file {@code Mime} type.
+     * Detect the <b>mime</b> type of the given file name.
      * @param filename File name.
-     * @throws DocumentContentException Thrown in case an error occurred while processing the media file.
+     * @throws DocumentContentException Thrown in case an error occurred while processing the file.
      */
     private void detectMimeType(final @NonNull String filename) throws DocumentContentException
     {
         try
         {
-            mimeType = new Tika().detect(FileHelper.getFile(filename));
+            detectMimeType(FileHelper.getFile(filename));
         }
         catch (Exception e)
         {
@@ -300,9 +308,9 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     /**
-     * Detects the media file {@code Mime} type.
+     * Detect the <b>mime</b> type of the given file.
      * @param file File.
-     * @throws DocumentContentException Thrown in case an error occurred while processing the media file.
+     * @throws DocumentContentException Thrown in case an error occurred while processing the file.
      */
     private void detectMimeType(final @NonNull File file) throws DocumentContentException
     {
@@ -317,9 +325,9 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     /**
-     * Detects the media file {@code Mime} type.
-     * @param inputStream Input Stream.
-     * @throws DocumentContentException Thrown in case an error occurred while processing the media file.
+     * Detect the <b>mime</b> type of the file contained in the given input stream.
+     * @param inputStream Input stream.
+     * @throws DocumentContentException Thrown in case an error occurred while processing the input stream.
      */
     private void detectMimeType(final @NonNull InputStream inputStream) throws DocumentContentException
     {
@@ -334,15 +342,15 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     /**
-     * Detects the media file {@code Mime} type.
+     * Detect the <b>mime</b> type of the media file.
      * @param multiPartFile Multipart file.
-     * @throws DocumentContentException Thrown in case an error occurred while processing the media file.
+     * @throws DocumentContentException Thrown in case an error occurred while processing the multipart file.
      */
     private void detectMimeType(final @NonNull MultipartFile multiPartFile) throws DocumentContentException
     {
         try
         {
-            mimeType = new Tika().detect(multiPartFile.getInputStream());
+            detectMimeType(multiPartFile.getInputStream());
         }
         catch (Exception e)
         {
@@ -351,7 +359,7 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     /**
-     * Returns the document output full path name (path + name).
+     * Return the document output full path name (path + name).
      * @param outputPath Output path and file name.
      * @return Document full path and file name.
      */

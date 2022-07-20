@@ -57,7 +57,7 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     /**
      * Test filename.
      */
-    protected final String TEST_DOCUMENT_CONTENT_PDF = "./media/java-8-streams-cheat-sheet.pdf";
+    protected final String DOCUMENT_CONTENT_PDF = "./media/java-8-streams-cheat-sheet.pdf";
 
     /**
      * Create a test document.
@@ -71,8 +71,8 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
                 .withDescription(DOCUMENT_DESCRIPTION)
                 .withReference(DOCUMENT_REFERENCE)
                 .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
-                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withFilename(DOCUMENT_CONTENT_PDF)
+                .withDocumentType(DocumentType.DOCUMENT_INVOICE)
                 .build();
     }
 

@@ -94,14 +94,14 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     void setId(final @NonNull UUID id);
 
     /**
-     * Returns the parent entity of this entity (can be null).
+     * Return the parent entity of this entity (can be null).
      * @param <T> Entity type.
      * @return Parent entity if set, <b>null</b>> otherwise.
      */
     <T extends IDataModelEntity> T getParent();
 
     /**
-     * Sets the parent entity for this entity (can be null).
+     * Set the parent entity for this entity (can be null).
      * @param parent Parent entity.
      * @param <T> Entity type.
      * @throws DataModelEntityException Thrown to indicate an error occurred when trying to set the parent entity.
@@ -109,7 +109,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     <T extends IDataModelEntity> void setParent(T parent) throws DataModelEntityException;
 
     /**
-     * Returns the parent type.
+     * Return the parent type.
      * @return DataModelEntity type representing the parent type.
      */
     EntityType getParentType();
@@ -204,87 +204,92 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     boolean removeDocumentById(final @NonNull UUID id);
 
     /**
-     * Returns the entity name.
+     * Return the entity name.
      * @return DataModelEntity name.
      */
     String getName();
 
     /**
-     * Sets the entity name.
+     * Set the entity name.
      * @param name DataModelEntity name.
      */
     void setName(String name);
 
     /**
-     * Returns the entity description.
+     * Return the entity description.
      * @return DataModelEntity description.
      */
     String getDescription();
 
     /**
-     * Sets the entity description.
+     * Set the entity description.
      * @param description DataModelEntity description.
      */
     void setDescription(String description);
 
     /**
-     * Returns the entity reference.
+     * Return the entity reference.
      * @return DataModelEntity reference.
      */
     String getReference();
 
     /**
-     * Sets the entity reference.
+     * Set the entity reference.
      * @param reference DataModelEntity reference.
      */
     void setReference(String reference);
 
     /**
-     * Returns the document tags.
+     * Return the document tags.
      * @return Document tags.
      */
     List<String> getTags();
 
     /**
-     * Returns the document tags as a string with values separated by commas.
+     * Return the document tags as a string with values separated by commas.
      * @return Document tags.
      */
     String getTagsAsString();
 
     /**
-     * Sets the document tags.
+     * Set the document tags.
      * @param tags Document tags.
      */
     void setTags(final String tags);
 
     /**
-     * Adds a tag.
+     * Add a tag.
      * @param tag Tag.
      */
     void addTag(String tag);
 
     /**
-     * Removes a tag.
-     * @param tag Tag to remove.
+     * Delete a tag.
+     * @param tag Tag to delete.
      */
-    void removeTag(String tag);
+    void deleteTag(String tag);
 
     /**
-     * Returns a random tag.
+     * Delete all tags.
+     */
+    void deleteAllTags();
+
+    /**
+     * Return a random tag.
      * @return Random tag or <b>null</b> if no tag exist.
      * @throws DataModelEntityException Thrown in case an error occurred while trying to get a random tag.
      */
     String getRandomTag() throws DataModelEntityException;
 
     /**
-     * Checks if the given tag exist.
+     * Check if the given tag exist.
      * @param tag Tag.
-     * @return {@code True} if the tag exist, {@code false} otherwise.
+     * @return <b>True</b> if the tag exist, <b>false</b> otherwise.
      */
     boolean existTag(String tag);
 
     /**
-     * Returns the number of tags.
+     * Return the number of tags.
      * @return Number of tags.
      */
     int getTagCount();

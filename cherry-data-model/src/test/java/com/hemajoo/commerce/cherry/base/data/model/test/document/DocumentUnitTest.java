@@ -53,6 +53,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
     }
 
     @Test
@@ -70,18 +71,6 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_GENERIC);
     }
 
-    @SuppressWarnings("java:S5778")
-    @Test
-    @DisplayName("Cannot create a document without mandatory attributes")
-    final void testCannotCreateDocumentWithoutName()
-    {
-        // Name is mandatory
-        assertThrows(ConstraintViolationException.class, () ->
-                Document.builder()
-                    .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                    .build());
-    }
-
     @Test
     @DisplayName("Create a document with all attributes")
     final void testCreateDocumentWithAllAttributes() throws DocumentException
@@ -91,8 +80,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                 .withDescription(DOCUMENT_DESCRIPTION)
                 .withReference(DOCUMENT_REFERENCE)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withFilename(DOCUMENT_CONTENT_PDF)
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withStatusType(EntityStatusType.INACTIVE)
+                .withFilename(DOCUMENT_CONTENT_PDF)
                 .build();
 
         assertThat(document).isNotNull();
@@ -103,17 +93,30 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
-        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
+        assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
+        assertThat(document.getInactiveSince()).isNotNull();
+    }
+
+    @SuppressWarnings("java:S5778")
+    @Test
+    @DisplayName("Cannot create a document without mandatory attributes")
+    final void testCannotCreateDocumentWithoutName()
+    {
+        // Name is mandatory
+        assertThrows(ConstraintViolationException.class, () ->
+                Document.builder()
+                        .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                        .build());
     }
 
     @Test
-    @DisplayName("Count the tags")
-    final void testCountTags() throws DocumentException
+    @DisplayName("Add a tag")
+    final void testAddTag() throws DocumentException
     {
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2 })
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -121,7 +124,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG3);
+        assertThat(document.getTags()).hasSize(2);
+
+        document.addTag(DOCUMENT_TAG3);
+
+        assertThat(document.getTags()).contains(DOCUMENT_TAG3);
         assertThat(document.getTags()).hasSize(3);
     }
 
@@ -139,6 +147,28 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+
+        document.addTag(DOCUMENT_TAG3);
+
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+    }
+
+    @Test
+    @DisplayName("Count the number of tags")
+    final void testCountTags() throws DocumentException
+    {
+        IDocument document = Document.builder()
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .build();
+
+        assertThat(document).isNotNull();
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTagCount()).isEqualTo(3);
     }
 
     @Test
@@ -158,9 +188,53 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getTagCount()).isEqualTo(3);
 
-        document.removeTag(DOCUMENT_TAG2);
-        assertThat(document.getTagCount()).isEqualTo(2);
+        document.deleteTag(DOCUMENT_TAG2);
+
         assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
+        assertThat(document.getTagCount()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Delete all document tags")
+    final void testDeleteAllTags() throws DocumentException
+    {
+        IDocument document = Document.builder()
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .build();
+
+        assertThat(document).isNotNull();
+        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTagCount()).isEqualTo(3);
+
+        document.deleteAllTags();
+
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG1);
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG3);
+        assertThat(document.getTagCount()).isZero();
+    }
+
+    @Test
+    @DisplayName("Check if a tag exist")
+    final void testExistTag() throws DocumentException
+    {
+        IDocument document = Document.builder()
+                .withName(DOCUMENT_NAME)
+                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG3})
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .build();
+
+        assertThat(document.existTag(DOCUMENT_TAG1)).isTrue();
+        assertThat(document.existTag(DOCUMENT_TAG2)).isFalse();
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
+        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
+        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTagCount()).isEqualTo(2);
     }
 
     @Test

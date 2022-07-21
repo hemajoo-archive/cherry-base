@@ -27,37 +27,37 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     /**
      * Test document name.
      */
-    protected final String DOCUMENT_NAME = FAKER.funnyName().name().trim();
+    protected final String testDocumentName = FAKER.funnyName().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG1 = FAKER.animal().name().trim();
+    protected final String testDocumentTag1 = FAKER.animal().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG2 = FAKER.artist().name().trim();
+    protected final String testDocumentTag2 = FAKER.artist().name().trim();
 
     /**
      * Test tag.
      */
-    protected final String DOCUMENT_TAG3 = FAKER.book().genre().trim();
+    protected final String testDocumentTag3 = FAKER.book().genre().trim();
 
     /**
      * Test description.
      */
-    protected final String DOCUMENT_DESCRIPTION = FAKER.book().title().trim();
+    protected final String testDocumentDescription = FAKER.book().title().trim();
 
     /**
      * Test reference.
      */
-    protected final String DOCUMENT_REFERENCE = FAKER.aviation().METAR().trim();
+    protected final String testDocumentReference = FAKER.aviation().METAR().trim();
 
     /**
      * Test filename.
      */
-    protected final String DOCUMENT_CONTENT_PDF = "./media/java-8-streams-cheat-sheet.pdf";
+    protected final String testDocumentContentPdf = "./media/java-8-streams-cheat-sheet.pdf";
 
     /**
      * Create a test document.
@@ -67,11 +67,11 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     protected IDocument createTestDocument() throws DocumentException
     {
         return Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withDescription(DOCUMENT_DESCRIPTION)
-                .withReference(DOCUMENT_REFERENCE)
-                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
-                .withFilename(DOCUMENT_CONTENT_PDF)
+                .withName(testDocumentName)
+                .withDescription(testDocumentDescription)
+                .withReference(testDocumentReference)
+                .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withFilename(testDocumentContentPdf)
                 .withDocumentType(DocumentType.DOCUMENT_INVOICE)
                 .build();
     }

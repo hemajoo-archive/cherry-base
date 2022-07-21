@@ -142,6 +142,8 @@ public class Document extends DataModelEntity implements IDocument
     public Document()
     {
         super(EntityType.DOCUMENT);
+
+        setActive();
     }
 
     /**
@@ -203,10 +205,9 @@ public class Document extends DataModelEntity implements IDocument
      */
     protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
     {
-        super(EntityType.DOCUMENT);
+        this();
 
         setId(UuidGenerator.getUuid());
-        setActive();
 
         if (documentType != null)
         {

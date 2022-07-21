@@ -60,7 +60,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private static final String TAG_SEPARATOR = ",";
 
     /**
-     * DataModelEntity identifier.
+     * Entity identifier.
      */
     @DiffIgnore
     @Getter
@@ -72,7 +72,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private UUID id;
 
     /**
-     * DataModelEntity type.
+     * Entity type.
      */
     @Getter
     @Setter
@@ -81,7 +81,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private EntityType entityType;
 
     /**
-     * DataModelEntity name.
+     * Entity name.
      */
     @Getter
     @Setter
@@ -91,7 +91,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private String name;
 
     /**
-     * DataModelEntity description.
+     * Entity description.
      */
     @Getter
     @Setter
@@ -99,7 +99,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private String description;
 
     /**
-     * DataModelEntity internal reference.
+     * Entity internal reference.
      */
     @Getter
     @Setter
@@ -122,7 +122,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private List<Document> documents = null;
 
     /**
-     * The parent entity.
+     * Parent entity.
      */
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -140,8 +140,8 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     private EntityType parentType;
 
     /**
-     * Creates a new base entity.
-     * @param type DataModelEntity type.
+     * Create a new entity.
+     * @param type Entity type.
      */
     protected DataModelEntity(final EntityType type)
     {
@@ -315,7 +315,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void removeTag(String tag)
+    public final void deleteTag(String tag)
     {
         List<String> sourceTags = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
         List<String> targetTags = new ArrayList<>();
@@ -329,6 +329,12 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         }
 
         setTags(StringHelper.convertListValuesAsString(targetTags, TAG_SEPARATOR));
+    }
+
+    @Override
+    public final void deleteAllTags()
+    {
+        tags = null;
     }
 
     @Override

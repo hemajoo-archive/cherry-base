@@ -45,6 +45,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class DocumentUnitTest extends AbstractDocumentUnitTest
 {
+
+    public static final String JAVA_8_SHEET_NAME = "Java 8 Sheet";
+    public static final String JAVA_8_SHEET_DESCRIPTION = "A Java 8 reference sheet.";
+    public static final String JAVA_8_REFERENCE = "2021";
+
     @Test
     @DisplayName("Create an empty document")
     final void testCreateEmptyDocument()
@@ -61,11 +66,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocument() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
+                .withName(testDocumentName)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_GENERIC);
@@ -76,22 +81,22 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithAllAttributes() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withDescription(DOCUMENT_DESCRIPTION)
-                .withReference(DOCUMENT_REFERENCE)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withName(testDocumentName)
+                .withDescription(testDocumentDescription)
+                .withReference(testDocumentReference)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
-                .withFilename(DOCUMENT_CONTENT_PDF)
+                .withFilename(testDocumentContentPdf)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getDescription()).isEqualTo(DOCUMENT_DESCRIPTION);
-        assertThat(document.getReference()).isEqualTo(DOCUMENT_REFERENCE);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getDescription()).isEqualTo(testDocumentDescription);
+        assertThat(document.getReference()).isEqualTo(testDocumentReference);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
@@ -115,21 +120,21 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testAddTag() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2 })
+                .withName(testDocumentName)
+                .withTags(new String[] {testDocumentTag1, testDocumentTag2})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag3);
         assertThat(document.getTags()).hasSize(2);
 
-        document.addTag(DOCUMENT_TAG3);
+        document.addTag(testDocumentTag3);
 
-        assertThat(document.getTags()).contains(DOCUMENT_TAG3);
+        assertThat(document.getTags()).contains(testDocumentTag3);
         assertThat(document.getTags()).hasSize(3);
     }
 
@@ -138,19 +143,19 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCannotAddDuplicateTag() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG1, DOCUMENT_TAG3, DOCUMENT_TAG1})
+                .withName(testDocumentName)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag1, testDocumentTag3, testDocumentTag1})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
 
-        document.addTag(DOCUMENT_TAG3);
+        document.addTag(testDocumentTag3);
 
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
     }
 
     @Test
@@ -158,16 +163,16 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCountTags() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withName(testDocumentName)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getTagCount()).isEqualTo(3);
     }
 
@@ -176,21 +181,21 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testDeleteTag() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withName(testDocumentName)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getTagCount()).isEqualTo(3);
 
-        document.deleteTag(DOCUMENT_TAG2);
+        document.deleteTag(testDocumentTag2);
 
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
         assertThat(document.getTagCount()).isEqualTo(2);
     }
 
@@ -199,23 +204,23 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testDeleteAllTags() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
+                .withName(testDocumentName)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getTagCount()).isEqualTo(3);
 
         document.deleteAllTags();
 
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG1);
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG3);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag1);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag3);
         assertThat(document.getTagCount()).isZero();
     }
 
@@ -224,16 +229,16 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testExistTag() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG3})
+                .withName(testDocumentName)
+                .withTags(new String[]{testDocumentTag1, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
-        assertThat(document.existTag(DOCUMENT_TAG1)).isTrue();
-        assertThat(document.existTag(DOCUMENT_TAG2)).isFalse();
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).doesNotContain(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.existTag(testDocumentTag1)).isTrue();
+        assertThat(document.existTag(testDocumentTag2)).isFalse();
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getTagCount()).isEqualTo(2);
     }
 
@@ -242,11 +247,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFilename() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
+                .withName(JAVA_8_SHEET_NAME)
+                .withDescription(JAVA_8_SHEET_DESCRIPTION)
+                .withReference(JAVA_8_REFERENCE)
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFilename(DOCUMENT_CONTENT_PDF)
+                .withFilename(testDocumentContentPdf)
                 .build();
 
         assertThat(document).isNotNull();
@@ -258,11 +263,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFile() throws DocumentException, FileException
     {
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
+                .withName(JAVA_8_SHEET_NAME)
+                .withDescription(JAVA_8_SHEET_DESCRIPTION)
+                .withReference(JAVA_8_REFERENCE)
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFile(FileHelper.getFile(DOCUMENT_CONTENT_PDF))
+                .withFile(FileHelper.getFile(testDocumentContentPdf))
                 .build();
 
         assertThat(document).isNotNull();
@@ -287,7 +292,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
 
-        document.setContent(DOCUMENT_CONTENT_PDF);
+        document.setContent(testDocumentContentPdf);
 
         assertThat(document.getContent()).isNotNull();
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
@@ -303,9 +308,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Set a document content after instance creation given a file")
     final void testSetDocumentContentAfterCreationWithFile() throws DocumentException, FileException
     {
-        final String documentName = "Java 8 Sheet";
-        final String documentDescription = "A Java 8 reference sheet.";
-        final String documentReference = "2021";
+        final String documentName = JAVA_8_SHEET_NAME;
+        final String documentDescription = JAVA_8_SHEET_DESCRIPTION;
+        final String documentReference = JAVA_8_REFERENCE;
 
         IDocument document = Document.builder()
                 .withName(documentName)
@@ -316,7 +321,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
 
-        document.setContent(FileHelper.getFile(DOCUMENT_CONTENT_PDF));
+        document.setContent(FileHelper.getFile(testDocumentContentPdf));
 
         assertThat(document.getContent()).isNotNull();
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_INVOICE);
@@ -333,17 +338,17 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testInactivateDocument() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
-                .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
+                .withName(testDocumentName)
+                .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG1);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG2);
-        assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
+        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
         assertThat(document.getTags()).hasSize(3);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
@@ -354,13 +359,13 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testReactivateDocument() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName(DOCUMENT_NAME)
+                .withName(testDocumentName)
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(DOCUMENT_NAME);
+        assertThat(document.getName()).isEqualTo(testDocumentName);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
 
@@ -381,8 +386,8 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         for (int i = 0; i < COUNT; i++)
         {
             list.add(Document.builder()
-                    .withName(DOCUMENT_NAME)
-                    .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
+                    .withName(testDocumentName)
+                    .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
                     .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build());
         }
@@ -402,12 +407,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         for (int i = 0; i < COUNT; i++)
         {
             document = Document.builder()
-                    .withName(DOCUMENT_NAME)
-                    .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
+                    .withName(testDocumentName)
+                    .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
                     .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build();
 
-            document.setContent(DOCUMENT_CONTENT_PDF);
+            document.setContent(testDocumentContentPdf);
 
             list.add(document);
         }

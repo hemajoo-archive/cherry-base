@@ -150,7 +150,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
     {
         final String LAST_NAME = FAKER.name().lastName();
         final String FIRST_NAME = FAKER.name().firstName();
-        final Date BIRTH_DATE = FAKER.date().birthday();
+        final Date BIRTHDATE = FAKER.date().birthday();
         final String DESCRIPTION = "An unknown person";
         final String REFERENCE = "UJHH-4589663";
         final String TAG1 = "USA";
@@ -168,7 +168,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
                 .withDescription(DESCRIPTION)
-                .withBirthDate(BIRTH_DATE)
+                .withBirthDate(BIRTHDATE)
                 .withPersonType(PersonType.PHYSICAL)
                 .withGenderType(GenderType.MALE)
                 .withTags(new String[]{ TAG1, TAG2, TAG3 })
@@ -181,7 +181,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
         assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
         assertThat(person.getGenderType()).isEqualTo(GenderType.MALE);
-        assertThat(person.getBirthDate()).isEqualTo(BIRTH_DATE);
+        assertThat(person.getBirthDate()).isEqualTo(BIRTHDATE);
         assertThat(person.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(person.getReference()).isEqualTo(REFERENCE);
         assertThat(person.getTags()).containsOnlyOnce(TAG1);

@@ -31,47 +31,47 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
     /**
      * Number of dependencies to generate when generating a random person.
      */
-    protected final int COUNT_PERSON_DEPENDENCY = 5;
+    protected static final int COUNT_PERSON_DEPENDENCY = 5;
 
     /**
      * Test person first name.
      */
-    protected final String PERSON_FIRSTNAME = FAKER.name().firstName();
+    protected final String testPersonFirstName = FAKER.name().firstName();
 
     /**
      * Test person last name.
      */
-    protected final String PERSON_LASTNAME = FAKER.name().lastName();
+    protected final String testPersonLastName = FAKER.name().lastName();
 
     /**
      * Test person birthdate.
      */
-    protected final Date PERSON_BIRTHDATE = FAKER.date().birthday();
+    protected final Date testPersonBirthDate = FAKER.date().birthday();
 
     /**
      * Test person tag #1.
      */
-    protected final String PERSON_TAG1 = FAKER.animal().name();
+    protected final String testPersonTag1 = FAKER.animal().name();
 
     /**
      * Test person tag #2.
      */
-    protected final String PERSON_TAG2 = FAKER.artist().name();
+    protected final String testPersonTag2 = FAKER.artist().name();
 
     /**
      * Test person tag #3.
      */
-    protected final String PERSON_TAG3 = FAKER.book().genre();
+    protected final String testPersonTag3 = FAKER.book().genre();
 
     /**
      * Test person description.
      */
-    protected final String PERSON_DESCRIPTION = FAKER.book().title();
+    protected final String testPersonDescription = FAKER.book().title();
 
     /**
      * Test person reference.
      */
-    protected final String PERSON_REFERENCE = FAKER.aviation().METAR();
+    protected final String testPersonReference = FAKER.aviation().METAR();
 
     /**
      * Create a test person.
@@ -81,14 +81,14 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
     protected IPerson createTestPerson() throws PersonException, DocumentException
     {
         return Person.builder()
-                .withLastName(PERSON_LASTNAME)
-                .withFirstName(PERSON_FIRSTNAME)
-                .withDescription(PERSON_DESCRIPTION)
-                .withBirthDate(PERSON_BIRTHDATE)
+                .withLastName(testPersonLastName)
+                .withFirstName(testPersonFirstName)
+                .withDescription(testPersonDescription)
+                .withBirthDate(testPersonBirthDate)
                 .withPersonType(PersonType.PHYSICAL)
                 .withGenderType(GenderType.MALE)
-                .withTags(new String[]{ PERSON_TAG1, PERSON_TAG2, PERSON_TAG3 })
-                .withReference(PERSON_REFERENCE)
+                .withTags(new String[]{testPersonTag1, testPersonTag2, testPersonTag3})
+                .withReference(testPersonReference)
                 .withOwner(createTestDocument())
                 .build();
     }

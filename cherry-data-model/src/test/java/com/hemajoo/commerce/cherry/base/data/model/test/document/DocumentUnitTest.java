@@ -45,6 +45,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class DocumentUnitTest extends AbstractDocumentUnitTest
 {
+
+    public static final String JAVA_8_SHEET_NAME = "Java 8 Sheet";
+    public static final String JAVA_8_SHEET_DESCRIPTION = "A Java 8 reference sheet.";
+    public static final String JAVA_8_REFERENCE = "2021";
+
     @Test
     @DisplayName("Create an empty document")
     final void testCreateEmptyDocument()
@@ -242,9 +247,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFilename() throws DocumentException
     {
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
+                .withName(JAVA_8_SHEET_NAME)
+                .withDescription(JAVA_8_SHEET_DESCRIPTION)
+                .withReference(JAVA_8_REFERENCE)
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
                 .withFilename(testDocumentContentPdf)
                 .build();
@@ -258,9 +263,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFile() throws DocumentException, FileException
     {
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
+                .withName(JAVA_8_SHEET_NAME)
+                .withDescription(JAVA_8_SHEET_DESCRIPTION)
+                .withReference(JAVA_8_REFERENCE)
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
                 .withFile(FileHelper.getFile(testDocumentContentPdf))
                 .build();
@@ -303,9 +308,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Set a document content after instance creation given a file")
     final void testSetDocumentContentAfterCreationWithFile() throws DocumentException, FileException
     {
-        final String documentName = "Java 8 Sheet";
-        final String documentDescription = "A Java 8 reference sheet.";
-        final String documentReference = "2021";
+        final String documentName = JAVA_8_SHEET_NAME;
+        final String documentDescription = JAVA_8_SHEET_DESCRIPTION;
+        final String documentReference = JAVA_8_REFERENCE;
 
         IDocument document = Document.builder()
                 .withName(documentName)

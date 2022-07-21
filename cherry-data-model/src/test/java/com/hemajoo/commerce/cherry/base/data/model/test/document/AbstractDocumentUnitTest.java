@@ -57,7 +57,7 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     /**
      * Test filename.
      */
-    protected final String testDocumentContentPdf = "./media/java-8-streams-cheat-sheet.pdf";
+    protected static final String testDocumentContentPdf = "./media/java-8-streams-cheat-sheet.pdf";
 
     /**
      * Create a test document.

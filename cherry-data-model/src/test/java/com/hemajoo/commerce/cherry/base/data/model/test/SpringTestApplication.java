@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Import;
  */
 @Import({ DataModelConfiguration.class })
 @ComponentScan(basePackages = "com.hemajoo.commerce.cherry.base.data.model")
-//@EnableJpaRepositories(basePackages = "com.hemajoo.commerce.cherry.base")
 @EntityScan(basePackages = "com.hemajoo.commerce.cherry.base")
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 public class SpringTestApplication

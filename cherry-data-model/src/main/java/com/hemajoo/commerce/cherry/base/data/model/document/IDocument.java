@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * Provide services to manipulate the data composing a data model entity <b>document</b>.
+ * Provide services to manipulate the data composing a <b>document</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -83,100 +83,58 @@ public interface IDocument extends IDataModelEntity
     void setDocumentType(final DocumentType type);
 
     /**
-     * Return the document content.
-     * @return Document content.
+     * Return the content (file) of this document.
+     * @return Document content as an input stream.
      */
     InputStream getContent();
 
     /**
-     * Set the document content.
-     * @param file File.
+     * Set the content of the document.
+     * @param file File representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull File file) throws DocumentException;
 
     /**
-     * Set the document content.
-     * @param filename File name.
+     * Set the content of the document.
+     * @param filename File name representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull String filename) throws DocumentException;
 
     /**
-     * Set the document content (based on the information provided at document creation time).
-     * @throws DocumentException Thrown in case an error occurred while setting the document content.
-     */
-    void setContent() throws DocumentException;
-
-    /**
-     * Returns the document extension.
+     * Return the document extension.
      * @return Document extension.
      */
     String getExtension();
 
     /**
-     * Sets the document extension.
-     * @param extension Document extension.
-     */
-    void setExtension(final String extension);
-
-    /**
-     * Returns the document filename.
+     * Return the document filename.
      * @return Document filename.
      */
     String getFilename();
 
     /**
-     * Sets the document filename.
-     * @param filename Document filename.
-     */
-    void setFilename(final String filename);
-
-    /**
-     * Returns the document content identifier.
+     * Return the document content identifier.
      * @return Document content identifier.
      */
     String getContentId();
 
     /**
-     * Sets the document content identifier.
-     * @param contentId Document content identifier.
-     */
-    void setContentId(final String contentId);
-
-    /**
-     * Returns the document content length.
+     * Return the document content length.
      * @return Document content length.
      */
     long getContentLength();
 
     /**
-     * Sets the document content length.
-     * @param contentLength Document content length.
-     */
-    void setContentLength(final long contentLength);
-
-    /**
-     * Returns the document mime type.
+     * Return the document mime type.
      * @return Document mime type.
      */
     String getMimeType();
 
     /**
-     * Sets the document mime type.
-     * @param mimeType Document mime type.
-     */
-    void setMimeType(final String mimeType);
-
-    /**
-     * Returns the document content path.
+     * Return the document content path.
      * @return Document content path.
      */
     String getContentPath();
-
-    /**
-     * Sets the document content path.
-     * @param contentPath Document content path.
-     */
-    void setContentPath(final String contentPath);
 }

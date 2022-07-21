@@ -22,7 +22,7 @@ import org.ressec.avocado.core.random.EnumRandomGenerator;
 import java.util.UUID;
 
 /**
- * Utility class providing services to randomly generate <b>document</b> entities.
+ * Utility class providing services to randomly generate <b>document</b> data model entities.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -32,7 +32,7 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
     /**
      * Document type enumeration generator.
      */
-    private static final EnumRandomGenerator DOCUMENT_TYPE_GENERATOR = new EnumRandomGenerator(DocumentType.class).exclude(DocumentType.UNKNOWN);
+    private static final EnumRandomGenerator DOCUMENT_TYPE_GENERATOR = new EnumRandomGenerator(DocumentType.class);
 
     /**
      * Test media type enumeration generator.

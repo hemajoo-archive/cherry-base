@@ -23,7 +23,7 @@ import java.io.Serial;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class ContentStoreException extends CherryException
+public class ContentStoreException extends CherryException // TODO Should be moved to cherry-server project
 {
     /**
      * Default serialization identifier.

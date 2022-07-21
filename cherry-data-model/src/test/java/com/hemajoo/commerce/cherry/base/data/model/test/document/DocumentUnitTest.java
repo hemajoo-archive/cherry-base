@@ -91,8 +91,8 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                 .withDescription(DOCUMENT_DESCRIPTION)
                 .withReference(DOCUMENT_REFERENCE)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withFilename(DOCUMENT_CONTENT_PDF)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
@@ -104,7 +104,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getTags()).containsOnlyOnce(DOCUMENT_TAG3);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
-        assertThat(document.getDocumentType()).isEqualTo(DocumentType.MEDIA_VIDEO);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
     }
 
     @Test
@@ -114,7 +114,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
@@ -132,7 +132,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG1, DOCUMENT_TAG3, DOCUMENT_TAG1})
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
@@ -148,7 +148,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
                 .withTags(new String[]{DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3})
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
@@ -164,15 +164,15 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @DisplayName("Create a document with a content (file)")
-    final void testCreateDocumentWithFile() throws DocumentException
+    @DisplayName("Create a document with a content file name")
+    final void testCreateDocumentWithContentFilename() throws DocumentException
     {
         IDocument document = Document.builder()
                 .withName("Java 8 Sheet")
                 .withDescription("A Java 8 reference sheet.")
                 .withReference("2021")
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFilename(TEST_DOCUMENT_CONTENT_PDF)
+                .withFilename(DOCUMENT_CONTENT_PDF)
                 .build();
 
         assertThat(document).isNotNull();
@@ -180,54 +180,78 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     }
 
     @Test
-    @DisplayName("Cannot set document content without a content (file)")
-    final void testCannotSetDocumentContentWithoutFile() throws DocumentException
+    @DisplayName("Create a document with a content file")
+    final void testCreateDocumentWithContentFile() throws DocumentException, FileException
     {
         IDocument document = Document.builder()
                 .withName("Java 8 Sheet")
                 .withDescription("A Java 8 reference sheet.")
                 .withReference("2021")
                 .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                .withFile(FileHelper.getFile(DOCUMENT_CONTENT_PDF))
                 .build();
 
         assertThat(document).isNotNull();
-        assertThrows(DocumentException.class, document::setContent);
+        assertThat(document.getContentPath()).isNull(); // As it has not been stored in the store yet!
+        assertThat(document.getContentLength()).isPositive();
     }
 
     @Test
-    @DisplayName("Set a document content given a file name")
-    final void testSetDocumentContentWithFilename() throws DocumentException
+    @DisplayName("Set a document content after instance creation of the document")
+    final void testSetDocumentContentAfterCreationWithFilename() throws DocumentException
     {
+        final String documentName = "A Kind of Magic";
+        final String documentDescription = "A Kind of Magic is the twelfth studio album by the British rock band Queen.";
+        final String documentReference = "1986";
+
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
-                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                .withName(documentName)
+                .withDescription(documentDescription)
+                .withReference(documentReference)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
 
-        document.setContent(TEST_DOCUMENT_CONTENT_PDF);
+        document.setContent(DOCUMENT_CONTENT_PDF);
 
         assertThat(document.getContent()).isNotNull();
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getDescription()).isEqualTo(documentDescription);
+        assertThat(document.getReference()).isEqualTo(documentReference);
+        assertThat(document.getExtension()).isEqualTo("pdf");
+        assertThat(document.getMimeType()).isEqualTo("application/pdf");
+        assertThat(document.getFilename()).isEqualTo("java-8-streams-cheat-sheet.pdf");
     }
 
     @Test
-    @DisplayName("Set a document content given a file")
-    final void testSetDocumentContentWithFile() throws DocumentException, FileException
+    @DisplayName("Set a document content after instance creation given a file")
+    final void testSetDocumentContentAfterCreationWithFile() throws DocumentException, FileException
     {
+        final String documentName = "Java 8 Sheet";
+        final String documentDescription = "A Java 8 reference sheet.";
+        final String documentReference = "2021";
+
         IDocument document = Document.builder()
-                .withName("Java 8 Sheet")
-                .withDescription("A Java 8 reference sheet.")
-                .withReference("2021")
-                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                .withName(documentName)
+                .withDescription(documentDescription)
+                .withReference(documentReference)
+                .withDocumentType(DocumentType.DOCUMENT_INVOICE)
                 .build();
 
         assertThat(document).isNotNull();
 
-        document.setContent(FileHelper.getFile(TEST_DOCUMENT_CONTENT_PDF));
+        document.setContent(FileHelper.getFile(DOCUMENT_CONTENT_PDF));
 
         assertThat(document.getContent()).isNotNull();
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_INVOICE);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getDescription()).isEqualTo(documentDescription);
+        assertThat(document.getReference()).isEqualTo(documentReference);
+        assertThat(document.getExtension()).isEqualTo("pdf");
+        assertThat(document.getMimeType()).isEqualTo("application/pdf");
+        assertThat(document.getFilename()).isEqualTo("java-8-streams-cheat-sheet.pdf");
     }
 
     @Test
@@ -237,7 +261,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
                 .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
@@ -257,7 +281,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     {
         IDocument document = Document.builder()
                 .withName(DOCUMENT_NAME)
-                .withDocumentType(DocumentType.MEDIA_VIDEO)
+                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
@@ -285,7 +309,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
             list.add(Document.builder()
                     .withName(DOCUMENT_NAME)
                     .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
-                    .withDocumentType(DocumentType.MEDIA_VIDEO)
+                    .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build());
         }
 
@@ -306,10 +330,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
             document = Document.builder()
                     .withName(DOCUMENT_NAME)
                     .withTags(new String[] { DOCUMENT_TAG1, DOCUMENT_TAG2, DOCUMENT_TAG3 })
-                    .withDocumentType(DocumentType.MEDIA_VIDEO)
-//                    .withContentName("./media/java-8-streams-cheat-sheet.pdf") //TODO Add to builder
+                    .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build();
-            document.setContent(TEST_DOCUMENT_CONTENT_PDF);
+
+            document.setContent(DOCUMENT_CONTENT_PDF);
+
             list.add(document);
         }
 

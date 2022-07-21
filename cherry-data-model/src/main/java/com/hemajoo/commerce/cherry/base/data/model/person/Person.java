@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@SuppressWarnings("java:S6204")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -134,7 +135,7 @@ public class Person extends DataModelEntity implements IPerson
     private List<EmailAddress> emailAddresses = new ArrayList<>();
 
     /**
-     * Creates a new person.
+     * Create a new person.
      */
     public Person()
     {
@@ -155,6 +156,7 @@ public class Person extends DataModelEntity implements IPerson
      * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
      */
     @Builder(setterPrefix = "with")
+    @SuppressWarnings("java:S107")
     public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final Date birthDate, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
     {
         this(personType, owner);
@@ -215,7 +217,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Sets the person last name.
+     * Set the person last name.
      * @param lastName Last name.
      */
     public void setLastName(final String lastName)
@@ -225,7 +227,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Sets the person first name.
+     * Set the person first name.
      * @param firstName First name.
      */
     public void setFirstName(final String firstName)
@@ -235,7 +237,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Returns the default email address.
+     * Return the default email address.
      * @return Optional default email address.
      */
     public final IEmailAddress getDefaultEmailAddress()
@@ -245,7 +247,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the person has a default email address?
+     * Check if the person has a default email address?
      * @return {@code True} if the person has a default email address, {@code false} otherwise.
      */
     public final boolean hasDefaultEmailAddress()
@@ -254,7 +256,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the given email already exist?
+     * Check if the given email already exist?
      * @param email Email to check.
      * @return {@code True} if it already exist, {@code false} otherwise.
      */
@@ -265,7 +267,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the given email address already exist?
+     * Check if the given email address already exist?
      * @param emailAddress Email address to check.
      * @return {@code True} if it already exist, {@code false} otherwise.
      */
@@ -276,9 +278,9 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Returns the email address matching the given identifier.
+     * Return the email address matching the given identifier.
      * @param id Email address identifier.
-     * @return Email address if one is matching the given identifier, null otherwise.
+     * @return Matching email address, <b>null</b> otherwise.
      */
     public final IEmailAddress getEmailById(final @NonNull UUID id)
     {
@@ -287,10 +289,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves email addresses matching the given {@link AddressType}.
+     * Retrieve a list of email addresses matching the given address type.
      * @param type Address type.
-     * @return List of email addresses.
+     * @return List of matching email addresses.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IEmailAddress> findEmailAddressByType(final AddressType type)
     {
         return emailAddresses.stream()
@@ -299,10 +302,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves email addresses matching the given {@link EntityStatusType}.
+     * Retrieve a list of email addresses matching the given status type.
      * @param status Status type.
      * @return List of email addresses.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status)
     {
         return emailAddresses.stream()
@@ -349,7 +353,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Returns the default postal address.
+     * Return the default postal address.
      * @return Default postal address.
      */
     public final Optional<PostalAddress> getDefaultPostalAddress()
@@ -359,7 +363,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the person has a default postal address?
+     * Check if the person has a default postal address?
      * @return {@code True} if the person has a default postal address, {@code false} otherwise.
      */
     public final boolean hasDefaultPostalAddress()
@@ -368,7 +372,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if a postal address matches the given one exist?
+     * Check if a postal address matches the given one exist?
      * @param address Postal address.
      * @return {@code True} if a postal address matches, {@code false} otherwise.
      */
@@ -378,10 +382,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves postal addresses matching the given {@link AddressType}.
+     * Retrieve postal addresses matching the given {@link AddressType}.
      * @param type Address type.
      * @return List of postal addresses.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IPostalAddress> findPostalAddressByType(final AddressType type)
     {
         return postalAddresses.stream()
@@ -390,10 +395,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves postal addresses matching the given {@link EntityStatusType}.
+     * Retrieve postal addresses matching the given {@link EntityStatusType}.
      * @param status Status type.
      * @return List of postal addresses.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IPostalAddress> findPostalAddressByStatus(final EntityStatusType status)
     {
         return postalAddresses.stream()
@@ -402,7 +408,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Adds an postal address.
+     * Add a postal address.
      * @param postalAddress Postal address.
      * @throws DataModelEntityException Thrown to indicate an error occurred while adding a postal address.
      */
@@ -413,7 +419,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Returns the default phone number.
+     * Return the default phone number.
      * @return Optional default phone number.
      */
     public final Optional<PhoneNumber> getDefaultPhoneNumber()
@@ -423,7 +429,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the person has a default phone number?
+     * Check if the person has a default phone number?
      * @return {@code True} if the person has a default phone number, {@code false} otherwise.
      */
     public final boolean hasDefaultPhoneNumber()
@@ -432,7 +438,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the given phone number (only the number) already exist?
+     * Check if the given phone number (only the number) already exist?
      * @param phoneNumber Phone number to check.
      * @return {@code True} if it already exist, {@code false} otherwise.
      */
@@ -443,7 +449,7 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Checks if the given phone number already exist?
+     * Check if the given phone number already exist?
      * @param phoneNumber Phone number to check.
      * @return {@code True} if it already exist, {@code false} otherwise.
      */
@@ -454,10 +460,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves phone numbers matching the given {@link PhoneNumberType}.
+     * Retrieve phone numbers matching the given {@link PhoneNumberType}.
      * @param type Address type.
      * @return List of phone numbers.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IPhoneNumber> findPhoneNumberByType(final PhoneNumberType type)
     {
         return phoneNumbers.stream()
@@ -466,10 +473,11 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     /**
-     * Retrieves phone numbers matching the given {@link EntityStatusType}.
+     * Retrieve phone numbers matching the given {@link EntityStatusType}.
      * @param status Status type.
      * @return List of phone numbers.
      */
+    @SuppressWarnings("java:S6204")
     public final List<IPhoneNumber> findPhoneNumberByStatus(final EntityStatusType status)
     {
         return phoneNumbers.stream()

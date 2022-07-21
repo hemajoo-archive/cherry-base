@@ -69,12 +69,6 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     @JsonIgnore
     String BASE_PARENT_ID = "parentId";
 
-//    /**
-//     * Data model entity attribute: <b>id</b>.
-//     */
-//    @JsonIgnore
-//    public static final String BASE_PARENT = "parent";
-
     /**
      * Data model entity attribute: <b>parent type</b>.
      */

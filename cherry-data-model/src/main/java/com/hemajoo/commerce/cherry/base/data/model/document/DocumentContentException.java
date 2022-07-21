@@ -21,6 +21,7 @@ import java.io.Serial;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@SuppressWarnings("java:S110")
 public class DocumentContentException extends DocumentException
 {
     /**

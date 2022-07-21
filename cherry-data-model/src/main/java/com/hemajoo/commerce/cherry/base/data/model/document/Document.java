@@ -257,17 +257,6 @@ public class Document extends DataModelEntity implements IDocument
         setContent(file.getAbsolutePath());
     }
 
-    //@Override
-//    private void setContent() throws DocumentException
-//    {
-//        if (this.baseFilename == null)
-//        {
-//            throw new DocumentException("Cannot load document content as no file as been attached yet!");
-//        }
-//
-//        setContent(this.baseFilename);
-//    }
-
     /**
      * Set the document content.
      * @param inputStream Input stream.
@@ -373,10 +362,4 @@ public class Document extends DataModelEntity implements IDocument
                 ? (outputPath + end)
                 : (outputPath + File.separator + end);
     }
-//
-//    @Override
-//    public void setOwner(ServerEntity owner)
-//    {
-//        this.owner = owner;
-//    }
 }

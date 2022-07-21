@@ -398,7 +398,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         final String FIRST_NAME = FAKER.name().firstName();
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
+                .withPersonType(PersonType.AGENT)
                 .withGenderType(GenderType.MALE)
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
@@ -417,7 +417,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
 
         IPerson person = Person.builder()
                 .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
+                .withGenderType(GenderType.FEMALE)
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
                 .build();
@@ -434,7 +434,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         final String FIRST_NAME = FAKER.name().firstName();
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
+                .withPersonType(PersonType.VIRTUAL)
                 .withGenderType(GenderType.MALE)
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
@@ -453,7 +453,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
 
         IPerson person = Person.builder()
                 .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
+                .withGenderType(GenderType.FEMALE)
                 .withLastName(LAST_NAME)
                 .withFirstName(FIRST_NAME)
                 .build();

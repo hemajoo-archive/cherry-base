@@ -127,7 +127,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnoreProperties
-    @ManyToOne(targetEntity = DataModelEntity.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = DataModelEntity.class, fetch = FetchType.EAGER) // TODO We should store the parent's UUID here!
     private IDataModelEntity parent;
 
     /**

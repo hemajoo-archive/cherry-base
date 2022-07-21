@@ -79,36 +79,15 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
         {
             if (withEmailAddress)
             {
-                if (withDocument)
-                {
-                    person.addEmailAddress(EmailAddressRandomizer.generate(withRandomId, true, withContent, count));
-                }
-                else
-                {
-                    person.addEmailAddress(EmailAddressRandomizer.generate(withRandomId, false, false, count));
-                }
+                person.addEmailAddress(EmailAddressRandomizer.generate(withRandomId, withDocument, withContent, count));
             }
             if (withPostalAddress)
             {
-                if (withDocument)
-                {
-                    person.addPhoneNumber(PhoneNumberRandomizer.generate(withRandomId, true, withContent, count));
-                }
-                else
-                {
-                    person.addPhoneNumber(PhoneNumberRandomizer.generate(withRandomId, false, false, count));
-                }
+                person.addPostalAddress(PostalAddressRandomizer.generate(withRandomId, withDocument, withContent, count));
             }
             if (withPhoneNumber)
             {
-                if (withDocument)
-                {
-                    person.addPostalAddress(PostalAddressRandomizer.generate(withRandomId, true, withContent, count));
-                }
-                else
-                {
-                    person.addPostalAddress(PostalAddressRandomizer.generate(withRandomId, false, false, count));
-                }
+                person.addPhoneNumber(PhoneNumberRandomizer.generate(withRandomId, withDocument, withContent, count));
             }
         }
 

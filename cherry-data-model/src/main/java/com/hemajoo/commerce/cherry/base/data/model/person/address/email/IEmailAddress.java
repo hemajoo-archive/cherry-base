@@ -18,7 +18,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 
 /**
- * Provide services to manipulate the data composing an <b>email address</b>.
+ * Provide services to manipulate an <b>email address</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @since Cherry 0.1.0
  * @version 1.0.0

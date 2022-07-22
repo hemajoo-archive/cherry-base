@@ -258,6 +258,18 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     void addTag(String tag);
 
     /**
+     * Add multiple tags.
+     * @param tags Tags to set (as an array of strings).
+     */
+    void addTags(final String... tags);
+
+    /**
+     * Add multiple tags.
+     * @param tags Tags to set.
+     */
+    void addTags(final List<String> tags);
+
+    /**
      * Delete a tag.
      * @param tag Tag to delete.
      */

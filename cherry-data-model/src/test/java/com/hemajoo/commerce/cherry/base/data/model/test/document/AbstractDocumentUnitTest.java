@@ -14,8 +14,11 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.document.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
+
+import java.util.Arrays;
 
 /**
  * Abstract implementation of a <b>Cherry</b> unit test.
@@ -64,13 +67,13 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
      * @return Document.
      * @throws DocumentException Thrown in case an error occurred while creating a new document.
      */
-    protected IDocument createTestDocument() throws DocumentException
+    protected IDocument createTestDocument() throws DataModelEntityException
     {
         return Document.builder()
                 .withName(testDocumentName)
                 .withDescription(testDocumentDescription)
                 .withReference(testDocumentReference)
-                .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withFilename(testDocumentContentPdf)
                 .withDocumentType(DocumentType.DOCUMENT_INVOICE)
                 .build();

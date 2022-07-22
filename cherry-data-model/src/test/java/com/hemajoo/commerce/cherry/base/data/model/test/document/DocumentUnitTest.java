@@ -14,10 +14,10 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +30,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -63,7 +64,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Create a document with the minimal set of attributes")
-    final void testCreateDocument() throws DocumentException
+    final void testCreateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
@@ -78,13 +79,13 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Create a document with all attributes")
-    final void testCreateDocumentWithAllAttributes() throws DocumentException
+    final void testCreateDocumentWithAllAttributes() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
                 .withDescription(testDocumentDescription)
                 .withReference(testDocumentReference)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .withFilename(testDocumentContentPdf)
@@ -117,11 +118,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Add a tag")
-    final void testAddTag() throws DocumentException
+    final void testAddTag() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[] {testDocumentTag1, testDocumentTag2})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -140,11 +141,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Cannot create duplicate tag")
-    final void testCannotAddDuplicateTag() throws DocumentException
+    final void testCannotAddDuplicateTag() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag1, testDocumentTag3, testDocumentTag1})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3, testDocumentTag1))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -160,11 +161,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Count the number of tags")
-    final void testCountTags() throws DocumentException
+    final void testCountTags() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -178,11 +179,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Delete a document tag")
-    final void testDeleteTag() throws DocumentException
+    final void testDeleteTag() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -201,11 +202,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Delete all document tags")
-    final void testDeleteAllTags() throws DocumentException
+    final void testDeleteAllTags() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -226,11 +227,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Check if a tag exist")
-    final void testExistTag() throws DocumentException
+    final void testExistTag() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[]{testDocumentTag1, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .build();
 
@@ -244,7 +245,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Create a document with a content file name")
-    final void testCreateDocumentWithContentFilename() throws DocumentException
+    final void testCreateDocumentWithContentFilename() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(JAVA_8_SHEET_NAME)
@@ -260,7 +261,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Create a document with a content file")
-    final void testCreateDocumentWithContentFile() throws DocumentException, FileException
+    final void testCreateDocumentWithContentFile() throws DataModelEntityException, FileException
     {
         IDocument document = Document.builder()
                 .withName(JAVA_8_SHEET_NAME)
@@ -277,7 +278,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Set a document content after instance creation of the document")
-    final void testSetDocumentContentAfterCreationWithFilename() throws DocumentException
+    final void testSetDocumentContentAfterCreationWithFilename() throws DataModelEntityException
     {
         final String documentName = "A Kind of Magic";
         final String documentDescription = "A Kind of Magic is the twelfth studio album by the British rock band Queen.";
@@ -306,7 +307,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Set a document content after instance creation given a file")
-    final void testSetDocumentContentAfterCreationWithFile() throws DocumentException, FileException
+    final void testSetDocumentContentAfterCreationWithFile() throws DataModelEntityException, FileException
     {
         final String documentName = JAVA_8_SHEET_NAME;
         final String documentDescription = JAVA_8_SHEET_DESCRIPTION;
@@ -335,11 +336,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Inactivate a document")
-    final void testInactivateDocument() throws DocumentException
+    final void testInactivateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
-                .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                 .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
@@ -356,7 +357,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
     @Test
     @DisplayName("Reactivate a document")
-    final void testReactivateDocument() throws DocumentException
+    final void testReactivateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
                 .withName(testDocumentName)
@@ -378,7 +379,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @Test
     @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 10'000 documents without content")
-    final void testPerformanceCreateMultipleDocumentsWithoutContent() throws DocumentException
+    final void testPerformanceCreateMultipleDocumentsWithoutContent() throws DataModelEntityException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();
@@ -387,7 +388,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         {
             list.add(Document.builder()
                     .withName(testDocumentName)
-                    .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                    .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                     .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build());
         }
@@ -398,7 +399,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @Test
     @Timeout(value = 8000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 10'000 documents with content")
-    final void testPerformanceCreateMultipleDocumentsWithContent() throws DocumentException
+    final void testPerformanceCreateMultipleDocumentsWithContent() throws DataModelEntityException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();
@@ -408,7 +409,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         {
             document = Document.builder()
                     .withName(testDocumentName)
-                    .withTags(new String[] {testDocumentTag1, testDocumentTag2, testDocumentTag3})
+                    .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
                     .withDocumentType(DocumentType.DOCUMENT_MEDIA)
                     .build();
 

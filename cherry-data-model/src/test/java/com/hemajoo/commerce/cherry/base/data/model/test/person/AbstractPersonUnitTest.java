@@ -15,7 +15,6 @@
 package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
 
@@ -76,9 +75,9 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
     /**
      * Create a test person.
      * @return Person.
-     * @throws PersonException Thrown in case an error occurred while creating a new person.
+     * @throws DataModelEntityException Thrown in case an error occurred while creating a new person.
      */
-    protected IPerson createTestPerson() throws PersonException, DocumentException
+    protected IPerson createTestPerson() throws DataModelEntityException
     {
         return Person.builder()
                 .withLastName(testPersonLastName)

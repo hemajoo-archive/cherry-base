@@ -19,7 +19,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import java.io.Serial;
 
 /**
- * Checked exception thrown to indicate an error occurred with an <b>email address</b> data model entity.
+ * Exception thrown to indicate an error occurred with an <b>email address</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

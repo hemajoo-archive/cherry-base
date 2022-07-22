@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Represent a <b>document</b> data model entity.
@@ -152,34 +153,37 @@ public class Document extends DataModelEntity implements IDocument
      * @param description Document description.
      * @param documentType Document type.
      * @param statusType Status type.
-     * @param owner Document owner.
+     * @param parent Parent.
      * @param reference Document reference.
      * @param filename Document file name representing the document content. If <b>withFilename()</b> is used invoking the builder, the <b>withFile()</b> is not supposed to be invoked!
      * @param file Document file representing the document content. If <b>withFile()</b> is used invoking the builder, the <b>withFilename()</b> is not supposed to be invoked!
-     * @param tags Document tags.
-     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
+     * @param tags List of tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
-    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final File file, final String filename, final String... tags) throws DocumentException
+    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity parent, final String reference, final File file, final String filename, final List<String> tags) throws DataModelEntityException
     {
-        this(documentType, owner);
+        super(EntityType.DOCUMENT, name, description, reference, statusType, parent, null /* a document cannot contain other documents */, tags);
 
-        setName(name);
-        setDescription(description);
-        setReference(reference);
+        setId(UuidGenerator.getUuid());
 
-        if (statusType == EntityStatusType.INACTIVE)
+        if (documentType != null)
         {
-            setInactive();
+            this.documentType = documentType;
         }
 
-        if (tags != null)
+        try
         {
-            for (String tag : tags)
+            setParent(parent);
+            if (parent != null)
             {
-                addTag(tag);
+                parent.addDocument(this);
             }
+        }
+        catch (DataModelEntityException e)
+        {
+            throw new DocumentException(e);
         }
 
         if (file != null)
@@ -197,36 +201,36 @@ public class Document extends DataModelEntity implements IDocument
         super.validate(); // Validate the document data
     }
 
-    /**
-     * Create a new document.
-     * @param documentType Document type.
-     * @param owner Document owner.
-     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
-     */
-    protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
-    {
-        this();
-
-        setId(UuidGenerator.getUuid());
-
-        if (documentType != null)
-        {
-            this.documentType = documentType;
-        }
-
-        try
-        {
-            setParent(owner);
-            if (owner != null)
-            {
-                owner.addDocument(this);
-            }
-        }
-        catch (DataModelEntityException e)
-        {
-            throw new DocumentException(e);
-        }
-    }
+//    /**
+//     * Create a new document.
+//     * @param documentType Document type.
+//     * @param owner Document owner.
+//     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
+//     */
+//    protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
+//    {
+//        this();
+//
+//        setId(UuidGenerator.getUuid());
+//
+//        if (documentType != null)
+//        {
+//            this.documentType = documentType;
+//        }
+//
+//        try
+//        {
+//            setParent(owner);
+//            if (owner != null)
+//            {
+//                owner.addDocument(this);
+//            }
+//        }
+//        catch (DataModelEntityException e)
+//        {
+//            throw new DocumentException(e);
+//        }
+//    }
 
     @SuppressWarnings("java:S1163")
     @Override

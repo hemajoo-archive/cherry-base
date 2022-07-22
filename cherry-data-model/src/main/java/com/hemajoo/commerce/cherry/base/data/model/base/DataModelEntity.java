@@ -20,10 +20,12 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Identity;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.AbstractStatusEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.base.validation.DataModelEntityValidator;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -148,6 +150,38 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         this.entityType = type;
     }
 
+    /**
+     * Create a ne data model entity.
+     * @param type Entity type.
+     * @param name Entity name.
+     * @param description Entity description.
+     * @param reference Entity reference.
+     * @param status Entity status.
+     * @param parent Entity parent.
+     * @param document Associated document.
+     * @param tags Entity tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while trying to set the parent entity.
+     */
+    @SuppressWarnings("java:S107")
+    public DataModelEntity(final EntityType type, final String name, final String description, final String reference, final EntityStatusType status, final IDataModelEntity parent, final IDocument document, final List<String> tags) throws DataModelEntityException
+    {
+        this(type);
+
+        this.name = name;
+        this.description = description;
+        this.reference = reference;
+
+        setStatusType(status == null ? EntityStatusType.ACTIVE : status);
+        setParent(parent);
+
+        addTags(tags);
+
+        if (document != null)
+        {
+            addDocument(document);
+        }
+    }
+
     @Override
     public final IIdentity getIdentity()
     {
@@ -161,7 +195,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
+    public final <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
     {
         if (parent == this)
         {
@@ -185,7 +219,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
 
     @JsonIgnore
     @Override
-    public <T extends IDataModelEntity> List<T> getDocuments()
+    public final <T extends IDataModelEntity> List<T> getDocuments()
     {
         if (entityType == EntityType.MEDIA)
         {
@@ -311,6 +345,30 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         if (StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
         {
             tags = tags == null || tags.isEmpty() ? tag : tags + ", " + tag;
+        }
+    }
+
+    @Override
+    public final void addTags(final String... tags)
+    {
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
+        }
+    }
+
+    @Override
+    public final void addTags(final List<String> tags)
+    {
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
         }
     }
 

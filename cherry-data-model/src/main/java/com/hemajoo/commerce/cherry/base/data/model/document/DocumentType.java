@@ -26,19 +26,24 @@ import java.util.Arrays;
 public enum DocumentType
 {
     /**
-     * <b>Generic</b> document.
+     * <b>Unknown</b> document type.
      */
-    DOCUMENT_GENERIC,
+    UNKNOWN,
 
     /**
-     * <b>Media</b> document.
+     * <b>Generic</b> document type.
      */
-    DOCUMENT_MEDIA,
+    GENERIC,
 
     /**
-     * <b>Invoice</b> document.
+     * <b>Media</b> document type.
      */
-    DOCUMENT_INVOICE;
+    MEDIA,
+
+    /**
+     * <b>Invoice</b> document type.
+     */
+    INVOICE;
 
     /**
      * Creates a new document type given its type as a string representation.

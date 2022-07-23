@@ -17,6 +17,7 @@ package com.hemajoo.commerce.cherry.base.data.model.base;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Identity;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.AbstractStatusEntity;
@@ -35,7 +36,6 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.security.NoSuchAlgorithmException;
@@ -148,6 +148,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     protected DataModelEntity(final EntityType type)
     {
         this.entityType = type;
+        setStatusType(EntityStatusType.ACTIVE);
     }
 
     /**
@@ -214,7 +215,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final int getDocumentCount()
     {
-        return documents.size();
+        return documents == null ? 0 : documents.size();
     }
 
     @JsonIgnore
@@ -226,7 +227,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
             return new ArrayList<>();
         }
 
-        return documents != null ? (List<T>) Collections.unmodifiableList(documents) : null;
+        return documents != null ? (List<T>) Collections.unmodifiableList(documents) : new ArrayList<>();
     }
 
     @Override
@@ -430,14 +431,41 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
 
     /**
      * Validate the data of the underlying data model entity.
-     * @throws ConstraintViolationException Thrown in case some constraint violations have been detected.
+     * @throws DataModelEntityValidationException Thrown in case errors occurred while validating a data model entity.
      */
-    protected final void validate() throws ConstraintViolationException
+    protected final void validate() throws DataModelEntityValidationException
     {
         Set<ConstraintViolation<DataModelEntity>> violations = DataModelEntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
+        checkAndThrowException(violations);
+    }
+
+    private DataModelEntityValidationException checkAndThrowException(final Set<ConstraintViolation<DataModelEntity>> violations) throws DataModelEntityValidationException
+    {
+        int counter = 1;
+        StringBuilder messageBuilder = new StringBuilder();
+
         if (!violations.isEmpty())
         {
-            throw new ConstraintViolationException(violations);
+            messageBuilder
+                    .append(violations.size())
+                    .append(" constraint violations found!");
         }
+
+        for (ConstraintViolation<DataModelEntity> violation : violations)
+        {
+            messageBuilder.append("\n\t")
+                    .append("(").append(counter).append(") - ")
+                    .append("Attribute: '")
+                    .append(violation.getPropertyPath()).append("' ")
+                    .append(violation.getMessage());
+            counter++;
+        }
+
+        if (!messageBuilder.isEmpty())
+        {
+            throw new DataModelEntityValidationException(messageBuilder.toString());
+        }
+
+        return null;
     }
 }

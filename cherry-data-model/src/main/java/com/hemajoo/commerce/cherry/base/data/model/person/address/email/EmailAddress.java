@@ -23,12 +23,14 @@ import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.IPerson;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
+import com.hemajoo.commons.annotation.EnumValue;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -50,8 +52,9 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Email address: 'email' cannot be null!")
-    @Email(message = "Email address: '${validatedValue}' is not a valid email!")
+    @NotNull
+    @NotBlank
+    @Email
     @Column(name = "EMAIL")
     private String email;
 
@@ -66,11 +69,12 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     /**
      * Email type.
      */
-    @Getter
-    @Setter
-    @Enumerated(EnumType.STRING)
+    @NotNull
+    @NotBlank
+    //@Enumerated(EnumType.STRING)
+    @EnumValue(enumClass = AddressType.class, enumMethod = "isValid")
     @Column(name = "ADDRESS_TYPE")
-    private AddressType addressType;
+    private String addressType;
 
     /**
      * The person identifier this email address belongs to.
@@ -89,6 +93,9 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     public EmailAddress()
     {
         super(EntityType.EMAIL_ADDRESS);
+
+        this.addressType = AddressType.UNKNOWN.name();
+        this.isDefaultEmail = false;
     }
 
     /**
@@ -112,9 +119,33 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
         super(EntityType.EMAIL_ADDRESS, name, description, reference, statusType, parent, document, tags);
 
         this.email = email;
-        this.addressType = addressType;
         this.isDefaultEmail = isDefault;
+        setAddressType(addressType == null ? AddressType.UNKNOWN : addressType);
 
-        super.validate(); // Validate the document data
+        if (getName() == null)
+        {
+            setName(email);
+        }
+
+        try
+        {
+            super.validate(); // Validate the document data
+        }
+        catch (Exception e)
+        {
+            throw new EmailAddressException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void setAddressType(final AddressType addressType)
+    {
+        this.addressType = addressType.name();
+    }
+
+    @Override
+    public AddressType getAddressType()
+    {
+        return AddressType.valueOf(this.addressType);
     }
 }

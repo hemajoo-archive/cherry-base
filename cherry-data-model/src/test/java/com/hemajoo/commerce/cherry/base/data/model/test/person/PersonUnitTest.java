@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +65,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
 
     @Test
     @DisplayName("Create a person with mandatory fields")
-    final void testCreatePersonWithName() throws PersonException
+    final void testCreatePersonWithName() throws DataModelEntityException
     {
         final String LAST_NAME = FAKER.name().lastName();
         final String FIRST_NAME = FAKER.name().firstName();
@@ -146,7 +147,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
 
     @Test
     @DisplayName("Create a person with all attributes")
-    final void testCreatePersonWithAllAttributes() throws PersonException
+    final void testCreatePersonWithAllAttributes() throws DataModelEntityException
     {
         final String LAST_NAME = FAKER.name().lastName();
         final String FIRST_NAME = FAKER.name().firstName();
@@ -157,7 +158,7 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         final String TAG2 = "Texas";
         final String TAG3 = "Austin";
 
-        IPerson owner = Person.builder()
+        IPerson parent = Person.builder()
                 .withPersonType(PersonType.PHYSICAL)
                 .withLastName("Einstein")
                 .withFirstName("Albert")
@@ -171,9 +172,9 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
                 .withBirthDate(BIRTHDATE)
                 .withPersonType(PersonType.PHYSICAL)
                 .withGenderType(GenderType.MALE)
-                .withTags(new String[]{ TAG1, TAG2, TAG3 })
+                .withTags(Arrays.asList(TAG1, TAG2, TAG3))
                 .withReference(REFERENCE)
-                .withOwner(owner)
+                .withParent(parent)
                 .build();
 
         assertThat(person).isNotNull();

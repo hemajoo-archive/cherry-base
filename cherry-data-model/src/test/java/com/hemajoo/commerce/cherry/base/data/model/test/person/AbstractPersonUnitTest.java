@@ -15,90 +15,83 @@
 package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
-import com.hemajoo.commerce.cherry.base.data.model.person.*;
+import com.hemajoo.commerce.cherry.base.data.model.configuration.DataModelConfiguration;
+import com.hemajoo.commerce.cherry.base.data.model.person.GenderType;
+import com.hemajoo.commerce.cherry.base.data.model.person.PersonRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.person.PersonType;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 /**
- * Abstract implementation of a <b>person</b> data model entity unit test.
+ * Abstract implementation of a unit test for a <b>person</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
 {
     /**
-     * Number of dependencies to generate when generating a random person.
+     * Data model configuration.
      */
-    protected static final int COUNT_PERSON_DEPENDENCY = 5;
+    @Autowired
+    private DataModelConfiguration configuration;
 
     /**
-     * Test person first name.
+     * First name.
      */
-    protected final String testPersonFirstName = FAKER.name().firstName();
+    protected String personFirstName;
 
     /**
-     * Test person last name.
+     * Last name.
      */
-    protected final String testPersonLastName = FAKER.name().lastName();
+    protected String personLastName;
 
     /**
-     * Test person birthdate.
+     * Birthdate.
      */
-    protected final Date testPersonBirthDate = FAKER.date().birthday();
+    protected Date personBirthDate;
 
     /**
-     * Test person tag #1.
+     * Person type.
      */
-    protected final String testPersonTag1 = FAKER.animal().name();
+    protected PersonType personType;
 
     /**
-     * Test person tag #2.
+     * Gender type.
      */
-    protected final String testPersonTag2 = FAKER.artist().name();
+    protected GenderType genderType;
 
     /**
-     * Test person tag #3.
+     * Email.
      */
-    protected final String testPersonTag3 = FAKER.book().genre();
+    protected String emailAddress;
 
     /**
-     * Test person description.
+     * Address type.
      */
-    protected final String testPersonDescription = FAKER.book().title();
+    protected AddressType emailAddressType;
 
     /**
-     * Test person reference.
+     * Is default email address.
      */
-    protected final String testPersonReference = FAKER.aviation().METAR();
+    protected boolean emailIsDefault;
 
-    /**
-     * Create a test person.
-     * @return Person.
-     * @throws DataModelEntityException Thrown in case an error occurred while creating a new person.
-     */
-    protected IPerson createTestPerson() throws DataModelEntityException
+    @BeforeEach
+    protected void beforeEach() throws DataModelEntityException
     {
-        return Person.builder()
-                .withLastName(testPersonLastName)
-                .withFirstName(testPersonFirstName)
-                .withDescription(testPersonDescription)
-                .withBirthDate(testPersonBirthDate)
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withTags(new String[]{testPersonTag1, testPersonTag2, testPersonTag3})
-                .withReference(testPersonReference)
-                .withOwner(createTestDocument())
-                .build();
-    }
+        super.beforeEach();
 
-    /**
-     * Return a new random person.
-     * @return Person.
-     * @throws DataModelEntityException Thrown in case an error occurred while generating a new random person.
-     */
-    protected IPerson getRandomPerson() throws DataModelEntityException
-    {
-        return PersonRandomizer.generate(true, true, true, true, true, true, COUNT_PERSON_DEPENDENCY);
+        personFirstName = PersonRandomizer.getRandomFirstName();
+        personLastName = PersonRandomizer.getRandomLastName();
+        personBirthDate = PersonRandomizer.getRandomBirthDate();
+        personType = PersonRandomizer.getRandomPersonType();
+        genderType = PersonRandomizer.getRandomGenderType();
+        emailAddress = EmailAddressRandomizer.getRandomEmail();
+        emailAddressType = EmailAddressRandomizer.getRandomAddressType();
+        emailIsDefault = EmailAddressRandomizer.getRandomIsDefault();
     }
 }

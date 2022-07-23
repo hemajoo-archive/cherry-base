@@ -14,16 +14,14 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.base.exception;
 
-import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
-
 import java.io.Serial;
 
 /**
- * Exception thrown to indicate an error occurred with a data model entity.
+ * Exception thrown to indicate an error occurred with the validation of a data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class DataModelEntityException extends CherryException
+public class DataModelEntityValidationException extends DataModelEntityException
 {
     /**
      * Default serialization identifier.
@@ -32,29 +30,29 @@ public class DataModelEntityException extends CherryException
     private static final long serialVersionUID = 1L;
 
     /**
-     * Thrown to indicate that an error occurred with a data model entity.
+     * Thrown to indicate that an error occurred with the validation of a data model entity.
      * @param exception Parent {@link Exception}.
      */
-    public DataModelEntityException(final Exception exception)
+    public DataModelEntityValidationException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred with a data model entity.
+     * Thrown to indicate that an error occurred with the validation of a data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public DataModelEntityException(final String message)
+    public DataModelEntityValidationException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred with a data model entity.
+     * Thrown to indicate that an error occurred with the validation of a data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent {@link Exception}.
      */
-    public DataModelEntityException(final String message, final Exception exception)
+    public DataModelEntityValidationException(final String message, final Exception exception)
     {
         super(message, exception);
     }

@@ -24,6 +24,7 @@ import lombok.experimental.UtilityClass;
 import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,12 +39,12 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
     /**
      * Person type enumeration generator.
      */
-    private static final EnumRandomGenerator PERSON_TYPE_GENERATOR = new EnumRandomGenerator(PersonType.class);
+    private static final EnumRandomGenerator GENERATOR_PERSON_TYPE = new EnumRandomGenerator(PersonType.class);
 
     /**
      * Gender type enumeration generator.
      */
-    private static final EnumRandomGenerator GENDER_TYPE_GENERATOR = new EnumRandomGenerator(GenderType.class);
+    private static final EnumRandomGenerator GENERATOR_GENDER_TYPE = new EnumRandomGenerator(GenderType.class);
 
     /**
      * Generate a random person.
@@ -91,11 +92,11 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
             }
         }
 
-        person.setFirstName(FAKER.name().firstName());
-        person.setLastName(FAKER.name().lastName());
+        person.setFirstName(getRandomFirstName());
+        person.setLastName(getRandomLastName());
         person.setBirthDate(FAKER.date().birthday(18, 70));
-        person.setPersonType((PersonType) PERSON_TYPE_GENERATOR.gen());
-        person.setGenderType((GenderType) GENDER_TYPE_GENERATOR.gen());
+        person.setPersonType(getRandomPersonType());
+        person.setGenderType(getRandomGenderType());
 
         return person;
     }
@@ -122,5 +123,50 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
         }
 
         return persons;
+    }
+
+    /**
+     * Returns a random person type.
+     * @return Person type.
+     */
+    public static PersonType getRandomPersonType()
+    {
+        return (PersonType) GENERATOR_PERSON_TYPE.gen();
+    }
+
+    /**
+     * Returns a random gender type.
+     * @return Gender type.
+     */
+    public static GenderType getRandomGenderType()
+    {
+        return (GenderType) GENERATOR_GENDER_TYPE.gen();
+    }
+
+    /**
+     * Returns a random person first name.
+     * @return First name.
+     */
+    public static String getRandomFirstName()
+    {
+        return FAKER.name().firstName().trim();
+    }
+
+    /**
+     * Returns a random person last name.
+     * @return Last name.
+     */
+    public static String getRandomLastName()
+    {
+        return FAKER.name().lastName().trim();
+    }
+
+    /**
+     * Returns a random person birthdate.
+     * @return Birthdate.
+     */
+    public static Date getRandomBirthDate()
+    {
+        return FAKER.date().birthday(18, 85);
     }
 }

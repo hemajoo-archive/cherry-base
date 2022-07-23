@@ -57,7 +57,7 @@ public class Document extends DataModelEntity implements IDocument
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "DOCUMENT_TYPE", length = 50)
-    private DocumentType documentType = DocumentType.DOCUMENT_GENERIC;
+    private DocumentType documentType = DocumentType.GENERIC;
 
     /**
      * Document file extension.
@@ -85,14 +85,14 @@ public class Document extends DataModelEntity implements IDocument
     private transient MultipartFile multiPartFile; // Only stored until the content of the file is loaded into the content store.
 
     /**
-     * Base file name.
+     * Original file name.
      */
     @DiffIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Getter
     @Transient
-    private transient String baseFilename; // Only stored until the content of the file is loaded into the content store.
+    private transient String originalFilename; // Only stored until the content of the file is loaded into the content store.
 
     /**
      * File content identifier.
@@ -144,7 +144,7 @@ public class Document extends DataModelEntity implements IDocument
     {
         super(EntityType.DOCUMENT);
 
-        setActive();
+        this.documentType = DocumentType.UNKNOWN;
     }
 
     /**
@@ -198,7 +198,14 @@ public class Document extends DataModelEntity implements IDocument
             }
         }
 
-        super.validate(); // Validate the document data
+        try
+        {
+            super.validate(); // Validate the document data
+        }
+        catch (Exception e)
+        {
+            throw new DocumentException(e.getMessage());
+        }
     }
 
 //    /**
@@ -272,8 +279,8 @@ public class Document extends DataModelEntity implements IDocument
         try
         {
             detectMimeType(absolutePath);
-            this.baseFilename = absolutePath;
-            this.filename = FilenameUtils.getName(baseFilename);
+            this.originalFilename = absolutePath;
+            this.filename = FilenameUtils.getName(originalFilename);
             this.extension = FilenameUtils.getExtension(filename);
             this.content = inputStream;
             this.contentLength = inputStream.available();

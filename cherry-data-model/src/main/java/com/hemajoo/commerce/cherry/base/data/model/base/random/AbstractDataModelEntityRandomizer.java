@@ -17,15 +17,23 @@ package com.hemajoo.commerce.cherry.base.data.model.base.random;
 import com.github.javafaker.Faker;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
+import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
 import lombok.NonNull;
+import org.ressec.avocado.core.exception.checked.FileException;
+import org.ressec.avocado.core.helper.FileHelper;
 import org.ressec.avocado.core.random.EnumRandomGenerator;
 
+import java.io.File;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Provide an abstract implementation of a data model entity <b>randomizer</b> used to randomly generate data model entities.
@@ -35,9 +43,9 @@ import java.util.List;
 public abstract class AbstractDataModelEntityRandomizer
 {
     /**
-     * Default dependency bound.
+     * Test file names.
      */
-    protected static final int DEFAULT_DEPENDENCY_BOUND = 10;
+    private static final List<String> FILENAMES = new ArrayList<>();
 
     /**
      * Faker generator.
@@ -52,14 +60,100 @@ public abstract class AbstractDataModelEntityRandomizer
     /**
      * Entity status type enumeration generator.
      */
-    protected static final EnumRandomGenerator STATUS_TYPE_GENERATOR = new EnumRandomGenerator(EntityStatusType.class);
+    protected static final EnumRandomGenerator GENERATOR_STATUS_TYPE = new EnumRandomGenerator(EntityStatusType.class);
+
+    /**
+     * Document type enumeration generator.
+     */
+    protected static final EnumRandomGenerator GENERATOR_DOCUMENT_TYPE = new EnumRandomGenerator(DocumentType.class);
 
     /**
      * Creates a new base entity randomizer.
      */
     protected AbstractDataModelEntityRandomizer()
     {
-        // Empty
+        // Empty!
+    }
+
+    /**
+     * Returns a random document type.
+     * @return Document type.
+     */
+    public static DocumentType getRandomDocumentType()
+    {
+        return (DocumentType) GENERATOR_DOCUMENT_TYPE.gen();
+    }
+
+    /**
+     * Returns a random entity sttaus type.
+     * @return Status type.
+     */
+    public static EntityStatusType getRandomStatusType()
+    {
+        return (EntityStatusType) GENERATOR_STATUS_TYPE.gen();
+    }
+
+    /**
+     * Returns a random name.
+     * @return Name.
+     */
+    public static String getRandomName()
+    {
+        return FAKER.internet().slug().trim();
+    }
+
+    /**
+     * Returns a random description.
+     * @return Description.
+     */
+    public static String getRandomDescription()
+    {
+        return FAKER.ancient().primordial().trim();
+    }
+
+    /**
+     * Returns a random reference.
+     * @return Reference.
+     */
+    public static String getRandomReference()
+    {
+        return FAKER.internet().macAddress().trim();
+    }
+
+    /**
+     * Returns a random tag.
+     * @return Tag.
+     */
+    public static String getRandomTag()
+    {
+        return FAKER.animal().name().trim();
+    }
+
+    /**
+     * Returns a set of random tags (from 1 to a maximum of 5) as a comma separated string.
+     * @return Tags.
+     */
+    public static String getRandomTags()
+    {
+        return StringHelper.convertListValuesAsString(getRandomTagList(), ",");
+    }
+
+    /**
+     * Returns a list of random tags.
+     * @return List of tags.
+     */
+    public static List<String> getRandomTagList()
+    {
+        List<String> tags = new ArrayList<>();
+
+        final int count = RANDOM.nextInt(1, 5);
+
+        for (int i = 0; i < count; i++)
+        {
+            tags.add(getRandomTag());
+        }
+
+        return tags;
     }
 
     /**
@@ -83,7 +177,7 @@ public abstract class AbstractDataModelEntityRandomizer
         parent.setDescription(description);
         parent.setReference(FAKER.ancient().hero());
         parent.setTags(FAKER.animal().name() + ", " + FAKER.animal().name());
-        parent.setStatusType((EntityStatusType) STATUS_TYPE_GENERATOR.gen());
+        parent.setStatusType(getRandomStatusType());
 
         if (parent.getStatusType() == EntityStatusType.INACTIVE)
         {
@@ -105,5 +199,101 @@ public abstract class AbstractDataModelEntityRandomizer
     public static <T> T getRandomElement(final List<T> list)
     {
         return list.get(RANDOM.nextInt(list.size()));
+    }
+
+    /**
+     * Return a random test filename.
+     * @return Test filename.
+     * @throws DocumentException Thrown in case an error occurred when trying to get a random document filename.
+     */
+    public static String getRandomFilename() throws DocumentException
+    {
+        try
+        {
+            if (FILENAMES.isEmpty())
+            {
+                // Load the test files.
+                File file = FileHelper.getFile("./media");
+                for (File element : Objects.requireNonNull(file.listFiles()))
+                {
+                    FILENAMES.add(element.getAbsolutePath());
+                }
+            }
+        }
+        catch (FileException e)
+        {
+            throw new DocumentException(e);
+        }
+
+        return AbstractDataModelEntityRandomizer.getRandomElement(FILENAMES);
+    }
+
+    /**
+     * Return a random integer.
+     * @return Integer value.
+     */
+    public static boolean getRandomBoolean()
+    {
+        return RANDOM.nextBoolean();
+    }
+
+    /**
+     * Return a random integer.
+     * @return Integer value.
+     */
+    public static int getRandomInt()
+    {
+        return RANDOM.nextInt();
+    }
+
+    /**
+     * Return a random integer.
+     * @param min Minimal value.
+     * @param max Maximal value.
+     * @return Integer value.
+     */
+    public static int getRandomInt(final int min, final int max)
+    {
+        return RANDOM.nextInt(min, max);
+    }
+
+    /**
+     * Return a random integer.
+     * @param min Minimal value.
+     * @return Integer value.
+     */
+    public static int getRandomInt(final int min)
+    {
+        return RANDOM.nextInt(min);
+    }
+
+    /**
+     * Return a random long value.
+     * @return Long value.
+     */
+    public static long getRandomLong()
+    {
+        return RANDOM.nextLong();
+    }
+
+    /**
+     * Return a random long value.
+     * @param min Minimal value.
+     * @param max Maximal value.
+     * @return Long value.
+     */
+    public static long getRandomLong(final long min, final long max)
+    {
+        return RANDOM.nextLong(min, max);
+    }
+
+    /**
+     * Return a random long value.
+     * @param min Minimal value.
+     * @return Long value.
+     */
+    public static long getRandomLong(final long min)
+    {
+        return RANDOM.nextLong(min);
     }
 }

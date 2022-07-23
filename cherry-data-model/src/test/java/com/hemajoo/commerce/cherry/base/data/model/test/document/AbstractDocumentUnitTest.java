@@ -15,87 +15,67 @@
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
-import com.hemajoo.commerce.cherry.base.data.model.document.*;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
+import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
- * Abstract implementation of a <b>Cherry</b> unit test.
+ * Abstract implementation of a unit test for a <b>document</b> data model entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
 public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUnitTest
 {
     /**
-     * Test document name.
+     * Name.
      */
-    protected final String testDocumentName = FAKER.funnyName().name().trim();
+    protected String documentName;
 
     /**
-     * Test tag.
+     * Description.
      */
-    protected final String testDocumentTag1 = FAKER.animal().name().trim();
+    protected String documentDescription;
 
     /**
-     * Test tag.
+     * Reference.
      */
-    protected final String testDocumentTag2 = FAKER.artist().name().trim();
+    protected String documentReference;
 
     /**
-     * Test tag.
+     * Tags.
      */
-    protected final String testDocumentTag3 = FAKER.book().genre().trim();
+    protected List<String> documentTags;
 
     /**
-     * Test description.
+     * Filename.
      */
-    protected final String testDocumentDescription = FAKER.book().title().trim();
+    protected String documentFilename;
 
     /**
-     * Test reference.
+     * Document type.
      */
-    protected final String testDocumentReference = FAKER.aviation().METAR().trim();
+    protected DocumentType documentType;
 
     /**
-     * Test filename.
+     * Document status type.
      */
-    protected static final String testDocumentContentPdf = "./media/java-8-streams-cheat-sheet.pdf";
+    protected EntityStatusType documentStatusType;
 
-    /**
-     * Create a test document.
-     * @return Document.
-     * @throws DocumentException Thrown in case an error occurred while creating a new document.
-     */
-    protected IDocument createTestDocument() throws DataModelEntityException
+    @BeforeEach
+    protected void beforeEach() throws DataModelEntityException
     {
-        return Document.builder()
-                .withName(testDocumentName)
-                .withDescription(testDocumentDescription)
-                .withReference(testDocumentReference)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withFilename(testDocumentContentPdf)
-                .withDocumentType(DocumentType.DOCUMENT_INVOICE)
-                .build();
-    }
+        super.beforeEach();
 
-    /**
-     * Return a randomly generated document with a content (file) attached.
-     * @return Document.
-     * @throws DocumentException Thrown in case an error occurred while creating a document.
-     */
-    protected IDocument getRandomDocumentWithContent() throws DocumentException
-    {
-        return DocumentRandomizer.generate(true, true);
-    }
-
-    /**
-     * Return a randomly generated document without a content (file) attached.
-     * @return Document.
-     * @throws DocumentException Thrown in case an error occurred while creating a document.
-     */
-    protected IDocument getRandomDocument() throws DocumentException
-    {
-        return DocumentRandomizer.generate(true, false);
+        documentName = DocumentRandomizer.getRandomName();
+        documentDescription = DocumentRandomizer.getRandomName();
+        documentReference = DocumentRandomizer.getRandomName();
+        documentTags = DocumentRandomizer.getRandomTagList();
+        documentFilename = DocumentRandomizer.getRandomFilename();
+        documentType = DocumentRandomizer.getRandomDocumentType();
+        documentStatusType = DocumentRandomizer.getRandomStatusType();
     }
 }

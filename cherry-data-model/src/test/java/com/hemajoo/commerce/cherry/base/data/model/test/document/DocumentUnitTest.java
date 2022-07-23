@@ -17,9 +17,7 @@ package com.hemajoo.commerce.cherry.base.data.model.test.document;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
-import com.hemajoo.commerce.cherry.base.data.model.document.Document;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
-import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
+import com.hemajoo.commerce.cherry.base.data.model.document.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -28,9 +26,7 @@ import org.ressec.avocado.core.helper.FileHelper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -46,11 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class DocumentUnitTest extends AbstractDocumentUnitTest
 {
-
-    public static final String JAVA_8_SHEET_NAME = "Java 8 Sheet";
-    public static final String JAVA_8_SHEET_DESCRIPTION = "A Java 8 reference sheet.";
-    public static final String JAVA_8_REFERENCE = "2021";
-
     @Test
     @DisplayName("Create an empty document")
     final void testCreateEmptyDocument()
@@ -67,14 +58,14 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
+                .withName(documentName)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
-        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_GENERIC);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.GENERIC);
     }
 
     @Test
@@ -82,26 +73,33 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithAllAttributes() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withDescription(testDocumentDescription)
-                .withReference(testDocumentReference)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withDescription(documentDescription)
+                .withReference(documentReference)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
-                .withFilename(testDocumentContentPdf)
+                .withFilename(documentFilename)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getDescription()).isEqualTo(testDocumentDescription);
-        assertThat(document.getReference()).isEqualTo(testDocumentReference);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getDescription()).isEqualTo(documentDescription);
+        assertThat(document.getReference()).isEqualTo(documentReference);
         assertThat(document.getEntityType()).isEqualTo(EntityType.DOCUMENT);
-        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.MEDIA);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
+        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
+        assertThat(document.getExtension()).isNotNull();
+        assertThat(document.getFilename()).isNotNull();
+        assertThat(document.getOriginalFilename()).isNotNull();
+        assertThat(document.getContentLength()).isPositive();
+        assertThat(document.getContent()).isNotNull();
+        assertThat(document.getMimeType()).isNotNull();
+        assertThat(document.getContentId()).isNull();
+        assertThat(document.getContentPath()).isNull();
     }
 
     @SuppressWarnings("java:S5778")
@@ -110,9 +108,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCannotCreateDocumentWithoutName()
     {
         // Name is mandatory
-        assertThrows(ConstraintViolationException.class, () ->
+        assertThrows(DocumentException.class, () ->
                 Document.builder()
-                        .withDocumentType(DocumentType.DOCUMENT_GENERIC)
+                        .withDocumentType(documentType)
                         .build());
     }
 
@@ -120,23 +118,23 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Add a tag")
     final void testAddTag() throws DataModelEntityException
     {
+        final String tag = FAKER.beer().name(); // We know this one cannot be part of initial tag list!
+
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).doesNotContain(testDocumentTag3);
-        assertThat(document.getTags()).hasSize(2);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
 
-        document.addTag(testDocumentTag3);
+        document.addTag(tag);
 
-        assertThat(document.getTags()).contains(testDocumentTag3);
-        assertThat(document.getTags()).hasSize(3);
+        assertThat(document.getTags()).contains(tag);
+        assertThat(document.getTags()).hasSize(documentTags.size() + 1);
     }
 
     @Test
@@ -144,19 +142,20 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCannotAddDuplicateTag() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3, testDocumentTag1))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
+        assertThat(document.getName()).isEqualTo(documentName);
 
-        document.addTag(testDocumentTag3);
+        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
 
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
+        document.addTag(documentTags.get(0));
+
+        assertThat(document.getTags()).containsOnlyOnce(documentTags.get(0));
     }
 
     @Test
@@ -164,40 +163,39 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCountTags() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
-        assertThat(document.getTagCount()).isEqualTo(3);
+        assertThat(document.getName()).isEqualTo(documentName);
+
+        assertThat(document.getTagCount()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
     }
 
     @Test
     @DisplayName("Delete a document tag")
     final void testDeleteTag() throws DataModelEntityException
     {
+        int size = documentTags.size();
+
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
-        assertThat(document.getTagCount()).isEqualTo(3);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
 
-        document.deleteTag(testDocumentTag2);
+        document.deleteTag(documentTags.get(0));
 
-        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
-        assertThat(document.getTagCount()).isEqualTo(2);
+        assertThat(document.getTags()).doesNotContain(documentTags.get(0));
+        assertThat(document.getTagCount()).isEqualTo(size - 1);
     }
 
     @Test
@@ -205,23 +203,18 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testDeleteAllTags() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
-        assertThat(document.getTagCount()).isEqualTo(3);
+        assertThat(document.getName()).isEqualTo(documentName);
+        assertThat(document.getTagCount()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
 
         document.deleteAllTags();
 
-        assertThat(document.getTags()).doesNotContain(testDocumentTag1);
-        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
-        assertThat(document.getTags()).doesNotContain(testDocumentTag3);
         assertThat(document.getTagCount()).isZero();
     }
 
@@ -229,18 +222,18 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Check if a tag exist")
     final void testExistTag() throws DataModelEntityException
     {
+        final String tag = FAKER.beer().name(); // We know this one cannot be part of initial tag list!
+
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
-        assertThat(document.existTag(testDocumentTag1)).isTrue();
-        assertThat(document.existTag(testDocumentTag2)).isFalse();
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).doesNotContain(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
-        assertThat(document.getTagCount()).isEqualTo(2);
+        assertThat(document.existTag(documentTags.get(0))).isTrue();
+        assertThat(document.existTag(tag)).isFalse();
+        assertThat(document.getTagCount()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
     }
 
     @Test
@@ -248,11 +241,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFilename() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(JAVA_8_SHEET_NAME)
-                .withDescription(JAVA_8_SHEET_DESCRIPTION)
-                .withReference(JAVA_8_REFERENCE)
-                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFilename(testDocumentContentPdf)
+                .withName(documentName)
+                .withDescription(documentDescription)
+                .withReference(documentReference)
+                .withDocumentType(DocumentType.GENERIC)
+                .withFilename(documentFilename)
                 .build();
 
         assertThat(document).isNotNull();
@@ -264,11 +257,11 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testCreateDocumentWithContentFile() throws DataModelEntityException, FileException
     {
         IDocument document = Document.builder()
-                .withName(JAVA_8_SHEET_NAME)
-                .withDescription(JAVA_8_SHEET_DESCRIPTION)
-                .withReference(JAVA_8_REFERENCE)
-                .withDocumentType(DocumentType.DOCUMENT_GENERIC)
-                .withFile(FileHelper.getFile(testDocumentContentPdf))
+                .withName(documentName)
+                .withDescription(documentDescription)
+                .withReference(documentReference)
+                .withDocumentType(DocumentType.GENERIC)
+                .withFile(FileHelper.getFile(documentFilename))
                 .build();
 
         assertThat(document).isNotNull();
@@ -280,58 +273,50 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Set a document content after instance creation of the document")
     final void testSetDocumentContentAfterCreationWithFilename() throws DataModelEntityException
     {
-        final String documentName = "A Kind of Magic";
-        final String documentDescription = "A Kind of Magic is the twelfth studio album by the British rock band Queen.";
-        final String documentReference = "1986";
-
         IDocument document = Document.builder()
                 .withName(documentName)
                 .withDescription(documentDescription)
                 .withReference(documentReference)
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withDocumentType(DocumentType.MEDIA)
                 .build();
 
         assertThat(document).isNotNull();
 
-        document.setContent(testDocumentContentPdf);
+        document.setContent(documentFilename);
 
         assertThat(document.getContent()).isNotNull();
-        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_MEDIA);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.MEDIA);
         assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getDescription()).isEqualTo(documentDescription);
         assertThat(document.getReference()).isEqualTo(documentReference);
-        assertThat(document.getExtension()).isEqualTo("pdf");
-        assertThat(document.getMimeType()).isEqualTo("application/pdf");
-        assertThat(document.getFilename()).isEqualTo("java-8-streams-cheat-sheet.pdf");
+        assertThat(document.getExtension()).isNotNull();
+        assertThat(document.getMimeType()).isNotNull();
+        assertThat(document.getFilename()).isNotNull();
     }
 
     @Test
     @DisplayName("Set a document content after instance creation given a file")
     final void testSetDocumentContentAfterCreationWithFile() throws DataModelEntityException, FileException
     {
-        final String documentName = JAVA_8_SHEET_NAME;
-        final String documentDescription = JAVA_8_SHEET_DESCRIPTION;
-        final String documentReference = JAVA_8_REFERENCE;
-
         IDocument document = Document.builder()
                 .withName(documentName)
                 .withDescription(documentDescription)
                 .withReference(documentReference)
-                .withDocumentType(DocumentType.DOCUMENT_INVOICE)
+                .withDocumentType(DocumentType.INVOICE)
                 .build();
 
         assertThat(document).isNotNull();
 
-        document.setContent(FileHelper.getFile(testDocumentContentPdf));
+        document.setContent(FileHelper.getFile(documentFilename));
 
         assertThat(document.getContent()).isNotNull();
-        assertThat(document.getDocumentType()).isEqualTo(DocumentType.DOCUMENT_INVOICE);
+        assertThat(document.getDocumentType()).isEqualTo(DocumentType.INVOICE);
         assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getDescription()).isEqualTo(documentDescription);
         assertThat(document.getReference()).isEqualTo(documentReference);
-        assertThat(document.getExtension()).isEqualTo("pdf");
-        assertThat(document.getMimeType()).isEqualTo("application/pdf");
-        assertThat(document.getFilename()).isEqualTo("java-8-streams-cheat-sheet.pdf");
+        assertThat(document.getExtension()).isNotNull();
+        assertThat(document.getMimeType()).isNotNull();
+        assertThat(document.getFilename()).isNotNull();
     }
 
     @Test
@@ -339,20 +324,18 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testInactivateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withTags(documentTags)
+                .withDocumentType(DocumentType.MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag1);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag2);
-        assertThat(document.getTags()).containsOnlyOnce(testDocumentTag3);
-        assertThat(document.getTags()).hasSize(3);
+        assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
+        assertThat(document.getTagCount()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).containsAll(documentTags);
     }
 
     @Test
@@ -360,13 +343,13 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     final void testReactivateDocument() throws DataModelEntityException
     {
         IDocument document = Document.builder()
-                .withName(testDocumentName)
-                .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                .withName(documentName)
+                .withDocumentType(DocumentType.MEDIA)
                 .withStatusType(EntityStatusType.INACTIVE)
                 .build();
 
         assertThat(document).isNotNull();
-        assertThat(document.getName()).isEqualTo(testDocumentName);
+        assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
 
@@ -387,9 +370,9 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         for (int i = 0; i < COUNT; i++)
         {
             list.add(Document.builder()
-                    .withName(testDocumentName)
-                    .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                    .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                    .withName(DocumentRandomizer.getRandomName())
+                    .withTags(DocumentRandomizer.getRandomTagList())
+                    .withDocumentType(DocumentType.MEDIA)
                     .build());
         }
 
@@ -408,12 +391,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         for (int i = 0; i < COUNT; i++)
         {
             document = Document.builder()
-                    .withName(testDocumentName)
-                    .withTags(Arrays.asList(testDocumentTag1, testDocumentTag2, testDocumentTag3))
-                    .withDocumentType(DocumentType.DOCUMENT_MEDIA)
+                    .withName(DocumentRandomizer.getRandomName())
+                    .withTags(DocumentRandomizer.getRandomTagList())
+                    .withDocumentType(DocumentType.MEDIA)
                     .build();
 
-            document.setContent(testDocumentContentPdf);
+            document.setContent(DocumentRandomizer.getRandomFilename());
 
             list.add(document);
         }

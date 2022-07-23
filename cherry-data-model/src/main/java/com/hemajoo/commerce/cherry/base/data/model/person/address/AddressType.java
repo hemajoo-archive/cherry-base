@@ -22,6 +22,11 @@ package com.hemajoo.commerce.cherry.base.data.model.person.address;
 public enum AddressType
 {
     /**
+     * <b>Unknown</b> address type.
+     */
+    UNKNOWN,
+
+    /**
      * Address is <b>private</b>.
      */
     PRIVATE,
@@ -34,5 +39,23 @@ public enum AddressType
     /**
      * <b>Other</b> address type.
      */
-    OTHER
+    OTHER;
+
+    /**
+     * Return if the given address type value is valid?
+     * @param name Address type value.
+     * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+     */
+    public static boolean isValid(String name)
+    {
+        for (AddressType value : AddressType.values())
+        {
+            if (value.name().equals(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -20,6 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressException;
@@ -146,73 +147,34 @@ public class Person extends DataModelEntity implements IPerson
      * Create a new person.
      * @param lastName Last name.
      * @param firstName First name.
+     * @param birthDate Birthdate.
+     * @param name Name.
      * @param description Description.
+     * @param reference Reference.
      * @param personType Person type.
      * @param genderType Gender type.
-     * @param birthDate Birthdate.
-     * @param owner Person owner.
-     * @param reference Reference.
+     * @param statusType Status type.
+     * @param parent Parent.
      * @param tags Person tags.
-     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a person.
      */
     @Builder(setterPrefix = "with")
     @SuppressWarnings("java:S107")
-    public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final Date birthDate, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
+    public Person(final String lastName, final String firstName, final Date birthDate, final String name, final String description, final String reference, final PersonType personType, final GenderType genderType, final EntityStatusType statusType, final IDataModelEntity parent, final List<String> tags, final IDocument document) throws DataModelEntityException
     {
-        this(personType, owner);
+        super(EntityType.PERSON, name, description, reference, statusType, parent, document, tags);
 
         setLastName(lastName);
         setFirstName(firstName);
-        setDescription(description);
-        setReference(reference);
         setBirthDate(birthDate);
 
         this.genderType = genderType;
-
-        if (tags != null)
-        {
-            for (String tag : tags)
-            {
-                addTag(tag);
-            }
-        }
 
         super.validate(); // Validate the data
 
         if (personType == PersonType.PHYSICAL && genderType == null)
         {
             throw new ConstraintViolationException("genderType: value cannot be null when attribute: personType is set to: PHYSICAL", null);
-        }
-    }
-
-    /**
-     * Create a new person.
-     * @param personType Person type.
-     * @param owner Person owner.
-     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
-     */
-    protected Person(final PersonType personType, final IDataModelEntity owner) throws PersonException
-    {
-        super(EntityType.PERSON);
-
-        setActive();
-
-        if (personType != null)
-        {
-            this.personType = personType;
-        }
-
-        try
-        {
-            setParent(owner);
-            if (owner != null)
-            {
-                //owner.addPerson(this); //TODO Fix it!
-            }
-        }
-        catch (DataModelEntityException e)
-        {
-            throw new PersonException(e);
         }
     }
 

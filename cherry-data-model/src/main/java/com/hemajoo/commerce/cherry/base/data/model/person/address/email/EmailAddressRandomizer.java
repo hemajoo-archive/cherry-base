@@ -34,7 +34,7 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     /**
      * Address type enumeration generator.
      */
-    private static final EnumRandomGenerator ADDRESS_TYPE_GENERATOR = new EnumRandomGenerator(AddressType.class);
+    private static final EnumRandomGenerator GENERATOR_ADDRESS_TYPE = new EnumRandomGenerator(AddressType.class);
 
     /**
      * Generate a random email address.
@@ -63,10 +63,37 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
             }
         }
 
-        emailAddress.setEmail(FAKER.internet().emailAddress());
-        emailAddress.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
-        emailAddress.setIsDefaultEmail(RANDOM.nextBoolean());
+        emailAddress.setEmail(getRandomEmail());
+        emailAddress.setAddressType(getRandomAddressType());
+        emailAddress.setIsDefaultEmail(getRandomIsDefault());
 
         return emailAddress;
+    }
+
+    /**
+     * Returns a random email address.
+     * @return Email address.
+     */
+    public static String getRandomEmail()
+    {
+        return FAKER.internet().emailAddress().trim();
+    }
+
+    /**
+     * Returns a random address type.
+     * @return Address type.
+     */
+    public static AddressType getRandomAddressType()
+    {
+        return (AddressType) GENERATOR_ADDRESS_TYPE.gen();
+    }
+
+    /**
+     * Returns a random is a default email address.
+     * @return Is default email address.
+     */
+    public boolean getRandomIsDefault()
+    {
+        return RANDOM.nextBoolean();
     }
 }

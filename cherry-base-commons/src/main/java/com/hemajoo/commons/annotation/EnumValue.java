@@ -31,24 +31,61 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * Annotation used to validate fields for which the value is coming from an enumeration.
+ * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+ * @version 1.0.0
+ */
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnumValue.Validator.class)
 public @interface EnumValue
 {
+    /**
+     * Message used when the validation of the value has failed.
+     * @return Message.
+     */
     String message() default "{com.hemajoo.constraints.validation.EnumValue.message}";
 
+    /**
+     * Validation groups.
+     * @return Validation groups.
+     */
     Class<?>[] groups() default {};
 
+    /**
+     * Payload.
+     * @return Payload.
+     */
     Class<? extends Payload>[] payload() default {};
 
+    /**
+     * Enumeration class from which the value to validate belongs to.
+     * @return Enumeration class.
+     */
     Class<? extends Enum<?>> enumClass();
 
+    /**
+     * Enumeration method used to validate if the value.
+     * @return Validation method name.
+     */
     String enumMethod();
 
+    /**
+     * Validator of the {@link EnumValue} annotation.
+     * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+     * @version 1.0.0
+     */
     class Validator implements ConstraintValidator<EnumValue, Object>
     {
+        /**
+         * Enumeration class.
+         */
         private Class<? extends Enum<?>> enumClass;
+
+        /**
+         * Validation method name.
+         */
         private String enumMethod;
 
         @Override
@@ -63,12 +100,12 @@ public @interface EnumValue
         {
             if (value == null)
             {
-                return Boolean.TRUE;
+                return true;
             }
 
             if (enumClass == null || enumMethod == null)
             {
-                return Boolean.TRUE;
+                return true;
             }
 
             // Add some message parameters
@@ -97,7 +134,7 @@ public @interface EnumValue
 
                 Boolean result = (Boolean)method.invoke(null, value);
 
-                return result == null ? false : result;
+                return result != null && result;
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
             {

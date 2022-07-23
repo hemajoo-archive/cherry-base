@@ -87,7 +87,7 @@
         <version.apache.commons.lang.3>3.9</version.apache.commons.lang.3>
         <version.apache.commons.io>2.11.0</version.apache.commons.io>
         <version.apache.commons.validator>1.7</version.apache.commons.validator>
-        <version.lombok>1.18.24</version.lombok>
+        <version.lombok>1.18.22</version.lombok>
         <version.assertj>3.23.1</version.assertj>
         <version.mapstruct>1.5.2.Final</version.mapstruct>
         <version.lombok.mapstruct>0.2.0</version.lombok.mapstruct>

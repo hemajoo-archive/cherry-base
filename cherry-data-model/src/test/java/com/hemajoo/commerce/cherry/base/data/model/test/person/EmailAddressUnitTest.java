@@ -90,8 +90,8 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @DisplayName("Create an email address with a maximal set of attributes")
-    final void testCreateEmailAddressWithMaximalAttributeSet() throws DataModelEntityException
+    @DisplayName("Create an email address with a maximum of attributes")
+    final void testCreateEmailAddressWithMaximalAttributes() throws DataModelEntityException
     {
         IDocument document = DocumentRandomizer.generate(true, true);
         IEmailAddress parent = EmailAddressRandomizer.generate(true, true, true, 1);

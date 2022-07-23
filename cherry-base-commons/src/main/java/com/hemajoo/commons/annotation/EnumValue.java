@@ -28,7 +28,9 @@ import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +47,7 @@ public @interface EnumValue
      * Message used when the validation of the value has failed.
      * @return Message.
      */
-    String message() default "{com.hemajoo.constraints.validation.EnumValue.message}";
+    String message() default "{com.hemajoo.constraints.validation.EnumValueExcluded.message}";
 
     /**
      * Validation groups.
@@ -69,14 +71,20 @@ public @interface EnumValue
      * Enumeration method used to validate if the value.
      * @return Validation method name.
      */
-    String enumMethod();
+    String enumMethod() default "";
+
+    /**
+     * Array of excluded values.
+     * @return Excluded values.
+     */
+    String[] excluded() default {};
 
     /**
      * Validator of the {@link EnumValue} annotation.
      * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
      * @version 1.0.0
      */
-    class Validator implements ConstraintValidator<EnumValue, Object>
+    class Validator implements ConstraintValidator<EnumValue, Enum<?>>
     {
         /**
          * Enumeration class.
@@ -88,15 +96,21 @@ public @interface EnumValue
          */
         private String enumMethod;
 
+        /**
+         * Excluded values.
+         */
+        private List<String> excluded;
+
         @Override
         public void initialize(EnumValue enumValue)
         {
             enumMethod = enumValue.enumMethod();
             enumClass = enumValue.enumClass();
+            excluded = Arrays.asList(enumValue.excluded());
         }
 
         @Override
-        public boolean isValid(Object value, ConstraintValidatorContext context)
+        public boolean isValid(Enum<?> value, ConstraintValidatorContext context)
         {
             if (value == null)
             {
@@ -119,31 +133,53 @@ public @interface EnumValue
 
             Class<?> valueClass = value.getClass();
 
-            try
+            if (valueClass.isEnum())
             {
-                Method method = enumClass.getMethod(enumMethod, valueClass);
-                if (!Boolean.TYPE.equals(method.getReturnType()) && !Boolean.class.equals(method.getReturnType()))
+                // Check if the value is an excluded one?
+                if (excluded.contains(value.name()))
                 {
-                    throw new RuntimeException(Strings.formatIfArgs("%s method return is not boolean type in the %s class", enumMethod, enumClass));
-                }
+                    // Filter the allowed values.
+                    List<String> includedValues = new ArrayList<>(Arrays.stream(enumClass.getEnumConstants())
+                            .map(Enum::name)
+                            .toList());
+                    includedValues.removeAll(excluded);
 
-                if (!Modifier.isStatic(method.getModifiers()))
+                    // Inject message parameter(s).
+                    ((ConstraintValidatorContextImpl) context).addMessageParameter("validValues", includedValues);
+
+                    return false;
+                }
+            }
+            else
+            {
+                try
                 {
-                    throw new RuntimeException(Strings.formatIfArgs("%s method is not static method in the %s class", enumMethod, enumClass));
+                    Method method = enumClass.getMethod(enumMethod, valueClass);
+                    if (!Boolean.TYPE.equals(method.getReturnType()) && !Boolean.class.equals(method.getReturnType()))
+                    {
+                        throw new RuntimeException(Strings.formatIfArgs("%s method return is not boolean type in the %s class", enumMethod, enumClass));
+                    }
+
+                    if (!Modifier.isStatic(method.getModifiers()))
+                    {
+                        throw new RuntimeException(Strings.formatIfArgs("%s method is not static method in the %s class", enumMethod, enumClass));
+                    }
+
+                    Boolean result = (Boolean)method.invoke(null, value);
+
+                    return result != null && result;
                 }
+                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                catch (NoSuchMethodException | SecurityException e)
+                {
+                    throw new RuntimeException(Strings.formatIfArgs("This %s(%s) method does not exist in the %s", enumMethod, valueClass, enumClass), e);
+                }
+            }
 
-                Boolean result = (Boolean)method.invoke(null, value);
-
-                return result != null && result;
-            }
-            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (NoSuchMethodException | SecurityException e)
-            {
-                throw new RuntimeException(Strings.formatIfArgs("This %s(%s) method does not exist in the %s", enumMethod, valueClass, enumClass), e);
-            }
+            return true;
         }
     }
 }

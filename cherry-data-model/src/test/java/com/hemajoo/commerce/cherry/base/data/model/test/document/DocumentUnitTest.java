@@ -90,7 +90,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document.getDocumentType()).isEqualTo(DocumentType.MEDIA);
         assertThat(document.getStatusType()).isEqualTo(EntityStatusType.INACTIVE);
         assertThat(document.getInactiveSince()).isNotNull();
-        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).hasSameSizeAs(documentTags);
         assertThat(document.getTags()).containsAll(documentTags);
         assertThat(document.getExtension()).isNotNull();
         assertThat(document.getFilename()).isNotNull();
@@ -128,7 +128,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(documentName);
-        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).hasSameSizeAs(documentTags);
         assertThat(document.getTags()).containsAll(documentTags);
 
         document.addTag(tag);
@@ -150,12 +150,13 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(documentName);
 
-        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTags()).hasSameSizeAs(documentTags);
         assertThat(document.getTags()).containsAll(documentTags);
 
-        document.addTag(documentTags.get(0));
+        document.addTag(List.copyOf(documentTags).get(0));
+        document.addTag(List.copyOf(documentTags).get(0));
 
-        assertThat(document.getTags()).containsOnlyOnce(documentTags.get(0));
+        assertThat(document.getTags()).containsOnlyOnce(List.copyOf(documentTags).get(0));
     }
 
     @Test
@@ -189,12 +190,12 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
 
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(documentName);
-        assertThat(document.getTags().size()).isEqualTo(documentTags.size());
+        assertThat(document.getTagCount()).isEqualTo(documentTags.size());
         assertThat(document.getTags()).containsAll(documentTags);
 
-        document.deleteTag(documentTags.get(0));
+        document.deleteTag(List.copyOf(documentTags).get(0));
 
-        assertThat(document.getTags()).doesNotContain(documentTags.get(0));
+        assertThat(document.getTags()).doesNotContain(List.copyOf(documentTags).get(0));
         assertThat(document.getTagCount()).isEqualTo(size - 1);
     }
 
@@ -230,7 +231,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
                 .withDocumentType(DocumentType.MEDIA)
                 .build();
 
-        assertThat(document.existTag(documentTags.get(0))).isTrue();
+        assertThat(document.existTag(List.copyOf(documentTags).get(0))).isTrue();
         assertThat(document.existTag(tag)).isFalse();
         assertThat(document.getTagCount()).isEqualTo(documentTags.size());
         assertThat(document.getTags()).containsAll(documentTags);

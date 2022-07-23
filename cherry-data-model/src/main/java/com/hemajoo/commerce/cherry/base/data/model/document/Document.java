@@ -20,6 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.utilities.UuidGenerator;
+import com.hemajoo.commons.annotation.EnumValue;
 import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
@@ -36,7 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Represent a <b>document</b> data model entity.
@@ -56,6 +57,7 @@ public class Document extends DataModelEntity implements IDocument
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
+    @EnumValue(enumClass = DocumentType.class, excluded = { "UNKNOWN" })
     @Column(name = "DOCUMENT_TYPE", length = 50)
     private DocumentType documentType = DocumentType.GENERIC;
 
@@ -162,7 +164,7 @@ public class Document extends DataModelEntity implements IDocument
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
-    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity parent, final String reference, final File file, final String filename, final List<String> tags) throws DataModelEntityException
+    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity parent, final String reference, final File file, final String filename, final Set<String> tags) throws DataModelEntityException
     {
         super(EntityType.DOCUMENT, name, description, reference, statusType, parent, null /* a document cannot contain other documents */, tags);
 

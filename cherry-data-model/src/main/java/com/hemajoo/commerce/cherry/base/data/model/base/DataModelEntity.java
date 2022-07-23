@@ -164,7 +164,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
      * @throws DataModelEntityException Thrown to indicate an error occurred while trying to set the parent entity.
      */
     @SuppressWarnings("java:S107")
-    public DataModelEntity(final EntityType type, final String name, final String description, final String reference, final EntityStatusType status, final IDataModelEntity parent, final IDocument document, final List<String> tags) throws DataModelEntityException
+    public DataModelEntity(final EntityType type, final String name, final String description, final String reference, final EntityStatusType status, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
     {
         this(type);
 
@@ -256,24 +256,30 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     {
         if (document.getId() != null)
         {
-            return existDocument(document.getId());
+            return existDocumentById(document.getId());
         }
         else
         {
-            return documents.stream().anyMatch(doc -> doc.getName().equals(document.getName()));
+            return existDocumentByName(document.getName());
         }
     }
 
     @Override
-    public final boolean existDocument(final @NonNull UUID id)
+    public final boolean existDocumentById(final @NonNull UUID id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().equals(id));
     }
 
     @Override
-    public final boolean existDocument(final @NonNull String id)
+    public final boolean existDocumentById(final @NonNull String id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().toString().equals(id));
+    }
+
+    @Override
+    public final boolean existDocumentByName(final @NonNull String name)
+    {
+        return documents.stream().anyMatch(doc -> doc.getName().equals(name));
     }
 
     @Override
@@ -362,7 +368,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void addTags(final List<String> tags)
+    public final void addTags(final Set<String> tags)
     {
         if (tags != null)
         {
@@ -437,9 +443,25 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     {
         Set<ConstraintViolation<DataModelEntity>> violations = DataModelEntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
         checkAndThrowException(violations);
+
+        postValidate();
     }
 
-    private DataModelEntityValidationException checkAndThrowException(final Set<ConstraintViolation<DataModelEntity>> violations) throws DataModelEntityValidationException
+    /**
+     * Post validate the data model entity.
+     * @throws DataModelEntityValidationException Thrown in case errors occurred while validating a data model entity.
+     */
+    protected void postValidate() throws DataModelEntityValidationException
+    {
+        // Should be overridden by subclasses.
+    }
+
+    /**
+     * Check if some constraints have been violated. If so, then it creates an exception with all the violations and throw it.
+     * @param violations Set of constraint violations.
+     * @throws DataModelEntityValidationException Thrown if some constraints have been violated.
+     */
+    private void checkAndThrowException(final Set<ConstraintViolation<DataModelEntity>> violations) throws DataModelEntityValidationException
     {
         int counter = 1;
         StringBuilder messageBuilder = new StringBuilder();
@@ -448,7 +470,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         {
             messageBuilder
                     .append(violations.size())
-                    .append(" constraint violations found!");
+                    .append(" constraint(s) violated found!");
         }
 
         for (ConstraintViolation<DataModelEntity> violation : violations)
@@ -465,7 +487,5 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         {
             throw new DataModelEntityValidationException(messageBuilder.toString());
         }
-
-        return null;
     }
 }

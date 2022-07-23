@@ -17,22 +17,17 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
-import com.hemajoo.commerce.cherry.base.data.model.configuration.DataModelConfiguration;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.*;
-import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
-import org.junit.jupiter.api.Disabled;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -45,14 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @version 1.0.0
  */
 @SpringBootTest
-class PersonUnitTest extends AbstractDataModelEntityUnitTest
+class PersonUnitTest extends AbstractPersonUnitTest
 {
-    /**
-     * Data model configuration.
-     */
-    @Autowired
-    private DataModelConfiguration configuration;
-
     @Test
     @DisplayName("Create an empty person")
     final void testCreateEmptyPerson()
@@ -67,169 +56,141 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
     @DisplayName("Create a person with mandatory fields")
     final void testCreatePersonWithName() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
         assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getPersonType()).isEqualTo(personType);
+        assertThat(person.getLastName()).isEqualTo(personLastName);
+        assertThat(person.getFirstName()).isEqualTo(personFirstName);
     }
 
     @SuppressWarnings("java:S5778")
     @Test
-    @DisplayName("Creating a person without a last name should raise a ConstraintViolationException")
+    @DisplayName("Cannot create a person without a last name")
     final void testCannotCreatePersonWithoutLastName()
     {
-        final String FIRST_NAME = FAKER.name().firstName();
-
-        assertThrows(ConstraintViolationException.class, () ->
+        assertThrows(PersonException.class, () ->
                 Person.builder()
-                        .withPersonType(PersonType.PHYSICAL)
-                        .withFirstName(FIRST_NAME)
-                        .withGenderType(GenderType.MALE)
+                        .withFirstName(personFirstName)
+                        .withPersonType(personType)
+                        .withGenderType(genderType)
                         .build());
     }
 
     @SuppressWarnings("java:S5778")
     @Test
-    @DisplayName("Creating a person without a first name should raise a ConstraintViolationException")
+    @DisplayName("Cannot create a person without a first name")
     final void testCannotCreatePersonWithoutFirstName()
     {
-        final String LAST_NAME = FAKER.name().lastName();
-
-        assertThrows(ConstraintViolationException.class, () ->
+        assertThrows(PersonException.class, () ->
                 Person.builder()
-                        .withPersonType(PersonType.PHYSICAL)
-                        .withLastName(LAST_NAME)
-                        .withGenderType(GenderType.MALE)
+                        .withPersonType(personType)
+                        .withLastName(personLastName)
+                        .withGenderType(genderType)
                         .build());
     }
 
     @SuppressWarnings("java:S5778")
     @Test
-    @DisplayName("Creating a person without a person type should raise a ConstraintViolationException")
+    @DisplayName("Cannot create a person without a person type")
     final void testCannotCreatePersonWithoutPersonType()
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-
-        assertThrows(ConstraintViolationException.class, () ->
+        assertThrows(PersonException.class, () ->
                 Person.builder()
-                        .withLastName(LAST_NAME)
-                        .withFirstName(FIRST_NAME)
-                        .withGenderType(GenderType.MALE)
+                        .withLastName(personLastName)
+                        .withFirstName(personFirstName)
+                        .withGenderType(genderType)
                         .build());
     }
 
     @SuppressWarnings("java:S5778")
     @Test
-    @DisplayName("Creating a person without a gender type when person type is physical should raise a ConstraintViolationException")
+    @DisplayName("Cannot create a person without a gender type when person type is 'PHYSICAL'")
     final void testCannotCreatePersonWithoutGenderTypeForPhysicalPerson()
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-
-        assertThrows(ConstraintViolationException.class, () ->
+        assertThrows(PersonException.class, () ->
                 Person.builder()
-                        .withLastName(LAST_NAME)
-                        .withFirstName(FIRST_NAME)
+                        .withLastName(personLastName)
+                        .withFirstName(personFirstName)
                         .withPersonType(PersonType.PHYSICAL)
                         .build());
     }
 
     @Test
-    @DisplayName("Create a person with all attributes")
-    final void testCreatePersonWithAllAttributes() throws DataModelEntityException
+    @DisplayName("Create a person with a maximum of attributes")
+    final void testCreatePersonWithMaxAttributes() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-        final Date BIRTHDATE = FAKER.date().birthday();
-        final String DESCRIPTION = "An unknown person";
-        final String REFERENCE = "UJHH-4589663";
-        final String TAG1 = "USA";
-        final String TAG2 = "Texas";
-        final String TAG3 = "Austin";
-
-        IPerson parent = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withLastName("Einstein")
-                .withFirstName("Albert")
-                .withGenderType(GenderType.MALE)
-                .build();
+        IPerson parent = PersonRandomizer.generate(true, false, false, false, false, false, 0);
 
         IPerson person = Person.builder()
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .withDescription(DESCRIPTION)
-                .withBirthDate(BIRTHDATE)
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withTags(Arrays.asList(TAG1, TAG2, TAG3))
-                .withReference(REFERENCE)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withBirthDate(personBirthDate)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withTags(tags)
+                .withName(name)
+                .withStatusType(statusType)
+                .withDescription(description)
+                .withReference(reference)
                 .withParent(parent)
                 .build();
 
         assertThat(person).isNotNull();
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getGenderType()).isEqualTo(GenderType.MALE);
-        assertThat(person.getBirthDate()).isEqualTo(BIRTHDATE);
-        assertThat(person.getDescription()).isEqualTo(DESCRIPTION);
-        assertThat(person.getReference()).isEqualTo(REFERENCE);
-        assertThat(person.getTags()).containsOnlyOnce(TAG1);
-        assertThat(person.getTags()).containsOnlyOnce(TAG2);
-        assertThat(person.getTags()).containsOnlyOnce(TAG3);
+        assertThat(person.getLastName()).isEqualTo(personLastName);
+        assertThat(person.getFirstName()).isEqualTo(personFirstName);
+        assertThat(person.getPersonType()).isEqualTo(personType);
+        assertThat(person.getGenderType()).isEqualTo(genderType);
+        assertThat(person.getBirthDate()).isEqualTo(personBirthDate);
+        assertThat(person.getDescription()).isEqualTo(description);
+        assertThat(person.getReference()).isEqualTo(reference);
+        assertThat(person.getTagCount()).isEqualTo(tags.size());
+        assertThat(person.getTags()).containsAll(tags);
         assertThat((IDataModelEntity) person.getParent()).isNotNull();
-        assertThat(((IPerson) person.getParent()).getLastName()).isEqualTo("Einstein");
+        assertThat(((IPerson) person.getParent()).getLastName()).isEqualTo(parent.getLastName());
     }
 
     @Test
     @DisplayName("Add a document")
     final void testAddDocument() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IDocument document = DocumentRandomizer.generate(true, true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
-        person.addDocument(DocumentRandomizer.generate(true, true));
+        person.addDocument(document);
 
         assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getPersonType()).isEqualTo(personType);
+        assertThat(person.getLastName()).isEqualTo(personLastName);
+        assertThat(person.getFirstName()).isEqualTo(personFirstName);
         assertThat(person.getDocumentCount()).isEqualTo(1);
+        assertThat((IDocument) person.getDocumentByName(document.getName())).isNotNull();
     }
 
     @Test
     @DisplayName("Remove a document")
     final void testRemoveDocument() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IDocument document = DocumentRandomizer.generate(true, true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true, true);
         person.addDocument(document);
 
         assertThat(person.getDocumentCount()).isPositive();
@@ -237,120 +198,87 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
         person.removeDocument(document);
 
         assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getPersonType()).isEqualTo(personType);
+        assertThat(person.getLastName()).isEqualTo(personLastName);
+        assertThat(person.getFirstName()).isEqualTo(personFirstName);
         assertThat(person.getDocumentCount()).isZero();
+        assertThat((IDocument) person.getDocumentByName(document.getName())).isNull();
     }
 
     @Test
-    @DisplayName("Get a document by its name")
-    final void testGetDocumentByName() throws DataModelEntityException
+    @DisplayName("Get a document (by: UUID, id, name)")
+    final void testGetDocument() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IDocument document = DocumentRandomizer.generate(true, true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withDocument(document)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true, true);
-        person.addDocument(document);
-
-        assertThat(person.getDocumentCount()).isEqualTo(1);
         assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getDocumentCount()).isEqualTo(1);
+        assertThat(person.getPersonType()).isEqualTo(personType);
+        assertThat(person.getLastName()).isEqualTo(personLastName);
+        assertThat(person.getFirstName()).isEqualTo(personFirstName);
 
-        IDocument other = person.getDocumentByName(document.getName());
-        assertThat(other).isNotNull();
-        assertThat(other.getName()).isEqualTo(document.getName());
+        assertThat((IDocument) person.getDocumentById(document.getId())).isNotNull();
+        assertThat((IDocument) person.getDocumentById(document.getId().toString())).isNotNull();
+        assertThat((IDocument) person.getDocumentByName(document.getName())).isNotNull();
     }
 
     @Test
-    @DisplayName("Get a document by its identifier")
-    final void testGetDocumentById() throws DataModelEntityException
-    {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-
-        IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .build();
-
-        IDocument document = DocumentRandomizer.generate(true, true);
-        person.addDocument(document);
-
-        assertThat(person.getDocumentCount()).isEqualTo(1);
-        assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
-
-        IDocument other = person.getDocumentById(document.getId());
-        assertThat(other).isNotNull();
-        assertThat(other.getId().toString()).isEqualTo(document.getId().toString());
-    }
-
-    @Test
-    @DisplayName("Check if a document exist")
+    @DisplayName("Check if a document exist (by: UUID, id, name)")
     final void testExistDocument() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IDocument document = DocumentRandomizer.generate(true, true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withDocument(document)
                 .build();
 
-        IDocument document = DocumentRandomizer.generate(true, true);
-        person.addDocument(document);
-
-        assertThat(person.getDocumentCount()).isEqualTo(1);
         assertThat(person).isNotNull();
-        assertThat(person.getPersonType()).isEqualTo(PersonType.PHYSICAL);
-        assertThat(person.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(person.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(person.getDocumentCount()).isEqualTo(1);
 
         assertThat(person.existDocument(document)).isTrue();
+        assertThat(person.existDocumentById(document.getId())).isTrue();
+        assertThat(person.existDocumentById(document.getId().toString())).isTrue();
+        assertThat(person.existDocumentByName(document.getName())).isTrue();
     }
 
     @Test
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        final int count = PersonRandomizer.getRandomInt(1, 10);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < count; i++)
         {
             person.addDocument(DocumentRandomizer.generate(true));
         }
 
         assertThat(person).isNotNull();
-        assertThat(person.getDocumentCount()).isEqualTo(10);
+        assertThat(person.getDocumentCount()).isEqualTo(count);
+        assertThat(person.getDocuments()).hasSize(count);
     }
 
     @Test
     @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
-    @DisplayName("Create 100 persons with light dependencies, no document and no content")
+    @DisplayName("Create 100 persons with light dependencies in less than 3 seconds")
     final void testPerformanceCreateMultiplePersonsWithoutDocumentContent() throws DataModelEntityException
     {
         final int COUNT = 100;
@@ -358,197 +286,230 @@ class PersonUnitTest extends AbstractDataModelEntityUnitTest
 
         for (int i = 0; i < COUNT; i++)
         {
+            // 1 <= X <= 5
             // For each person entity created, we also create:
             // - X documents
-            // - X email addresses  with X documents for each
-            // - X postal addresses with X documents for each
-            // - X phone numbers    with X documents for each
-            list.add(PersonRandomizer.generate(true,true, true, true, false, false, 5));
+            // - X email addresses  without any document
+            // - X postal addresses without any document
+            // - X phone numbers    without any document
+            list.add(PersonRandomizer.generate(true,true, true, true, false, false, DocumentRandomizer.getRandomInt(1, 5)));
         }
 
         assertThat(list).hasSize(COUNT);
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    @DisplayName("Create 10 persons with full dependencies (with document and content)")
+    @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
+    @DisplayName("Create 100 persons with full dependencies in less than 10 seconds")
     final void testPerformanceCreateMultiplePersonsWithDocumentContent() throws DataModelEntityException
     {
-        final int COUNT = 10;
+        final int COUNT = 100;
         List<IPerson> list = new ArrayList<>();
 
         for (int i = 0; i < COUNT; i++)
         {
+            // 1 <= X <= 5
             // For each person entity created, we also create:
             // - X documents
             // - X email addresses  with X documents for each
             // - X postal addresses with X documents for each
             // - X phone numbers    with X documents for each
-            list.add(PersonRandomizer.generate(true,true, true, true, true, true, 5));
+            list.add(PersonRandomizer.generate(true,true, true, true, true, true, DocumentRandomizer.getRandomInt(1, 5)));
         }
 
         assertThat(list).hasSize(COUNT);
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Add an email address")
     final void testAddEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IEmailAddress emailAddress = EmailAddressRandomizer.generate(true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.AGENT)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withEmailAddress(emailAddress)
                 .build();
 
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddresses()).hasSize(1);
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Delete an email address")
     final void testDeleteEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IEmailAddress emailAddress1 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress2 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress3 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress4 = EmailAddressRandomizer.generate(true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.FEMALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
+        person.addEmailAddress(emailAddress1);
+        person.addEmailAddress(emailAddress2);
+        person.addEmailAddress(emailAddress3);
+        person.addEmailAddress(emailAddress4);
+
+        int count = person.getEmailAddresses().size();
+
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddresses()).hasSize(count);
+
+        // Delete email by UUID
+        person.deleteEmailAddress(emailAddress1);
+        assertThat(person.getEmailAddresses()).hasSize(count - 1);
+        assertThat(person.existEmailAddressById(emailAddress1.getId())).isFalse();
+
+        // Delete email by id
+        person.deleteEmailAddress(emailAddress2);
+        assertThat(person.getEmailAddresses()).hasSize(count - 2);
+        assertThat(person.existEmailAddressById(emailAddress2.getId().toString())).isFalse();
+
+        // Delete email by value
+        person.deleteEmailAddress(emailAddress3);
+        assertThat(person.getEmailAddresses()).hasSize(count - 3);
+        assertThat(person.existEmailAddressByValue(emailAddress3.getEmail())).isFalse();
+
+        // Delete email by instance
+        person.deleteEmailAddress(emailAddress4);
+        assertThat(person.getEmailAddresses()).hasSize(count - 4);
+        assertThat(person.existEmailAddress(emailAddress4)).isFalse();
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
-    @DisplayName("Delete all email address")
+    @DisplayName("Delete all email addresses")
     final void testDeleteAllEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        final int count = PersonRandomizer.getRandomInt(1, 10);;
 
-        IPerson person = Person.builder()
-                .withPersonType(PersonType.VIRTUAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .build();
+        IPerson person = PersonRandomizer.generate(true, true, false, false, false, false, count);
 
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddresses()).hasSize(count);
+
+        person.deleteAllEmailAddress();
+        assertThat(person.getEmailAddresses()).isEmpty();
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Retrieve an email address")
     final void testRetrieveEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IEmailAddress emailAddress = EmailAddressRandomizer.generate(true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.FEMALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withEmailAddress(emailAddress)
                 .build();
 
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddressCount()).isEqualTo(1);
+
+        // Retrieve an email address by UUID
+        assertThat(person.getEmailAddressById(emailAddress.getId())).isEqualTo(emailAddress);
+
+        // Retrieve an email address by id
+        assertThat(person.getEmailAddressById(emailAddress.getId().toString())).isEqualTo(emailAddress);
+
+        // Retrieve an email address by email address
+        assertThat(person.getEmailAddressByValue(emailAddress.getEmail())).isEqualTo(emailAddress);
+
+        // Retrieve an email address by instance
+        assertThat(person.getEmailAddress(emailAddress)).isEqualTo(emailAddress);
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Retrieve all email addresses")
     final void testRetrieveAllEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IEmailAddress emailAddress1 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress2 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress3 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress4 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress5 = EmailAddressRandomizer.generate(true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
                 .build();
 
+        person.addEmailAddress(emailAddress1);
+        person.addEmailAddress(emailAddress2);
+        person.addEmailAddress(emailAddress3);
+        person.addEmailAddress(emailAddress4);
+        person.addEmailAddress(emailAddress5);
+
+        int count = person.getEmailAddressCount();
+
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddresses()).hasSize(5);
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Count the email addresses")
     final void testCountEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        final int count = PersonRandomizer.getRandomInt(1, 10);
 
-        IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .build();
+        IPerson person = PersonRandomizer.generate(true, true, false, false, false, false, count);
 
         assertThat(person).isNotNull();
+        assertThat(person.getEmailAddressCount()).isEqualTo(count);
     }
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
+    //@Disabled(TEST_NOT_YET_IMPLEMENTED)
     @Test
     @DisplayName("Check if an email address exist")
     final void testExistEmailAddress() throws DataModelEntityException
     {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        IEmailAddress emailAddress1 = EmailAddressRandomizer.generate(true);
+        IEmailAddress emailAddress2 = EmailAddressRandomizer.generate(true);
 
         IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
+                .withPersonType(personType)
+                .withGenderType(genderType)
+                .withLastName(personLastName)
+                .withFirstName(personFirstName)
+                .withEmailAddress(emailAddress1)
                 .build();
 
         assertThat(person).isNotNull();
-    }
+        assertThat(person.getEmailAddresses()).hasSize(1);
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
-    @Test
-    @DisplayName("Check if an email address exist given its email")
-    final void testExistEmailAddressByEmail() throws DataModelEntityException
-    {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
+        // Check by UUID
+        assertThat(person.existEmailAddressById(emailAddress1.getId())).isTrue();
+        assertThat(person.existEmailAddressById(emailAddress2.getId())).isFalse();
 
-        IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .build();
+        // Check by id
+        assertThat(person.existEmailAddressById(emailAddress1.getId().toString())).isTrue();
+        assertThat(person.existEmailAddressById(emailAddress2.getId().toString())).isFalse();
 
-        assertThat(person).isNotNull();
-    }
+        // Check by value
+        assertThat(person.existEmailAddressByValue(emailAddress1.getEmail())).isTrue();
+        assertThat(person.existEmailAddressByValue(emailAddress2.getEmail())).isFalse();
 
-    @Disabled(TEST_NOT_YET_IMPLEMENTED)
-    @Test
-    @DisplayName("Check if an email address exist given its identifier")
-    final void testExistEmailAddressById() throws DataModelEntityException
-    {
-        final String LAST_NAME = FAKER.name().lastName();
-        final String FIRST_NAME = FAKER.name().firstName();
-
-        IPerson person = Person.builder()
-                .withPersonType(PersonType.PHYSICAL)
-                .withGenderType(GenderType.MALE)
-                .withLastName(LAST_NAME)
-                .withFirstName(FIRST_NAME)
-                .build();
-
-        assertThat(person).isNotNull();
+        // Check by instance
+        assertThat(person.existEmailAddress(emailAddress1)).isTrue();
+        assertThat(person.existEmailAddress(emailAddress2)).isFalse();
     }
 }

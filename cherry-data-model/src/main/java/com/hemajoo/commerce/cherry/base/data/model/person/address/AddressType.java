@@ -14,36 +14,43 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.person.address;
 
+import lombok.experimental.FieldNameConstants;
+
 /**
  * Enumeration representing the several possible <b>address</b> types.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@FieldNameConstants(onlyExplicitlyIncluded = true)
 public enum AddressType
 {
     /**
      * <b>Unknown</b> address type.
      */
+    @FieldNameConstants.Include
     UNKNOWN,
 
     /**
      * Address is <b>private</b>.
      */
+    @FieldNameConstants.Include
     PRIVATE,
 
     /**
      * Address is <b>professional</b>.
      */
+    @FieldNameConstants.Include
     PROFESSIONAL,
 
     /**
      * <b>Other</b> address type.
      */
+    @FieldNameConstants.Include
     OTHER;
 
     /**
-     * Return if the given address type value is valid?
-     * @param name Address type value.
+     * Return if the given value is valid?
+     * @param name Value.
      * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
      */
     public static boolean isValid(String name)

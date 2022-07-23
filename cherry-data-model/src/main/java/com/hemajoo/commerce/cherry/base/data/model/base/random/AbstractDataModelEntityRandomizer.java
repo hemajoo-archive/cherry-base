@@ -30,10 +30,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Provide an abstract implementation of a data model entity <b>randomizer</b> used to randomly generate data model entities.
@@ -135,16 +132,16 @@ public abstract class AbstractDataModelEntityRandomizer
      */
     public static String getRandomTags()
     {
-        return StringHelper.convertListValuesAsString(getRandomTagList(), ",");
+        return StringHelper.convertListValuesAsString(List.copyOf(getRandomTagList()), ",");
     }
 
     /**
-     * Returns a list of random tags.
-     * @return List of tags.
+     * Returns a collection of random tags.
+     * @return Tags.
      */
-    public static List<String> getRandomTagList()
+    public static Set<String> getRandomTagList()
     {
-        List<String> tags = new ArrayList<>();
+        Set<String> tags = new HashSet<>();
 
         final int count = RANDOM.nextInt(1, 5);
 

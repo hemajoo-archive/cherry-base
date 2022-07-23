@@ -21,7 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract implementation of a unit test for a <b>document</b> data model entity.
@@ -48,7 +48,7 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     /**
      * Tags.
      */
-    protected List<String> documentTags;
+    protected Set<String> documentTags;
 
     /**
      * Filename.

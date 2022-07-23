@@ -20,7 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModel
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract implementation of a unit test for a data model entity.
@@ -47,7 +47,7 @@ public abstract class AbstractDataModelEntityUnitTest extends AbstractCherryUnit
     /**
      * Tags.
      */
-    protected List<String> tags;
+    protected Set<String> tags;
 
     /**
      * Filename.

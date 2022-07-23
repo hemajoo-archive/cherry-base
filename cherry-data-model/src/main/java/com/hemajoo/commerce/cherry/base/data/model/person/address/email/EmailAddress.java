@@ -23,7 +23,7 @@ import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.IPerson;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import com.hemajoo.commons.annotation.EnumValue;
+import com.hemajoo.commons.annotation.EnumNotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,7 +32,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Represents an <b>email address</b> data model entity.
@@ -69,12 +69,12 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     /**
      * Email type.
      */
-    @NotNull
-    @NotBlank
-    //@Enumerated(EnumType.STRING)
-    @EnumValue(enumClass = AddressType.class, enumMethod = "isValid")
+    @Getter
+    @Setter
+    @EnumNotNull(enumClass = AddressType.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "ADDRESS_TYPE")
-    private String addressType;
+    private AddressType addressType;
 
     /**
      * The person identifier this email address belongs to.
@@ -94,7 +94,7 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     {
         super(EntityType.EMAIL_ADDRESS);
 
-        this.addressType = AddressType.UNKNOWN.name();
+        this.addressType = AddressType.UNKNOWN;
         this.isDefaultEmail = false;
     }
 
@@ -114,7 +114,7 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
-    public EmailAddress(final String email, final AddressType addressType, final boolean isDefault, final String name, final String description, final String reference, final EntityStatusType statusType, final IDataModelEntity parent, final IDocument document, final List<String> tags) throws DataModelEntityException
+    public EmailAddress(final String email, final AddressType addressType, final boolean isDefault, final String name, final String description, final String reference, final EntityStatusType statusType, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
     {
         super(EntityType.EMAIL_ADDRESS, name, description, reference, statusType, parent, document, tags);
 
@@ -135,17 +135,5 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
         {
             throw new EmailAddressException(e.getMessage());
         }
-    }
-
-    @Override
-    public void setAddressType(final AddressType addressType)
-    {
-        this.addressType = addressType.name();
-    }
-
-    @Override
-    public AddressType getAddressType()
-    {
-        return AddressType.valueOf(this.addressType);
     }
 }

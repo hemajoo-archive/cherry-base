@@ -14,6 +14,8 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.person.phone;
 
+import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
+
 /**
  * Enumeration representing the several possible <b>phone number category</b> types.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
@@ -34,5 +36,23 @@ public enum PhoneNumberCategoryType
     /**
      * <b>Fax</b> phone number.
      */
-    FAX
+    FAX;
+
+    /**
+     * Return if the given value is valid?
+     * @param name Value.
+     * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+     */
+    public static boolean isValid(String name)
+    {
+        for (AddressType value : AddressType.values())
+        {
+            if (value.name().equals(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -26,6 +26,7 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
@@ -46,7 +47,8 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
      */
     @Getter
     @Setter
-    @NotNull(message = "Phone number: 'phoneNumber' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "PHONE_NUMBER", length = 30)
     private String number;
 
@@ -55,7 +57,8 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
      */
     @Getter
     @Setter
-    @NotNull(message = "Phone number: 'countryCode' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "COUNTRY_CODE", length = 3)
     private String countryCode;
 

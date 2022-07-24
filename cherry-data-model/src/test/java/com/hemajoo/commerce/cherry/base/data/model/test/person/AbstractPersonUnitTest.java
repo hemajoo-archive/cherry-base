@@ -27,6 +27,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.IPostal
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressType;
+import com.hemajoo.commerce.cherry.base.data.model.person.phone.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,22 +132,45 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
      */
     protected PostalAddressType postalCategoryAddressType;
 
+    /**
+     * Number (phone number).
+     */
+    protected String phoneNumber;
+
+    /**
+     * Is default (phone number).
+     */
+    protected boolean phoneIsDefault;
+
+    /**
+     * Phone number type.
+     */
+    protected PhoneNumberType phoneNumberType;
+
+    /**
+     * Phone number category type.
+     */
+    protected PhoneNumberCategoryType phoneNumberCategoryType;
+
 
     @BeforeEach
     protected void beforeEach() throws DataModelEntityException
     {
         super.beforeEach();
 
+        // Person data
         personFirstName = PersonRandomizer.getRandomFirstName();
         personLastName = PersonRandomizer.getRandomLastName();
         personBirthDate = PersonRandomizer.getRandomBirthDate();
         personType = PersonRandomizer.getRandomPersonType();
         genderType = PersonRandomizer.getRandomGenderType();
 
+        // Email address data
         emailAddress = EmailAddressRandomizer.getRandomEmail();
         emailAddressType = EmailAddressRandomizer.getRandomAddressType();
         emailIsDefault = EmailAddressRandomizer.getRandomIsDefault();
 
+        // Postal address data
         streetName = PostalAddressRandomizer.getRandomStreetName();
         streetNumber = PostalAddressRandomizer.getRandomStreetNumber();
         locality = PostalAddressRandomizer.getRandomLocality();
@@ -156,6 +180,12 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
         postalIsDefault = PostalAddressRandomizer.getRandomIsDefault();
         postalAddressType = PostalAddressRandomizer.getRandomAddressType();
         postalCategoryAddressType = PostalAddressRandomizer.getRandomPostalAddressType();
+
+        // Phone number data
+        phoneNumber = PhoneNumberRandomizer.getRandomNumber();
+        phoneIsDefault = PhoneNumberRandomizer.getRandomIsDefault();
+        phoneNumberType = PhoneNumberRandomizer.getRandomPhoneNumberType();
+        phoneNumberCategoryType = PhoneNumberRandomizer.getRandomPhoneNumberCategoryType();
     }
 
     /**
@@ -185,5 +215,18 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
                 .withCountryCode(PostalAddressRandomizer.getRandomCountryCode())
                 .withZipCode(PostalAddressRandomizer.getRandomZipCode())
                 .build();
+    }
+
+    /**
+     * Generate a lightweight random phone number.
+     * @return Phone number.
+     * @throws DataModelEntityException Thrown in case an error occurred while generating a random phone number.
+     */
+    protected IPhoneNumber generatePhoneNumber() throws DataModelEntityException
+    {
+        return PhoneNumber.builder()
+            .withNumber(PhoneNumberRandomizer.getRandomNumber())
+            .withCountryCode(PhoneNumberRandomizer.getRandomCountryCode())
+            .build();
     }
 }

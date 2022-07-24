@@ -17,6 +17,7 @@ package com.hemajoo.commerce.cherry.base.data.model.person.address.email;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
@@ -129,11 +130,17 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
 
         try
         {
-            super.validate(); // Validate the document data
+            super.validate(); // Validate the entity data
         }
         catch (Exception e)
         {
             throw new EmailAddressException(e.getMessage());
         }
+    }
+
+    @Override
+    protected final void postValidate() throws DataModelEntityValidationException
+    {
+        super.postValidate();
     }
 }

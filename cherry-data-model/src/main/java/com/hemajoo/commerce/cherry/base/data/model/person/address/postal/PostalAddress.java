@@ -15,18 +15,22 @@
 package com.hemajoo.commerce.cherry.base.data.model.person.address.postal;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.IPerson;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * Represents a <b>postal address</b> data model entity.
@@ -45,7 +49,8 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Postal address: 'streetName' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "STREET_NAME")
     private String streetName;
 
@@ -54,7 +59,8 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Postal address: 'streetNumber' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "STREET_NUMBER")
     private String streetNumber;
 
@@ -63,7 +69,8 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Postal address: 'locality' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "LOCALITY")
     private String locality;
 
@@ -72,7 +79,8 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Postal address: 'countryCode' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "COUNTRY_CODE", length = 3)
     private String countryCode;
 
@@ -81,7 +89,8 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Postal address: 'zipCode' cannot be null!")
+    @NotNull
+    @NotBlank
     @Column(name = "ZIP_CODE", length = 10)
     private String zipCode;
 
@@ -136,5 +145,62 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
     public PostalAddress()
     {
         super(EntityType.POSTAL_ADDRESS);
+    }
+
+    /**
+     * Create a new postal address.
+     * @param streetName Street name.
+     * @param streetNumber Street number.
+     * @param locality Locality.
+     * @param countryCode Country code.
+     * @param zipCode Zip code.
+     * @param area Area.
+     * @param isDefault Is default email address?
+     * @param addressType Address type.
+     * @param postalAddressType Postal address type.
+     * @param name Name.
+     * @param description Description.
+     * @param reference Reference.
+     * @param statusType Status type.
+     * @param parent Parent.
+     * @param document Associated document.
+     * @param tags Tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create an email address.
+     */
+    @SuppressWarnings("java:S107")
+    @Builder(setterPrefix = "with")
+    public PostalAddress(final String streetName, final String streetNumber, final String locality, final String countryCode, final String zipCode, final String area, final AddressType addressType, final PostalAddressType postalAddressType, final boolean isDefault, final String name, final String description, final String reference, final EntityStatusType statusType, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
+    {
+        super(EntityType.POSTAL_ADDRESS, name, description, reference, statusType, parent, document, tags);
+
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.locality = locality;
+        this.countryCode = countryCode;
+        this.zipCode = zipCode;
+        this.area = area;
+        this.isDefault = isDefault;
+        setAddressType(addressType == null ? AddressType.UNKNOWN : addressType);
+        setPostalAddressType(postalAddressType == null ? PostalAddressType.OTHER : postalAddressType);
+
+        if (name == null)
+        {
+            setName(streetNumber + ", " + streetName + " " + zipCode + " " + locality + " - " + countryCode);
+        }
+
+        try
+        {
+            super.validate(); // Validate the entity data
+        }
+        catch (Exception e)
+        {
+            throw new PostalAddressException(e.getMessage());
+        }
+    }
+
+    @Override
+    protected final void postValidate() throws DataModelEntityValidationException
+    {
+        super.postValidate();
     }
 }

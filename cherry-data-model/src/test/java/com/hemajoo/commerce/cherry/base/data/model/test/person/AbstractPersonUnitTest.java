@@ -20,7 +20,13 @@ import com.hemajoo.commerce.cherry.base.data.model.person.GenderType;
 import com.hemajoo.commerce.cherry.base.data.model.person.PersonRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.PersonType;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.IPostalAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressType;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,14 +77,60 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
     protected String emailAddress;
 
     /**
-     * Address type.
+     * Is default (email address).
+     */
+    protected boolean emailIsDefault;
+
+    /**
+     * Address type (email address).
      */
     protected AddressType emailAddressType;
 
     /**
-     * Is default email address.
+     * Street name (postal address).
      */
-    protected boolean emailIsDefault;
+    protected String streetName;
+
+    /**
+     * Street number (postal address).
+     */
+    protected String streetNumber;
+
+    /**
+     * Locality (postal address).
+     */
+    protected String locality;
+
+    /**
+     * Country code (postal address).
+     */
+    protected String countryCode;
+
+    /**
+     * Zip code (postal address).
+     */
+    protected String zipCode;
+
+    /**
+     * Area (postal address).
+     */
+    protected String area;
+
+    /**
+     * Is default (postal address).
+     */
+    protected boolean postalIsDefault;
+
+    /**
+     * Address type (postal address).
+     */
+    protected AddressType postalAddressType;
+
+    /**
+     * Postal address type (postal address).
+     */
+    protected PostalAddressType postalCategoryAddressType;
+
 
     @BeforeEach
     protected void beforeEach() throws DataModelEntityException
@@ -90,8 +142,48 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
         personBirthDate = PersonRandomizer.getRandomBirthDate();
         personType = PersonRandomizer.getRandomPersonType();
         genderType = PersonRandomizer.getRandomGenderType();
+
         emailAddress = EmailAddressRandomizer.getRandomEmail();
         emailAddressType = EmailAddressRandomizer.getRandomAddressType();
         emailIsDefault = EmailAddressRandomizer.getRandomIsDefault();
+
+        streetName = PostalAddressRandomizer.getRandomStreetName();
+        streetNumber = PostalAddressRandomizer.getRandomStreetNumber();
+        locality = PostalAddressRandomizer.getRandomLocality();
+        countryCode = PostalAddressRandomizer.getRandomCountryCode();
+        zipCode = PostalAddressRandomizer.getRandomZipCode();
+        area = PostalAddressRandomizer.getRandomArea();
+        postalIsDefault = PostalAddressRandomizer.getRandomIsDefault();
+        postalAddressType = PostalAddressRandomizer.getRandomAddressType();
+        postalCategoryAddressType = PostalAddressRandomizer.getRandomPostalAddressType();
+    }
+
+    /**
+     * Generate a lightweight random email address.
+     * @return Postal address.
+     * @throws DataModelEntityException Thrown in case an error occurred while generating a random postal address.
+     */
+    protected IEmailAddress generateEmailAddress() throws DataModelEntityException
+    {
+        return EmailAddress.builder()
+                .withEmail(emailAddress)
+                .withAddressType(emailAddressType)
+                .build();
+    }
+
+    /**
+     * Generate a lightweight random postal address.
+     * @return Postal address.
+     * @throws DataModelEntityException Thrown in case an error occurred while generating a random postal address.
+     */
+    protected IPostalAddress generatePostalAddress() throws DataModelEntityException
+    {
+        return PostalAddress.builder()
+                .withStreetName(PostalAddressRandomizer.getRandomStreetName())
+                .withStreetNumber(PostalAddressRandomizer.getRandomStreetNumber())
+                .withLocality(PostalAddressRandomizer.getRandomLocality())
+                .withCountryCode(PostalAddressRandomizer.getRandomCountryCode())
+                .withZipCode(PostalAddressRandomizer.getRandomZipCode())
+                .build();
     }
 }

@@ -98,13 +98,13 @@ public interface IPhoneNumber extends IDataModelEntity
 
     /**
      * Returns if the phone number is the default one.
-     * @return True if it's the default phone number, false otherwise.
+     * @return <b>True</b> if is the default phone number, <b>false</b> otherwise.
      */
     Boolean getIsDefault();
 
     /**
      * Sets if the phone number is the default one.
-     * @param isDefault True to set it as the default phone number, false otherwise.
+     * @param isDefault <b>True</b> to set the phone number as the default one, <b>false</b> otherwise.
      */
     void setIsDefault(final Boolean isDefault);
 }

@@ -32,7 +32,25 @@ public enum PhoneNumberType
     PROFESSIONAL,
 
     /**
-     * <b>Other</b> phone number.
+     * <b>Other</b> phone number type.
      */
-    OTHER
+    OTHER;
+
+    /**
+     * Return if the given value is valid?
+     * @param name Value.
+     * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+     */
+    public static boolean isValid(String name)
+    {
+        for (PhoneNumberType value : PhoneNumberType.values())
+        {
+            if (value.name().equals(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

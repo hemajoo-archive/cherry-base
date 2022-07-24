@@ -33,12 +33,36 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
     /**
      * Phone number type enumeration generator.
      */
-    private static final EnumRandomGenerator PHONE_NUMBER_TYPE_GENERATOR = new EnumRandomGenerator(PhoneNumberType.class);
+    private static final EnumRandomGenerator GENERATOR_PHONE_NUMBER_TYPE = new EnumRandomGenerator(PhoneNumberType.class);
 
     /**
      * Phone number category type enumeration generator.
      */
-    private static final EnumRandomGenerator PHONE_NUMBER_CATEGORY_TYPE_GENERATOR = new EnumRandomGenerator(PhoneNumberCategoryType.class);
+    private static final EnumRandomGenerator GENERATOR_PHONE_NUMBER_CATEGORY_TYPE = new EnumRandomGenerator(PhoneNumberCategoryType.class);
+
+    /**
+     * Generate a random phone number without any document.
+     * @param withRandomId Does a random identifier has to be generated?
+     * @return Phone number.
+     */
+    public static IPhoneNumber generate(final boolean withRandomId)
+    {
+        IPhoneNumber phone = new PhoneNumber();
+        populateBaseFields(phone);
+
+        if (withRandomId)
+        {
+            phone.setId(UUID.randomUUID());
+        }
+
+        phone.setNumber(getRandomNumber());
+        phone.setCountryCode(getRandomCountryCode());
+        phone.setPhoneType(getRandomPhoneNumberType());
+        phone.setCategoryType(getRandomPhoneNumberCategoryType());
+        phone.setIsDefault(getRandomIsDefault());
+
+        return phone;
+    }
 
     /**
      * Generate a random phone number.
@@ -51,7 +75,7 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      */
     public static IPhoneNumber generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IPhoneNumber phone = new PhoneNumber();
+        IPhoneNumber phone = generate(withRandomId);
         populateBaseFields(phone);
 
         if (withRandomId)
@@ -67,12 +91,51 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
             }
         }
 
-        phone.setNumber(FAKER.phoneNumber().cellPhone());
-        phone.setCountryCode(FAKER.address().countryCode().toUpperCase());
-        phone.setPhoneType((PhoneNumberType) PHONE_NUMBER_TYPE_GENERATOR.gen());
-        phone.setCategoryType((PhoneNumberCategoryType) PHONE_NUMBER_CATEGORY_TYPE_GENERATOR.gen());
-        phone.setIsDefault(RANDOM.nextBoolean());
-
         return phone;
+    }
+
+    /**
+     * Returns a random phone number.
+     * @return Number.
+     */
+    public static String getRandomNumber()
+    {
+        return FAKER.phoneNumber().phoneNumber().trim();
+    }
+
+    /**
+     * Returns a random phone country code.
+     * @return Country code.
+     */
+    public static String getRandomCountryCode()
+    {
+        return FAKER.address().countryCode().trim();
+    }
+
+    /**
+     * Returns a random phone number is default.
+     * @return Is default.
+     */
+    public static boolean getRandomIsDefault()
+    {
+        return getRandomBoolean();
+    }
+
+    /**
+     * Returns a random phone number type.
+     * @return Phone number type.
+     */
+    public static PhoneNumberType getRandomPhoneNumberType()
+    {
+        return (PhoneNumberType) GENERATOR_PHONE_NUMBER_TYPE.gen();
+    }
+
+    /**
+     * Returns a random phone number category type.
+     * @return Phone number category type.
+     */
+    public static PhoneNumberCategoryType getRandomPhoneNumberCategoryType()
+    {
+        return (PhoneNumberCategoryType) GENERATOR_PHONE_NUMBER_CATEGORY_TYPE.gen();
     }
 }

@@ -15,16 +15,19 @@
 package com.hemajoo.commerce.cherry.base.data.model.person.phone;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * Represents a server data model <b>phone number</b> entity.
@@ -99,5 +102,54 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
     public PhoneNumber()
     {
         super(EntityType.PHONE_NUMBER);
+    }
+
+    /**
+     * Create a new phone number.
+     * @param number Phone number.
+     * @param countryCode Country code.
+     * @param phoneType Phone type.
+     * @param categoryType Phone category type.
+     * @param isDefault Is default phone number?
+     * @param name Name.
+     * @param description Description.
+     * @param reference Reference.
+     * @param statusType Status type.
+     * @param parent Parent.
+     * @param document Associated document.
+     * @param tags Tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a phone number.
+     */
+    @SuppressWarnings("java:S107")
+    @Builder(setterPrefix = "with")
+    public PhoneNumber(final String number, final String countryCode, final PhoneNumberType phoneType, final PhoneNumberCategoryType categoryType, final boolean isDefault, final String name, final String description, final String reference, final EntityStatusType statusType, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
+    {
+        super(EntityType.PHONE_NUMBER, name, description, reference, statusType, parent, document, tags);
+
+        this.number = number;
+        this.countryCode = countryCode;
+        this.isDefault = isDefault;
+        setPhoneType(phoneType == null ? PhoneNumberType.OTHER : phoneType);
+        setCategoryType(categoryType == null ? PhoneNumberCategoryType.OTHER : categoryType);
+
+        if (name == null)
+        {
+            setName("+" + countryCode + number);
+        }
+
+        try
+        {
+            super.validate(); // Validate the entity data
+        }
+        catch (Exception e)
+        {
+            throw new PhoneNumberException(e.getMessage());
+        }
+    }
+
+    @Override
+    protected final void postValidate() throws DataModelEntityValidationException
+    {
+        super.postValidate();
     }
 }

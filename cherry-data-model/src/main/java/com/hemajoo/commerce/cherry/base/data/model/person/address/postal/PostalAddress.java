@@ -155,7 +155,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      * @param countryCode Country code.
      * @param zipCode Zip code.
      * @param area Area.
-     * @param isDefault Is default email address?
+     * @param isDefault Is default postal address?
      * @param addressType Address type.
      * @param postalAddressType Postal address type.
      * @param name Name.
@@ -165,7 +165,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
      * @param parent Parent.
      * @param document Associated document.
      * @param tags Tags.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create an email address.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a postal address.
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")

@@ -45,9 +45,8 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
      * Generate a random postal address without any document.
      * @param withRandomId Does a random identifier has to be generated?
      * @return Postal address.
-     * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
      */
-    public static IPostalAddress generate(final boolean withRandomId) throws DataModelEntityException
+    public static IPostalAddress generate(final boolean withRandomId)
     {
         IPostalAddress postal = new PostalAddress();
         populateBaseFields(postal);

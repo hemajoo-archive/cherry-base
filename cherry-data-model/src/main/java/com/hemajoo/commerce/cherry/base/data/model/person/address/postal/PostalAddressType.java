@@ -21,7 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public enum PostalAddressCategoryType
+public enum PostalAddressType
 {
     /**
      * <b>Default</b> postal address.

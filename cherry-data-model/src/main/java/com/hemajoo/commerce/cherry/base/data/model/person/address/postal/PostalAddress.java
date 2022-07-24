@@ -117,7 +117,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "CATEGORY_TYPE")
-    private PostalAddressCategoryType categoryType;
+    private PostalAddressType postalAddressType;
 
     /**
      * The person identifier this postal address belongs to.

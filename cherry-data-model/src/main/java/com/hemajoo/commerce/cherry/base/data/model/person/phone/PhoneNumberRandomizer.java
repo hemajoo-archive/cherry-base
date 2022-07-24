@@ -100,7 +100,7 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      */
     public static String getRandomNumber()
     {
-        return FAKER.phoneNumber().phoneNumber().trim();
+        return FAKER.phoneNumber().cellPhone().trim();
     }
 
     /**

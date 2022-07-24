@@ -335,9 +335,9 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final List<String> getTags()
+    public final Set<String> getTags()
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
     }
 
     @Override
@@ -349,7 +349,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final void addTag(String tag)
     {
-        if (StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
+        if (StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
         {
             tags = tags == null || tags.isEmpty() ? tag : tags + ", " + tag;
         }
@@ -382,8 +382,8 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final void deleteTag(String tag)
     {
-        List<String> sourceTags = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
-        List<String> targetTags = new ArrayList<>();
+        Set<String> sourceTags = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
+        Set<String> targetTags = new HashSet<>();
 
         for (String element : sourceTags)
         {
@@ -393,7 +393,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
             }
         }
 
-        setTags(StringHelper.convertListValuesAsString(targetTags, TAG_SEPARATOR));
+        setTags(StringHelper.convertSetValuesAsString(targetTags, TAG_SEPARATOR));
     }
 
     @Override
@@ -405,7 +405,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final String getRandomTag() throws DataModelEntityException
     {
-        List<String> tagList = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
+        Set<String> tagList = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
 
         if (tagList.isEmpty())
         {
@@ -415,7 +415,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         try
         {
             int index = SecureRandom.getInstanceStrong().nextInt(tagList.size());
-            return tagList.get(index).trim();
+            return List.copyOf(tagList).get(index).trim();
         }
         catch (NoSuchAlgorithmException e)
         {
@@ -426,13 +426,13 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final boolean existTag(String tag)
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
     }
 
     @Override
     public final int getTagCount()
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).size();
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).size();
     }
 
     /**

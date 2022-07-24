@@ -16,9 +16,10 @@ package com.hemajoo.commerce.cherry.base.utilities;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Utility class providing services to ease <b>strings</b> manipulation.
@@ -29,30 +30,30 @@ import java.util.List;
 public class StringHelper
 {
     /**
-     * Convert a set of values from a string to a list of values.
+     * Convert a set of values from a string to a set of values.
      * @param values String containing the values separated by a special character.
      * @param separator Separator character.
-     * @return List of values.
+     * @return Set of values.
      */
-    public static List<String> convertStringValuesAsList(final String values, final String separator)
+    public static Set<String> convertStringValuesAsSet(final String values, final String separator)
     {
         if (values == null || values.isEmpty())
         {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
         return Arrays.stream(values.split(separator))
                 .map(String::trim)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     /**
-     * Convert a list of values to a string with all values separated by a given separator character.
-     * @param values List of values.
+     * Convert a set of values to a string with all values separated by a given separator character.
+     * @param values Set of values.
      * @param separator Separator character.
      * @return String with values separated by a separator character.
      */
-    public static String convertListValuesAsString(final List<String> values, final String separator)
+    public static String convertSetValuesAsString(final Set<String> values, final String separator)
     {
         StringBuilder builder = new StringBuilder();
 

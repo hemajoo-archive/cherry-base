@@ -132,7 +132,7 @@ public abstract class AbstractDataModelEntityRandomizer
      */
     public static String getRandomTags()
     {
-        return StringHelper.convertListValuesAsString(List.copyOf(getRandomTagList()), ",");
+        return StringHelper.convertSetValuesAsString(getRandomTagList(), ",");
     }
 
     /**

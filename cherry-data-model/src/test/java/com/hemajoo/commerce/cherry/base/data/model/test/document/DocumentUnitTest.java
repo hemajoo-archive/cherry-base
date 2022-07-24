@@ -118,7 +118,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @DisplayName("Add a tag")
     final void testAddTag() throws DataModelEntityException
     {
-        final String tag = FAKER.beer().name(); // We know this one cannot be part of initial tag list!
+        final String tag = FAKER.country().countryCode2(); // We know this one cannot be part of the initial tag list!
 
         IDocument document = Document.builder()
                 .withName(documentName)
@@ -129,6 +129,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
         assertThat(document).isNotNull();
         assertThat(document.getName()).isEqualTo(documentName);
         assertThat(document.getTags()).hasSameSizeAs(documentTags);
+
         assertThat(document.getTags()).containsAll(documentTags);
 
         document.addTag(tag);

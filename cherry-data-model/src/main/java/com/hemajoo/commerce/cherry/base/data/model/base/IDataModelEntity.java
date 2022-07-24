@@ -245,7 +245,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * Return the document tags.
      * @return Document tags.
      */
-    List<String> getTags();
+    Set<String> getTags();
 
     /**
      * Return the document tags as a string with values separated by commas.

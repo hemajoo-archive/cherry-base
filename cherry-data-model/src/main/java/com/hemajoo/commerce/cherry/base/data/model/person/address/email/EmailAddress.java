@@ -15,20 +15,24 @@
 package com.hemajoo.commerce.cherry.base.data.model.person.address.email;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.IPerson;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.hemajoo.commons.annotation.EnumNotNull;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * Represents an <b>email address</b> data model entity.
@@ -48,8 +52,9 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
      */
     @Getter
     @Setter
-    @NotNull(message = "Email address: 'email' cannot be null!")
-    @Email(message = "Email address: '${validatedValue}' is not a valid email!")
+    @NotNull
+    @NotBlank
+    @Email
     @Column(name = "EMAIL")
     private String email;
 
@@ -66,6 +71,7 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
      */
     @Getter
     @Setter
+    @EnumNotNull(enumClass = AddressType.class)
     @Enumerated(EnumType.STRING)
     @Column(name = "ADDRESS_TYPE")
     private AddressType addressType;
@@ -87,5 +93,47 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     public EmailAddress()
     {
         super(EntityType.EMAIL_ADDRESS);
+
+        this.addressType = AddressType.UNKNOWN;
+        this.isDefaultEmail = false;
+    }
+
+    /**
+     * Create a new email address.
+     * @param email Email.
+     * @param addressType Address type.
+     * @param isDefault Is default email address?
+     * @param name Name.
+     * @param description Description.
+     * @param reference Reference.
+     * @param statusType Status type.
+     * @param parent Parent.
+     * @param document Associated document.
+     * @param tags Tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create an email address.
+     */
+    @SuppressWarnings("java:S107")
+    @Builder(setterPrefix = "with")
+    public EmailAddress(final String email, final AddressType addressType, final boolean isDefault, final String name, final String description, final String reference, final EntityStatusType statusType, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
+    {
+        super(EntityType.EMAIL_ADDRESS, name, description, reference, statusType, parent, document, tags);
+
+        this.email = email;
+        this.isDefaultEmail = isDefault;
+        setAddressType(addressType == null ? AddressType.UNKNOWN : addressType);
+
+        if (getName() == null)
+        {
+            setName(email);
+        }
+
+        try
+        {
+            super.validate(); // Validate the document data
+        }
+        catch (Exception e)
+        {
+            throw new EmailAddressException(e.getMessage());
+        }
     }
 }

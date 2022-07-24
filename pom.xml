@@ -60,7 +60,7 @@
         <!-- Maven plugins version properties. Last update on 2022/03/13 -->
         <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.2.2</version.maven.plugin.jar>
-        <version.maven.plugin.javadoc>3.3.2</version.maven.plugin.javadoc>
+        <version.maven.plugin.javadoc>3.4.0</version.maven.plugin.javadoc>
         <version.maven.plugin.source>3.2.1</version.maven.plugin.source>
         <version.maven.plugin.scm>2.0.0-M1</version.maven.plugin.scm>
         <version.maven.plugin.release>3.0.0-M5</version.maven.plugin.release>
@@ -71,7 +71,7 @@
         <version.maven.plugin.flyway>8.5.2</version.maven.plugin.flyway>
         <version.plugin.maven.docker>0.37.0</version.plugin.maven.docker>
         <version.plugin.maven.sonarscource.scanner>3.9.1.2184</version.plugin.maven.sonarscource.scanner>
-        <version.plugin.maven.jacoco>0.8.7</version.plugin.maven.jacoco>
+        <version.plugin.maven.jacoco>0.8.8</version.plugin.maven.jacoco>
 
         <!-- Spring Boot properties -->
         <version.spring.boot>2.7.0</version.spring.boot>
@@ -87,7 +87,7 @@
         <version.apache.commons.lang.3>3.9</version.apache.commons.lang.3>
         <version.apache.commons.io>2.11.0</version.apache.commons.io>
         <version.apache.commons.validator>1.7</version.apache.commons.validator>
-        <version.lombok>1.18.24</version.lombok>
+        <version.lombok>1.18.22</version.lombok>
         <version.assertj>3.23.1</version.assertj>
         <version.mapstruct>1.5.2.Final</version.mapstruct>
         <version.lombok.mapstruct>0.2.0</version.lombok.mapstruct>
@@ -435,6 +435,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${version.plugin.maven.jacoco}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/media/*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare</id>

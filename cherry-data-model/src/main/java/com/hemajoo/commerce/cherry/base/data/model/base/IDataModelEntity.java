@@ -23,6 +23,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -166,14 +167,21 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * @param id Document identifier.
      * @return <b>True</b>> if the document exist, <b>false</b> otherwise.
      */
-    boolean existDocument(final @NonNull UUID id);
+    boolean existDocumentById(final @NonNull UUID id);
 
     /**
      * Check if a document exist given its identifier.
      * @param id Document identifier.
      * @return <b>True</b>> if the document exist, <b>false</b> otherwise.
      */
-    boolean existDocument(final @NonNull String id);
+    boolean existDocumentById(final @NonNull String id);
+
+    /**
+     * Check if a document exist given its name.
+     * @param name Document name.
+     * @return <b>True</b>> if the document exist, <b>false</b> otherwise.
+     */
+    boolean existDocumentByName(final @NonNull String name);
 
     /**
      * Remove a document from the list of documents for this entity.
@@ -237,7 +245,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * Return the document tags.
      * @return Document tags.
      */
-    List<String> getTags();
+    Set<String> getTags();
 
     /**
      * Return the document tags as a string with values separated by commas.
@@ -256,6 +264,18 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
      * @param tag Tag.
      */
     void addTag(String tag);
+
+    /**
+     * Add multiple tags.
+     * @param tags Tags to set (as an array of strings).
+     */
+    void addTags(final String... tags);
+
+    /**
+     * Add multiple tags.
+     * @param tags Tags to set.
+     */
+    void addTags(final Set<String> tags);
 
     /**
      * Delete a tag.

@@ -17,13 +17,16 @@ package com.hemajoo.commerce.cherry.base.data.model.base;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Identity;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.AbstractStatusEntity;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.base.validation.DataModelEntityValidator;
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -33,7 +36,6 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.security.NoSuchAlgorithmException;
@@ -146,6 +148,39 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     protected DataModelEntity(final EntityType type)
     {
         this.entityType = type;
+        setStatusType(EntityStatusType.ACTIVE);
+    }
+
+    /**
+     * Create a ne data model entity.
+     * @param type Entity type.
+     * @param name Entity name.
+     * @param description Entity description.
+     * @param reference Entity reference.
+     * @param status Entity status.
+     * @param parent Entity parent.
+     * @param document Associated document.
+     * @param tags Entity tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while trying to set the parent entity.
+     */
+    @SuppressWarnings("java:S107")
+    public DataModelEntity(final EntityType type, final String name, final String description, final String reference, final EntityStatusType status, final IDataModelEntity parent, final IDocument document, final Set<String> tags) throws DataModelEntityException
+    {
+        this(type);
+
+        this.name = name;
+        this.description = description;
+        this.reference = reference;
+
+        setStatusType(status == null ? EntityStatusType.ACTIVE : status);
+        setParent(parent);
+
+        addTags(tags);
+
+        if (document != null)
+        {
+            addDocument(document);
+        }
     }
 
     @Override
@@ -161,7 +196,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
+    public final <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
     {
         if (parent == this)
         {
@@ -180,19 +215,19 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final int getDocumentCount()
     {
-        return documents.size();
+        return documents == null ? 0 : documents.size();
     }
 
     @JsonIgnore
     @Override
-    public <T extends IDataModelEntity> List<T> getDocuments()
+    public final <T extends IDataModelEntity> List<T> getDocuments()
     {
         if (entityType == EntityType.MEDIA)
         {
             return new ArrayList<>();
         }
 
-        return documents != null ? (List<T>) Collections.unmodifiableList(documents) : null;
+        return documents != null ? (List<T>) Collections.unmodifiableList(documents) : new ArrayList<>();
     }
 
     @Override
@@ -221,24 +256,30 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     {
         if (document.getId() != null)
         {
-            return existDocument(document.getId());
+            return existDocumentById(document.getId());
         }
         else
         {
-            return documents.stream().anyMatch(doc -> doc.getName().equals(document.getName()));
+            return existDocumentByName(document.getName());
         }
     }
 
     @Override
-    public final boolean existDocument(final @NonNull UUID id)
+    public final boolean existDocumentById(final @NonNull UUID id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().equals(id));
     }
 
     @Override
-    public final boolean existDocument(final @NonNull String id)
+    public final boolean existDocumentById(final @NonNull String id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().toString().equals(id));
+    }
+
+    @Override
+    public final boolean existDocumentByName(final @NonNull String name)
+    {
+        return documents.stream().anyMatch(doc -> doc.getName().equals(name));
     }
 
     @Override
@@ -294,9 +335,9 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final List<String> getTags()
+    public final Set<String> getTags()
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
     }
 
     @Override
@@ -308,17 +349,41 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final void addTag(String tag)
     {
-        if (StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
+        if (StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
         {
             tags = tags == null || tags.isEmpty() ? tag : tags + ", " + tag;
         }
     }
 
     @Override
+    public final void addTags(final String... tags)
+    {
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
+        }
+    }
+
+    @Override
+    public final void addTags(final Set<String> tags)
+    {
+        if (tags != null)
+        {
+            for (String tag : tags)
+            {
+                addTag(tag);
+            }
+        }
+    }
+
+    @Override
     public final void deleteTag(String tag)
     {
-        List<String> sourceTags = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
-        List<String> targetTags = new ArrayList<>();
+        Set<String> sourceTags = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
+        Set<String> targetTags = new HashSet<>();
 
         for (String element : sourceTags)
         {
@@ -328,7 +393,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
             }
         }
 
-        setTags(StringHelper.convertListValuesAsString(targetTags, TAG_SEPARATOR));
+        setTags(StringHelper.convertSetValuesAsString(targetTags, TAG_SEPARATOR));
     }
 
     @Override
@@ -340,7 +405,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final String getRandomTag() throws DataModelEntityException
     {
-        List<String> tagList = StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR);
+        Set<String> tagList = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
 
         if (tagList.isEmpty())
         {
@@ -350,7 +415,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
         try
         {
             int index = SecureRandom.getInstanceStrong().nextInt(tagList.size());
-            return tagList.get(index).trim();
+            return List.copyOf(tagList).get(index).trim();
         }
         catch (NoSuchAlgorithmException e)
         {
@@ -361,25 +426,66 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Override
     public final boolean existTag(String tag)
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
     }
 
     @Override
     public final int getTagCount()
     {
-        return StringHelper.convertStringValuesAsList(tags, TAG_SEPARATOR).size();
+        return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).size();
     }
 
     /**
      * Validate the data of the underlying data model entity.
-     * @throws ConstraintViolationException Thrown in case some constraint violations have been detected.
+     * @throws DataModelEntityValidationException Thrown in case errors occurred while validating a data model entity.
      */
-    protected final void validate() throws ConstraintViolationException
+    protected final void validate() throws DataModelEntityValidationException
     {
         Set<ConstraintViolation<DataModelEntity>> violations = DataModelEntityValidator.VALIDATOR_FACTORY.getValidator().validate(this);
+        checkAndThrowException(violations);
+
+        postValidate();
+    }
+
+    /**
+     * Post validate the data model entity.
+     * @throws DataModelEntityValidationException Thrown in case errors occurred while validating a data model entity.
+     */
+    protected void postValidate() throws DataModelEntityValidationException
+    {
+        // Should be overridden by subclasses.
+    }
+
+    /**
+     * Check if some constraints have been violated. If so, then it creates an exception with all the violations and throw it.
+     * @param violations Set of constraint violations.
+     * @throws DataModelEntityValidationException Thrown if some constraints have been violated.
+     */
+    private void checkAndThrowException(final Set<ConstraintViolation<DataModelEntity>> violations) throws DataModelEntityValidationException
+    {
+        int counter = 1;
+        StringBuilder messageBuilder = new StringBuilder();
+
         if (!violations.isEmpty())
         {
-            throw new ConstraintViolationException(violations);
+            messageBuilder
+                    .append(violations.size())
+                    .append(" constraint(s) violated found!");
+        }
+
+        for (ConstraintViolation<DataModelEntity> violation : violations)
+        {
+            messageBuilder.append("\n\t")
+                    .append("(").append(counter).append(") - ")
+                    .append("Attribute: '")
+                    .append(violation.getPropertyPath()).append("' ")
+                    .append(violation.getMessage());
+            counter++;
+        }
+
+        if (!messageBuilder.isEmpty())
+        {
+            throw new DataModelEntityValidationException(messageBuilder.toString());
         }
     }
 }

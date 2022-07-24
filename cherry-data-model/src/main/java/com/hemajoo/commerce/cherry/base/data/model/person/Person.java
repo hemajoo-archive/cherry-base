@@ -18,8 +18,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityValidationException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressException;
@@ -29,13 +31,12 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalA
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberType;
-import dev.fuxing.hibernate.ValidEnum;
+import com.hemajoo.commons.annotation.EnumNotNull;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -86,8 +87,8 @@ public class Person extends DataModelEntity implements IPerson
      */
     @Getter
     @Setter
-    @ValidEnum(message = "{javax.validation.constraints.ValidEnum.message}")
     @Enumerated(EnumType.STRING)
+    @EnumNotNull(enumClass = PersonType.class)
     @Column(name = "PERSON_TYPE", length = 50)
     private PersonType personType;
 
@@ -103,36 +104,33 @@ public class Person extends DataModelEntity implements IPerson
     /**
      * Postal addresses associated to the person.
      */
-    @Getter
     @Setter
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnoreProperties("person")
     @OneToMany(targetEntity = PostalAddress.class, mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PostalAddress> postalAddresses = new ArrayList<>();
+    private Set<PostalAddress> postalAddresses = new HashSet<>();
 
     /**
      * Phone numbers associated to the person.
      */
-    @Getter
     @Setter
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnoreProperties("person")
     @OneToMany(targetEntity = PhoneNumber.class, mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    private Set<PhoneNumber> phoneNumbers = new HashSet<>();
 
     /**
      * Email addresses associated to the person.
      */
-    @Getter
     @Setter
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnoreProperties("owner")
 //    @OneToMany(targetEntity = ServerEmailAddressEntity.class, mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(targetEntity = EmailAddress.class, mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EmailAddress> emailAddresses = new ArrayList<>();
+    private Set<IEmailAddress> emailAddresses = new HashSet<>();
 
     /**
      * Create a new person.
@@ -146,73 +144,66 @@ public class Person extends DataModelEntity implements IPerson
      * Create a new person.
      * @param lastName Last name.
      * @param firstName First name.
+     * @param birthDate Birthdate.
+     * @param name Name.
      * @param description Description.
+     * @param reference Reference.
      * @param personType Person type.
      * @param genderType Gender type.
-     * @param birthDate Birthdate.
-     * @param owner Person owner.
-     * @param reference Reference.
+     * @param statusType Status type.
+     * @param parent Parent.
      * @param tags Person tags.
-     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
+     * @param document Document.
+     * @param emailAddress Email address.
+     * @param postalAddress Postal address.
+     * @param phoneNumber Phone number.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a person.
      */
     @Builder(setterPrefix = "with")
     @SuppressWarnings("java:S107")
-    public Person(final String lastName, final String firstName, final String description, final PersonType personType, final GenderType genderType, final Date birthDate, final IDataModelEntity owner, final String reference, final String... tags) throws PersonException
+    public Person(final String lastName, final String firstName, final Date birthDate, final String name, final String description, final String reference, final PersonType personType,
+                  final GenderType genderType, final EntityStatusType statusType, final IDataModelEntity parent, final Set<String> tags, final IDocument document,
+                  final IEmailAddress emailAddress, final IPostalAddress postalAddress, final IPhoneNumber phoneNumber) throws DataModelEntityException
     {
-        this(personType, owner);
+        super(EntityType.PERSON, name, description, reference, statusType, parent, document, tags);
 
         setLastName(lastName);
         setFirstName(firstName);
-        setDescription(description);
-        setReference(reference);
         setBirthDate(birthDate);
+        setGenderType(genderType);
+        setPersonType(personType);
 
-        this.genderType = genderType;
-
-        if (tags != null)
+        if (emailAddress != null)
         {
-            for (String tag : tags)
-            {
-                addTag(tag);
-            }
+            addEmailAddress(emailAddress);
         }
-
-        super.validate(); // Validate the data
-
-        if (personType == PersonType.PHYSICAL && genderType == null)
+        if (postalAddress != null)
         {
-            throw new ConstraintViolationException("genderType: value cannot be null when attribute: personType is set to: PHYSICAL", null);
+            addPostalAddress(postalAddress);
         }
-    }
-
-    /**
-     * Create a new person.
-     * @param personType Person type.
-     * @param owner Person owner.
-     * @throws PersonException Thrown to indicate an error occurred when trying to create a person.
-     */
-    protected Person(final PersonType personType, final IDataModelEntity owner) throws PersonException
-    {
-        super(EntityType.PERSON);
-
-        setActive();
-
-        if (personType != null)
+        if (phoneNumber != null)
         {
-            this.personType = personType;
+            addPhoneNumber(phoneNumber);
         }
 
         try
         {
-            setParent(owner);
-            if (owner != null)
-            {
-                //owner.addPerson(this); //TODO Fix it!
-            }
+            super.validate(); // Validate the entity data using annotations
         }
-        catch (DataModelEntityException e)
+        catch (Exception e)
         {
-            throw new PersonException(e);
+            throw new PersonException(e.getMessage());
+        }
+    }
+
+    @Override
+    protected final void postValidate() throws DataModelEntityValidationException
+    {
+        super.postValidate();
+
+        if (personType == PersonType.PHYSICAL && genderType == null)
+        {
+            throw new DataModelEntityValidationException("Attribute: 'genderType' cannot be null if attribute: 'personType' is set to: 'PHYSICAL'");
         }
     }
 
@@ -236,82 +227,77 @@ public class Person extends DataModelEntity implements IPerson
         setName(this.lastName + ", " + this.firstName);
     }
 
-    /**
-     * Return the default email address.
-     * @return Optional default email address.
-     */
+    @Override
+    public final Set<IEmailAddress> getEmailAddresses()
+    {
+        return Collections.unmodifiableSet(emailAddresses);
+    }
+
+    @Override
     public final IEmailAddress getDefaultEmailAddress()
     {
         return emailAddresses.stream()
                 .filter(IEmailAddress::getIsDefaultEmail).findFirst().orElse(null);
     }
 
-    /**
-     * Check if the person has a default email address?
-     * @return {@code True} if the person has a default email address, {@code false} otherwise.
-     */
+    @Override
     public final boolean hasDefaultEmailAddress()
     {
         return emailAddresses.stream().anyMatch(IEmailAddress::getIsDefaultEmail);
     }
 
-    /**
-     * Check if the given email already exist?
-     * @param email Email to check.
-     * @return {@code True} if it already exist, {@code false} otherwise.
-     */
-    public final boolean existEmail(final @NonNull String email)
+    @Override
+    public final boolean existEmailAddress(final @NonNull IEmailAddress email)
     {
         return emailAddresses.stream()
-                .anyMatch(emailAddress -> emailAddress.getEmail().equalsIgnoreCase(email));
+                .anyMatch(e -> e.equals(email));
     }
 
-    /**
-     * Check if the given email address already exist?
-     * @param emailAddress Email address to check.
-     * @return {@code True} if it already exist, {@code false} otherwise.
-     */
-    public final boolean existEmailAddress(final @NonNull IEmailAddress emailAddress) // TODO Not sure it is necessary? Provide a test case.
+    @Override
+    public final boolean existEmailAddressById(final @NonNull UUID id)
     {
         return emailAddresses.stream()
-                .anyMatch(e -> e.equals(emailAddress));
+                .anyMatch(e -> e.getId().equals(id));
     }
 
-    /**
-     * Return the email address matching the given identifier.
-     * @param id Email address identifier.
-     * @return Matching email address, <b>null</b> otherwise.
-     */
-    public final IEmailAddress getEmailById(final @NonNull UUID id)
+    @Override
+    public final boolean existEmailAddressById(final @NonNull String id)
+    {
+        return existEmailAddressById(UUID.fromString(id));
+    }
+
+    @Override
+    public final boolean existEmailAddressByValue(final @NonNull String email)
+    {
+        return emailAddresses.stream()
+                .anyMatch(e -> e.getEmail().equals(email));
+    }
+
+    @Override
+    public final IEmailAddress getEmailAddress(@NonNull IEmailAddress email)
+    {
+        return emailAddresses.stream()
+                .filter(e -> e.equals(email)).findFirst().orElse(null);
+    }
+
+    @Override
+    public final IEmailAddress getEmailAddressById(@NonNull UUID id)
     {
         return emailAddresses.stream()
                 .filter(e -> e.getId().equals(id)).findFirst().orElse(null);
     }
 
-    /**
-     * Retrieve a list of email addresses matching the given address type.
-     * @param type Address type.
-     * @return List of matching email addresses.
-     */
-    @SuppressWarnings("java:S6204")
-    public final List<IEmailAddress> findEmailAddressByType(final AddressType type)
+    @Override
+    public final IEmailAddress getEmailAddressById(@NonNull String id)
     {
-        return emailAddresses.stream()
-                .filter(emailAddress -> emailAddress.getAddressType() == type)
-                .collect(Collectors.toList());
+        return getEmailAddressById(UUID.fromString(id));
     }
 
-    /**
-     * Retrieve a list of email addresses matching the given status type.
-     * @param status Status type.
-     * @return List of email addresses.
-     */
-    @SuppressWarnings("java:S6204")
-    public final List<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status)
+    @Override
+    public final IEmailAddress getEmailAddressByValue(@NonNull String value)
     {
         return emailAddresses.stream()
-                .filter(emailAddress -> emailAddress.getStatusType() == status)
-                .collect(Collectors.toList());
+                .filter(e -> e.getEmail().equals(value)).findFirst().orElse(null);
     }
 
     @Override
@@ -341,25 +327,92 @@ public class Person extends DataModelEntity implements IPerson
         emailAddresses.add((EmailAddress) emailAddress);
     }
 
-    /**
-     * Remove an email address.
-     * @param email Email address to remove.
-     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to remove an email address.
-     */
-    public final void removeEmailAddress(final @NonNull IEmailAddress email) throws DataModelEntityException
+    @Override
+    public final void deleteEmailAddress(final @NonNull IEmailAddress email) throws DataModelEntityException
     {
         email.setParent(null);
-        emailAddresses.remove(email);
+        emailAddresses.removeIf(e -> e.equals(email));
+    }
+
+    @Override
+    public final void deleteEmailAddressById(final @NonNull UUID id) throws DataModelEntityException
+    {
+        IEmailAddress email = getEmailAddressById(id);
+
+        if (email != null)
+        {
+            email.setParent(null);
+            emailAddresses.removeIf(e -> e.getId().equals(id));
+        }
+    }
+
+    @Override
+    public final void deleteEmailAddressById(@NonNull String id) throws DataModelEntityException
+    {
+        deleteEmailAddressById(UUID.fromString(id));
+    }
+
+    @Override
+    public final void deleteEmailAddressByValue(@NonNull String value) throws DataModelEntityException
+    {
+        IEmailAddress email = getEmailAddressByValue(value);
+
+        if (email != null)
+        {
+            email.setParent(null);
+            emailAddresses.removeIf(e -> e.getEmail().equals(value));
+        }
+    }
+
+    @Override
+    public final void deleteAllEmailAddress()
+    {
+        emailAddresses.clear();
+    }
+
+    @Override
+    public final int getEmailAddressCount()
+    {
+        return emailAddresses.size();
     }
 
     /**
-     * Return the default postal address.
-     * @return Default postal address.
+     * Retrieve a list of email addresses matching the given address type.
+     * @param type Address type.
+     * @return List of matching email addresses.
      */
-    public final Optional<PostalAddress> getDefaultPostalAddress()
+    @SuppressWarnings("java:S6204")
+    public final List<IEmailAddress> findEmailAddressByType(final AddressType type)
+    {
+        return emailAddresses.stream()
+                .filter(emailAddress -> emailAddress.getAddressType() == type)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieve a list of email addresses matching the given status type.
+     * @param status Status type.
+     * @return List of email addresses.
+     */
+    @SuppressWarnings("java:S6204")
+    public final List<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status)
+    {
+        return emailAddresses.stream()
+                .filter(emailAddress -> emailAddress.getStatusType() == status)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final Set<IPostalAddress> getPostalAddresses()
+    {
+        return Collections.unmodifiableSet(postalAddresses);
+    }
+
+    @Override
+    public final IPostalAddress getDefaultPostalAddress()
     {
         return postalAddresses.stream()
-                .filter(e -> e.getIsDefault() == Boolean.TRUE).findFirst();
+                .filter(IPostalAddress::getIsDefault).findFirst().orElse(null);
     }
 
     /**
@@ -418,6 +471,24 @@ public class Person extends DataModelEntity implements IPerson
         postalAddresses.add((PostalAddress) postalAddress);
     }
 
+    @Override
+    public final int getPostalAddressCount()
+    {
+        return postalAddresses.size();
+    }
+
+    @Override
+    public final Set<IPhoneNumber> getPhoneNumbers()
+    {
+        return Collections.unmodifiableSet(phoneNumbers);
+    }
+
+    @Override
+    public final int getPhoneNumberCount()
+    {
+        return phoneNumbers.size();
+    }
+
     /**
      * Return the default phone number.
      * @return Optional default phone number.
@@ -453,7 +524,7 @@ public class Person extends DataModelEntity implements IPerson
      * @param phoneNumber Phone number to check.
      * @return {@code True} if it already exist, {@code false} otherwise.
      */
-    public final boolean existPhoneNumber(final @NonNull IPhoneNumber phoneNumber) // TODO Not sure it is necessary? Provide a test case.
+    public final boolean existPhoneNumber(final @NonNull IPhoneNumber phoneNumber)
     {
         return phoneNumbers.stream()
                 .anyMatch(e -> e.equals(phoneNumber));

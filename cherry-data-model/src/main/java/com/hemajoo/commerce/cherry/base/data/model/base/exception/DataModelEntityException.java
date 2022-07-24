@@ -32,7 +32,7 @@ public class DataModelEntityException extends CherryException
     private static final long serialVersionUID = 1L;
 
     /**
-     * Thrown to indicate that an error occurred with a <b>Cherry</b> data model entity.
+     * Thrown to indicate that an error occurred with a data model entity.
      * @param exception Parent {@link Exception}.
      */
     public DataModelEntityException(final Exception exception)
@@ -41,7 +41,7 @@ public class DataModelEntityException extends CherryException
     }
 
     /**
-     * Thrown to indicate that an error occurred with a <b>Cherry</b> data model entity.
+     * Thrown to indicate that an error occurred with a data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      */
     public DataModelEntityException(final String message)
@@ -50,7 +50,7 @@ public class DataModelEntityException extends CherryException
     }
 
     /**
-     * Thrown to indicate that an error occurred with a <b>Cherry</b> data model entity.
+     * Thrown to indicate that an error occurred with a data model entity.
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent {@link Exception}.
      */

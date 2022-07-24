@@ -34,5 +34,23 @@ public enum PersonType
     /**
      * An <b>agent</b> person type.
      */
-    AGENT
+    AGENT;
+
+    /**
+     * Return if the given value is valid?
+     * @param name Value.
+     * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+     */
+    public static boolean isValid(String name)
+    {
+        for (PersonType value : PersonType.values())
+        {
+            if (value.name().equals(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

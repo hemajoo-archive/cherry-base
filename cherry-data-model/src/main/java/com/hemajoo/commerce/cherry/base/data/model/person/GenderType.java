@@ -29,5 +29,23 @@ public enum GenderType
     /**
      * <b>Female</b>.
      */
-    FEMALE
+    FEMALE;
+
+    /**
+     * Return if the given value is valid?
+     * @param name Value.
+     * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+     */
+    public static boolean isValid(String name)
+    {
+        for (GenderType value : GenderType.values())
+        {
+            if (value.name().equals(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

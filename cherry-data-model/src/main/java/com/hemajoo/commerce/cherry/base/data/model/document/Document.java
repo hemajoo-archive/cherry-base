@@ -20,6 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.utilities.UuidGenerator;
+import com.hemajoo.commons.annotation.EnumValue;
 import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 /**
  * Represent a <b>document</b> data model entity.
@@ -55,8 +57,9 @@ public class Document extends DataModelEntity implements IDocument
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
+    @EnumValue(enumClass = DocumentType.class, excluded = { "UNKNOWN" })
     @Column(name = "DOCUMENT_TYPE", length = 50)
-    private DocumentType documentType = DocumentType.DOCUMENT_GENERIC;
+    private DocumentType documentType = DocumentType.GENERIC;
 
     /**
      * Document file extension.
@@ -84,14 +87,14 @@ public class Document extends DataModelEntity implements IDocument
     private transient MultipartFile multiPartFile; // Only stored until the content of the file is loaded into the content store.
 
     /**
-     * Base file name.
+     * Original file name.
      */
     @DiffIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Getter
     @Transient
-    private transient String baseFilename; // Only stored until the content of the file is loaded into the content store.
+    private transient String originalFilename; // Only stored until the content of the file is loaded into the content store.
 
     /**
      * File content identifier.
@@ -143,7 +146,7 @@ public class Document extends DataModelEntity implements IDocument
     {
         super(EntityType.DOCUMENT);
 
-        setActive();
+        this.documentType = DocumentType.UNKNOWN;
     }
 
     /**
@@ -152,34 +155,37 @@ public class Document extends DataModelEntity implements IDocument
      * @param description Document description.
      * @param documentType Document type.
      * @param statusType Status type.
-     * @param owner Document owner.
+     * @param parent Parent.
      * @param reference Document reference.
      * @param filename Document file name representing the document content. If <b>withFilename()</b> is used invoking the builder, the <b>withFile()</b> is not supposed to be invoked!
      * @param file Document file representing the document content. If <b>withFile()</b> is used invoking the builder, the <b>withFilename()</b> is not supposed to be invoked!
-     * @param tags Document tags.
-     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
+     * @param tags List of tags.
+     * @throws DataModelEntityException Thrown to indicate an error occurred when trying to create a document.
      */
     @SuppressWarnings("java:S107")
     @Builder(setterPrefix = "with")
-    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity owner, final String reference, final File file, final String filename, final String... tags) throws DocumentException
+    public Document(final String name, final String description, final DocumentType documentType, final EntityStatusType statusType, final IDataModelEntity parent, final String reference, final File file, final String filename, final Set<String> tags) throws DataModelEntityException
     {
-        this(documentType, owner);
+        super(EntityType.DOCUMENT, name, description, reference, statusType, parent, null /* a document cannot contain other documents */, tags);
 
-        setName(name);
-        setDescription(description);
-        setReference(reference);
+        setId(UuidGenerator.getUuid());
 
-        if (statusType == EntityStatusType.INACTIVE)
+        if (documentType != null)
         {
-            setInactive();
+            this.documentType = documentType;
         }
 
-        if (tags != null)
+        try
         {
-            for (String tag : tags)
+            setParent(parent);
+            if (parent != null)
             {
-                addTag(tag);
+                parent.addDocument(this);
             }
+        }
+        catch (DataModelEntityException e)
+        {
+            throw new DocumentException(e);
         }
 
         if (file != null)
@@ -194,39 +200,46 @@ public class Document extends DataModelEntity implements IDocument
             }
         }
 
-        super.validate(); // Validate the document data
-    }
-
-    /**
-     * Create a new document.
-     * @param documentType Document type.
-     * @param owner Document owner.
-     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
-     */
-    protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
-    {
-        this();
-
-        setId(UuidGenerator.getUuid());
-
-        if (documentType != null)
-        {
-            this.documentType = documentType;
-        }
-
         try
         {
-            setParent(owner);
-            if (owner != null)
-            {
-                owner.addDocument(this);
-            }
+            super.validate(); // Validate the document data
         }
-        catch (DataModelEntityException e)
+        catch (Exception e)
         {
-            throw new DocumentException(e);
+            throw new DocumentException(e.getMessage());
         }
     }
+
+//    /**
+//     * Create a new document.
+//     * @param documentType Document type.
+//     * @param owner Document owner.
+//     * @throws DocumentException Thrown to indicate an error occurred when trying to create a document.
+//     */
+//    protected Document(final DocumentType documentType, final IDataModelEntity owner) throws DocumentException
+//    {
+//        this();
+//
+//        setId(UuidGenerator.getUuid());
+//
+//        if (documentType != null)
+//        {
+//            this.documentType = documentType;
+//        }
+//
+//        try
+//        {
+//            setParent(owner);
+//            if (owner != null)
+//            {
+//                owner.addDocument(this);
+//            }
+//        }
+//        catch (DataModelEntityException e)
+//        {
+//            throw new DocumentException(e);
+//        }
+//    }
 
     @SuppressWarnings("java:S1163")
     @Override
@@ -268,8 +281,8 @@ public class Document extends DataModelEntity implements IDocument
         try
         {
             detectMimeType(absolutePath);
-            this.baseFilename = absolutePath;
-            this.filename = FilenameUtils.getName(baseFilename);
+            this.originalFilename = absolutePath;
+            this.filename = FilenameUtils.getName(originalFilename);
             this.extension = FilenameUtils.getExtension(filename);
             this.content = inputStream;
             this.contentLength = inputStream.available();

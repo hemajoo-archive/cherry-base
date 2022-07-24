@@ -115,6 +115,12 @@ public interface IDocument extends IDataModelEntity
     String getFilename();
 
     /**
+     * Return the document original filename.
+     * @return Document original filename.
+     */
+    String getOriginalFilename();
+
+    /**
      * Return the document content identifier.
      * @return Document content identifier.
      */

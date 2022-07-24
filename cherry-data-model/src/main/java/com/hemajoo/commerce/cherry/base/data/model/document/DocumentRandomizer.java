@@ -14,10 +14,8 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.document;
 
-import com.hemajoo.commerce.cherry.base.commons.test.TestMediaType;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.util.UUID;
 
@@ -29,16 +27,6 @@ import java.util.UUID;
 @UtilityClass
 public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
 {
-    /**
-     * Document type enumeration generator.
-     */
-    private static final EnumRandomGenerator DOCUMENT_TYPE_GENERATOR = new EnumRandomGenerator(DocumentType.class);
-
-    /**
-     * Test media type enumeration generator.
-     */
-    private static final EnumRandomGenerator TEST_MEDIA_TYPE_GENERATOR = new EnumRandomGenerator(TestMediaType.class);
-
     /**
      * Generate a random document data model entity.
      * <br>
@@ -73,11 +61,11 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
 
         if (withContent)
         {
-            document.setContent(((TestMediaType) TEST_MEDIA_TYPE_GENERATOR.gen()).getPath());
+            document.setContent(DocumentRandomizer.getRandomFilename());
         }
 
         document.setTags(FAKER.elderScrolls().creature());
-        document.setDocumentType((DocumentType) DOCUMENT_TYPE_GENERATOR.gen());
+        document.setDocumentType(getRandomDocumentType());
 
         return document;
     }

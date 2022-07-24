@@ -34,8 +34,29 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     /**
      * Address type enumeration generator.
      */
-    private static final EnumRandomGenerator ADDRESS_TYPE_GENERATOR = new EnumRandomGenerator(AddressType.class);
+    private static final EnumRandomGenerator GENERATOR_ADDRESS_TYPE = new EnumRandomGenerator(AddressType.class);
 
+    /**
+     * Generate a random email address without any document.
+     * @param withRandomId Does a random entity identifier has to be generated?
+     * @return Email address.
+     */
+    public static IEmailAddress generate(final boolean withRandomId)
+    {
+        IEmailAddress emailAddress = new EmailAddress();
+        populateBaseFields(emailAddress);
+
+        if (withRandomId)
+        {
+            emailAddress.setId(UUID.randomUUID());
+        }
+
+        emailAddress.setEmail(getRandomEmail());
+        emailAddress.setAddressType(getRandomAddressType());
+        emailAddress.setIsDefaultEmail(getRandomIsDefault());
+
+        return emailAddress;
+    }
     /**
      * Generate a random email address.
      * @param withRandomId Does a random entity identifier has to be generated?
@@ -47,13 +68,7 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      */
     public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IEmailAddress emailAddress = new EmailAddress();
-        populateBaseFields(emailAddress);
-
-        if (withRandomId)
-        {
-            emailAddress.setId(UUID.randomUUID());
-        }
+        IEmailAddress emailAddress = generate(true);
 
         if (withDocument)
         {
@@ -63,10 +78,33 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
             }
         }
 
-        emailAddress.setEmail(FAKER.internet().emailAddress());
-        emailAddress.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
-        emailAddress.setIsDefaultEmail(RANDOM.nextBoolean());
-
         return emailAddress;
+    }
+
+    /**
+     * Returns a random email address.
+     * @return Email address.
+     */
+    public static String getRandomEmail()
+    {
+        return FAKER.internet().emailAddress().trim();
+    }
+
+    /**
+     * Returns a random address type.
+     * @return Address type.
+     */
+    public static AddressType getRandomAddressType()
+    {
+        return (AddressType) GENERATOR_ADDRESS_TYPE.gen();
+    }
+
+    /**
+     * Returns a random is a default email address.
+     * @return Is default email address.
+     */
+    public boolean getRandomIsDefault()
+    {
+        return RANDOM.nextBoolean();
     }
 }

@@ -34,12 +34,42 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
     /**
      * Address type enumeration generator.
      */
-    private static final EnumRandomGenerator ADDRESS_TYPE_GENERATOR = new EnumRandomGenerator(AddressType.class);
+    private static final EnumRandomGenerator GENERATOR_ADDRESS_TYPE = new EnumRandomGenerator(AddressType.class);
 
     /**
      * Address category type enumeration generator.
      */
-    private static final EnumRandomGenerator ADDRESS_CATEGORY_TYPE_GENERATOR = new EnumRandomGenerator(PostalAddressCategoryType.class);
+    private static final EnumRandomGenerator GENERATOR_POSTAL_ADDRESS_TYPE = new EnumRandomGenerator(PostalAddressType.class);
+
+    /**
+     * Generate a random postal address without any document.
+     * @param withRandomId Does a random identifier has to be generated?
+     * @return Postal address.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
+     */
+    public static IPostalAddress generate(final boolean withRandomId) throws DataModelEntityException
+    {
+        IPostalAddress postal = new PostalAddress();
+        populateBaseFields(postal);
+
+        if (withRandomId)
+        {
+            postal.setId(UUID.randomUUID());
+        }
+
+        postal.setIsDefault(getRandomIsDefault());
+        postal.setStreetName(getRandomStreetName());
+        postal.setStreetNumber(getRandomStreetNumber());
+        postal.setLocality(getRandomLocality());
+        postal.setArea(getRandomArea());
+        String zipCode = getRandomZipCode();
+        postal.setZipCode(zipCode.length() <= 7 ? zipCode : zipCode.substring(0, 7));
+        postal.setCountryCode(getRandomCountryCode().toUpperCase());
+        postal.setAddressType(getRandomAddressType());
+        postal.setPostalAddressType(getRandomPostalAddressType());
+
+        return postal;
+    }
 
     /**
      * Generate a random postal address.
@@ -52,13 +82,7 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
      */
     public static IPostalAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IPostalAddress postal = new PostalAddress();
-        populateBaseFields(postal);
-
-        if (withRandomId)
-        {
-            postal.setId(UUID.randomUUID());
-        }
+        IPostalAddress postal = generate(withRandomId);
 
         if (withDocument)
         {
@@ -68,17 +92,87 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
             }
         }
 
-        postal.setIsDefault(RANDOM.nextBoolean());
-        postal.setStreetName(FAKER.address().streetName());
-        postal.setStreetNumber(FAKER.address().streetAddressNumber());
-        postal.setLocality(FAKER.address().cityName());
-        postal.setArea(FAKER.address().state());
-        String zipCode = FAKER.address().zipCode();
-        postal.setZipCode(zipCode.length() <= 7 ? zipCode : zipCode.substring(0, 7));
-        postal.setCountryCode(FAKER.address().countryCode().toUpperCase());
-        postal.setAddressType((AddressType) ADDRESS_TYPE_GENERATOR.gen());
-        postal.setCategoryType((PostalAddressCategoryType) ADDRESS_CATEGORY_TYPE_GENERATOR.gen());
-
         return postal;
+    }
+
+    /**
+     * Returns a random postal address street name.
+     * @return Street name.
+     */
+    public static String getRandomStreetName()
+    {
+        return FAKER.address().streetName().trim();
+    }
+
+    /**
+     * Returns a random postal address street number.
+     * @return Street number.
+     */
+    public static String getRandomStreetNumber()
+    {
+        return FAKER.address().streetAddressNumber().trim();
+    }
+
+    /**
+     * Returns a random postal address locality.
+     * @return Locality.
+     */
+    public static String getRandomLocality()
+    {
+        return FAKER.address().cityName();
+    }
+
+    /**
+     * Returns a random postal address country code.
+     * @return Country code.
+     */
+    public static String getRandomCountryCode()
+    {
+        return FAKER.address().countryCode().trim();
+    }
+
+    /**
+     * Returns a random postal address zip code.
+     * @return Zip code.
+     */
+    public static String getRandomZipCode()
+    {
+        return FAKER.address().zipCode().trim();
+    }
+
+    /**
+     * Returns a random postal address area.
+     * @return Area.
+     */
+    public static String getRandomArea()
+    {
+        return FAKER.address().state().trim();
+    }
+
+    /**
+     * Returns a random postal address is default.
+     * @return Is default.
+     */
+    public static boolean getRandomIsDefault()
+    {
+        return getRandomBoolean();
+    }
+
+    /**
+     * Returns a random address type.
+     * @return Address type.
+     */
+    public static AddressType getRandomAddressType()
+    {
+        return (AddressType) GENERATOR_ADDRESS_TYPE.gen();
+    }
+
+    /**
+     * Returns a random postal address type.
+     * @return Postal address type.
+     */
+    public static PostalAddressType getRandomPostalAddressType()
+    {
+        return (PostalAddressType) GENERATOR_POSTAL_ADDRESS_TYPE.gen();
     }
 }

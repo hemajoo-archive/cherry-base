@@ -166,14 +166,14 @@ public interface IPostalAddress extends IDataModelEntity
     void setAddressType(final AddressType type);
 
     /**
-     * Returns the postal address category type.
-     * @return Category type.
+     * Returns the postal address type.
+     * @return Postal address type.
      */
-    PostalAddressCategoryType getCategoryType();
+    PostalAddressType getPostalAddressType();
 
     /**
-     * Sets the postal address category type.
-     * @param type Category type.
+     * Sets the postal address type.
+     * @param type Postal address type.
      */
-    void setCategoryType(final PostalAddressCategoryType type);
+    void setPostalAddressType(final PostalAddressType type);
 }

@@ -127,26 +127,25 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Add a document")
     final void testAddDocument() throws DataModelEntityException
     {
-        IDocument document = DocumentRandomizer.generate(true, false);
-
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
                 .withAddressType(emailAddressType)
+                .withDocument(DocumentRandomizer.generate(true, false))
                 .build();
-
-        email.addDocument(document);
 
         assertThat(email).isNotNull();
         assertThat(email.getDocumentCount()).isEqualTo(1);
-        assertThat(email.getDocuments().get(0).getName()).isEqualTo(document.getName());
-        assertThat(email.getDocuments().get(0).getId()).isEqualTo(document.getId());
+
+        email.addDocument(DocumentRandomizer.generate(true, true));
+        assertThat(email.getDocumentCount()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("Remove a document")
-    final void testRemoveDocument() throws DataModelEntityException
+    @DisplayName("Cannot add a duplicate document")
+    final void testCannotAddDuplicateDocument() throws DataModelEntityException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
+        IDocument other = DocumentRandomizer.generate(true, false);
 
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
@@ -156,17 +155,64 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
         assertThat(email).isNotNull();
         assertThat(email.getDocumentCount()).isEqualTo(1);
-        assertThat(email.getDocuments().get(0).getName()).isEqualTo(document.getName());
-        assertThat(email.getDocuments().get(0).getId()).isEqualTo(document.getId());
 
-        email.removeDocument(document);
+        // Cannot add a duplicate document based on instance
+        email.addDocument(document);
+        assertThat(email.getDocumentCount()).isEqualTo(1);
 
+        // Cannot add a duplicate document based on UUID
+        other.setId(document.getId());
+        email.addDocument(other);
+        assertThat(email.getDocumentCount()).isEqualTo(1);
+
+        // Cannot add a duplicate document based on name
+        other.setName(document.getName());
+        email.addDocument(other);
+        assertThat(email.getDocumentCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Delete a document")
+    final void testDeleteDocument() throws DataModelEntityException
+    {
+        IDocument document1 = DocumentRandomizer.generate(true, false);
+        IDocument document2 = DocumentRandomizer.generate(true, false);
+        IDocument document3 = DocumentRandomizer.generate(true, false);
+        IDocument document4 = DocumentRandomizer.generate(true, false);
+
+        IEmailAddress email = EmailAddress.builder()
+                .withEmail(emailAddress)
+                .withAddressType(emailAddressType)
+                .build();
+
+        email.addDocument(document1);
+        email.addDocument(document2);
+        email.addDocument(document3);
+        email.addDocument(document4);
+
+        assertThat(email).isNotNull();
+        assertThat(email.getDocumentCount()).isEqualTo(4);
+
+        // Delete document by instance
+        email.deleteDocument(document1);
+        assertThat(email.getDocumentCount()).isEqualTo(3);
+
+        // Delete document by UUID
+        email.deleteDocumentById(document2.getId());
+        assertThat(email.getDocumentCount()).isEqualTo(2);
+
+        // Delete document by id
+        email.deleteDocumentById(document3.getId().toString());
+        assertThat(email.getDocumentCount()).isEqualTo(1);
+
+        // Delete document by name
+        email.deleteDocumentByName(document4.getName());
         assertThat(email.getDocumentCount()).isZero();
     }
 
     @Test
-    @DisplayName("Get a document by its name")
-    final void testGetDocumentByName() throws DataModelEntityException
+    @DisplayName("Retrieve a document")
+    final void testRetrieveDocument() throws DataModelEntityException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
 
@@ -178,34 +224,18 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
         assertThat(email).isNotNull();
         assertThat(email.getDocumentCount()).isEqualTo(1);
-        assertThat(email.getDocuments().get(0).getName()).isEqualTo(document.getName());
-        assertThat(email.getDocuments().get(0).getId()).isEqualTo(document.getId());
 
-        IDocument other = email.getDocumentByName(document.getName());
-        assertThat(other).isNotNull();
-        assertThat(other.getName()).isEqualTo(document.getName());
-    }
+        // Get a document by instance
+        assertThat((IDocument) email.getDocument(document)).isEqualTo(document);
 
-    @Test
-    @DisplayName("Get a document by its identifier")
-    final void testGetDocumentById() throws DataModelEntityException
-    {
-        IDocument document = DocumentRandomizer.generate(true, false);
+        // Get a document by UUID
+        assertThat((IDocument) email.getDocumentById(document.getId())).isEqualTo(document);
 
-        IEmailAddress email = EmailAddress.builder()
-                .withEmail(emailAddress)
-                .withAddressType(emailAddressType)
-                .withDocument(document)
-                .build();
+        // Get a document by identifier
+        assertThat((IDocument) email.getDocumentById(document.getId().toString())).isEqualTo(document);
 
-        assertThat(email).isNotNull();
-        assertThat(email.getDocumentCount()).isEqualTo(1);
-        assertThat(email.getDocuments().get(0).getName()).isEqualTo(document.getName());
-        assertThat(email.getDocuments().get(0).getId()).isEqualTo(document.getId());
-
-        IDocument other = email.getDocumentById(document.getId());
-        assertThat(other).isNotNull();
-        assertThat(other.getId().toString()).isEqualTo(document.getId().toString());
+        // Get a document by name
+        assertThat((IDocument) email.getDocumentByName(document.getName())).isEqualTo(document);
     }
 
     @Test
@@ -222,16 +252,26 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
         assertThat(email).isNotNull();
         assertThat(email.getDocumentCount()).isEqualTo(1);
-        assertThat(email.getDocuments().get(0).getName()).isEqualTo(document.getName());
-        assertThat(email.getDocuments().get(0).getId()).isEqualTo(document.getId());
 
+        // Get a document by instance
         assertThat(email.existDocument(document)).isTrue();
+
+        // Get a document by identifier
+        assertThat(email.existDocumentById(document.getId().toString())).isTrue();
+
+        // Get a document by UUID
+        assertThat(email.existDocumentById(document.getId())).isTrue();
+
+        // Get a document by name
+        assertThat(email.existDocumentByName(document.getName())).isTrue();
     }
 
     @Test
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException
     {
+        int count = DocumentRandomizer.getRandomInt(1, 20);
+
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
                 .withAddressType(emailAddressType)
@@ -240,13 +280,12 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         assertThat(email).isNotNull();
         assertThat(email.getDocumentCount()).isZero();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < count; i++)
         {
             email.addDocument(DocumentRandomizer.generate(true));
         }
 
-        assertThat(email.getDocumentCount()).isEqualTo(10);
-        assertThat(email.getDocuments()).hasSize(10);
+        assertThat(email.getDocuments()).hasSize(count);
     }
 
     @Test
@@ -254,17 +293,17 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Create 1'000 email addresses with documents and no content")
     final void testPerformanceCreateMultipleEmailAddressesWithoutDocumentContent() throws DataModelEntityException
     {
-        final int COUNT = 1000;
+        final int count = 1000;
         List<IEmailAddress> list = new ArrayList<>();
 
-        for (int i = 0; i < COUNT; i++)
+        for (int i = 0; i < count; i++)
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
             list.add(EmailAddressRandomizer.generate(true, true, false, EmailAddressRandomizer.getRandomInt(1, 3)));
         }
 
-        assertThat(list).hasSize(COUNT);
+        assertThat(list).hasSize(count);
     }
 
     @Test
@@ -272,16 +311,16 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Create 1'000 email addresses with documents and content")
     final void testPerformanceCreateMultipleEmailAddressesWithDocumentAndContent() throws DataModelEntityException
     {
-        final int COUNT = 1000;
+        final int count = 1000;
         List<IEmailAddress> list = new ArrayList<>();
 
-        for (int i = 0; i < COUNT; i++)
+        for (int i = 0; i < count; i++)
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
             list.add(EmailAddressRandomizer.generate(true, true, true, EmailAddressRandomizer.getRandomInt(1, 3)));
         }
 
-        assertThat(list).hasSize(COUNT);
+        assertThat(list).hasSize(count);
     }
 }

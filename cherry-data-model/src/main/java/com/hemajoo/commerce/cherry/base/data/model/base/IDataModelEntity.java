@@ -20,9 +20,9 @@ import com.hemajoo.commerce.cherry.base.data.model.base.identity.IIdentity;
 import com.hemajoo.commerce.cherry.base.data.model.base.identity.Referable;
 import com.hemajoo.commerce.cherry.base.data.model.base.status.IStatusEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
+import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import lombok.NonNull;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -116,14 +116,22 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     int getDocumentCount();
 
     /**
-     * Return the complete list of documents this entity holds.
+     * Retrieve the collection of documents this entity holds.
      * @param <T> Entity type.
-     * @return List of documents.
+     * @return Set of documents.
      */
-    <T extends IDataModelEntity> List<T> getDocuments();
+    <T extends IDataModelEntity> Set<T> getDocuments();
 
     /**
-     * Return the document matching the given name.
+     * Retrieve a document.
+     * @param document Document.
+     * @param <T> Entity type.
+     * @return Document if found, <b>null</b> otherwise.
+     */
+    <T extends IDataModelEntity> T getDocument(final @NonNull IDocument document);
+
+    /**
+     * Retrieve a document given its name.
      * @param name Document name.
      * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
@@ -131,7 +139,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name);
 
     /**
-     * Return the document matching the given identifier.
+     * Retrieve a document given its identifier as a string.
      * @param id Document identifier.
      * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
@@ -139,7 +147,7 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     <T extends IDataModelEntity> T getDocumentById(final @NonNull String id);
 
     /**
-     * Return the document matching the given UUID.
+     * Retrieve a document given its identifier as UUID.
      * @param uuid Document UUID.
      * @param <T> Entity type.
      * @return Document if found, <b>null</b> otherwise.
@@ -184,26 +192,33 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     boolean existDocumentByName(final @NonNull String name);
 
     /**
-     * Remove a document from the list of documents for this entity.
-     * @param document Document to remove.
+     * Delete a document.
+     * @param document Document.
      * @param <T> Entity type.
      * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
-    <T extends IDataModelEntity> boolean removeDocument(T document);
+    <T extends IDataModelEntity> boolean deleteDocument(T document);
 
     /**
-     * Remove a document given its identifier.
+     * Delete a document.
      * @param id Document identifier.
      * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
-    boolean removeDocumentById(final @NonNull String id);
+    boolean deleteDocumentById(final @NonNull String id);
 
     /**
-     * Remove a document given its identifier.
-     * @param id Document identifier.
+     * Delete a document.
+     * @param id Document UUID.
      * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
      */
-    boolean removeDocumentById(final @NonNull UUID id);
+    boolean deleteDocumentById(final @NonNull UUID id);
+
+    /**
+     * Delete a document.
+     * @param name Document name.
+     * @return <b>True</b> if the document has been removed, <b>false</b> otherwise.
+     */
+    boolean deleteDocumentByName(final @NonNull String name);
 
     /**
      * Return the entity name.

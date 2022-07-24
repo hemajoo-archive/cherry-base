@@ -121,7 +121,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL/*, orphanRemoval = true*/)
-    private List<Document> documents = null;
+    private Set<Document> documents = null;
 
     /**
      * Parent entity.
@@ -220,14 +220,21 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
 
     @JsonIgnore
     @Override
-    public final <T extends IDataModelEntity> List<T> getDocuments()
+    public final <T extends IDataModelEntity> Set<T> getDocuments()
     {
         if (entityType == EntityType.MEDIA)
         {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
-        return documents != null ? (List<T>) Collections.unmodifiableList(documents) : new ArrayList<>();
+        return documents != null ? (Set<T>) Collections.unmodifiableSet(documents) : new HashSet<>();
+    }
+
+    @Override
+    public final <T extends IDataModelEntity> T getDocument(final @NonNull IDocument document)
+    {
+        Optional<Document> element = documents.stream().filter(e -> e.equals(document)).findFirst();
+        return element.isEmpty() ? null : (T) element.get();
     }
 
     @Override
@@ -292,7 +299,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
 
         if (documents == null)
         {
-            documents = new ArrayList<>();
+            documents = new HashSet<>();
         }
 
         if (!existDocument(document))
@@ -310,11 +317,11 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final <T extends IDataModelEntity> boolean removeDocument(final @NonNull T document)
+    public final <T extends IDataModelEntity> boolean deleteDocument(final @NonNull T document)
     {
         if (document.getId() != null)
         {
-            return removeDocumentById(document.getId());
+            return deleteDocumentById(document.getId());
         }
         else
         {
@@ -323,15 +330,21 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final boolean removeDocumentById(final @NonNull String id)
+    public final boolean deleteDocumentById(final @NonNull String id)
     {
         return documents.removeIf(doc -> doc.getId().toString().equals(id));
     }
 
     @Override
-    public final boolean removeDocumentById(final @NonNull UUID id)
+    public final boolean deleteDocumentById(final @NonNull UUID id)
     {
         return documents.removeIf(doc -> doc.getId().equals(id));
+    }
+
+    @Override
+    public final boolean deleteDocumentByName(final @NonNull String name)
+    {
+        return documents.removeIf(doc -> doc.getName().equals(name));
     }
 
     @Override

@@ -195,7 +195,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
 
         assertThat(person.getDocumentCount()).isPositive();
 
-        person.removeDocument(document);
+        person.deleteDocument(document);
 
         assertThat(person).isNotNull();
         assertThat(person.getPersonType()).isEqualTo(personType);

@@ -207,21 +207,15 @@ public class Person extends DataModelEntity implements IPerson
         }
     }
 
-    /**
-     * Set the person last name.
-     * @param lastName Last name.
-     */
-    public void setLastName(final String lastName)
+    @Override
+    public final void setLastName(final String lastName)
     {
         this.lastName = lastName;
         setName(this.lastName + ", " + this.firstName);
     }
 
-    /**
-     * Set the person first name.
-     * @param firstName First name.
-     */
-    public void setFirstName(final String firstName)
+    @Override
+    public final void setFirstName(final String firstName)
     {
         this.firstName = firstName;
         setName(this.lastName + ", " + this.firstName);
@@ -324,7 +318,7 @@ public class Person extends DataModelEntity implements IPerson
             throw new EmailAddressException(e);
         }
 
-        emailAddresses.add((EmailAddress) emailAddress);
+        emailAddresses.add(emailAddress);
     }
 
     @Override
@@ -365,8 +359,13 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final void deleteAllEmailAddress()
+    public final void deleteAllEmailAddress() throws DataModelEntityException
     {
+        for (IEmailAddress emailAddress : emailAddresses)
+        {
+            emailAddress.setParent(null);
+        }
+
         emailAddresses.clear();
     }
 
@@ -376,30 +375,22 @@ public class Person extends DataModelEntity implements IPerson
         return emailAddresses.size();
     }
 
-    /**
-     * Retrieve a list of email addresses matching the given address type.
-     * @param type Address type.
-     * @return List of matching email addresses.
-     */
+    @Override
     @SuppressWarnings("java:S6204")
-    public final List<IEmailAddress> findEmailAddressByType(final AddressType type)
+    public final Set<IEmailAddress> findEmailAddressByType(final AddressType type)
     {
         return emailAddresses.stream()
                 .filter(emailAddress -> emailAddress.getAddressType() == type)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    /**
-     * Retrieve a list of email addresses matching the given status type.
-     * @param status Status type.
-     * @return List of email addresses.
-     */
+    @Override
     @SuppressWarnings("java:S6204")
-    public final List<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status)
+    public final Set<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status)
     {
         return emailAddresses.stream()
                 .filter(emailAddress -> emailAddress.getStatusType() == status)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -409,66 +400,112 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
+    public IPostalAddress getPostalAddress(final @NonNull IPostalAddress address)
+    {
+        return postalAddresses.stream()
+                .filter(postalAddress -> postalAddress.equals(address))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public IPostalAddress getPostalAddressById(final @NonNull UUID id)
+    {
+        return postalAddresses.stream()
+                .filter(postalAddress -> postalAddress.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public IPostalAddress getPostalAddressById(final @NonNull String id)
+    {
+        return getPostalAddressById(UUID.fromString(id));
+    }
+
+    @Override
     public final IPostalAddress getDefaultPostalAddress()
     {
         return postalAddresses.stream()
                 .filter(IPostalAddress::getIsDefault).findFirst().orElse(null);
     }
 
-    /**
-     * Check if the person has a default postal address?
-     * @return {@code True} if the person has a default postal address, {@code false} otherwise.
-     */
+    @Override
     public final boolean hasDefaultPostalAddress()
     {
         return postalAddresses.stream().anyMatch(IPostalAddress::getIsDefault);
     }
 
-    /**
-     * Check if a postal address matches the given one exist?
-     * @param address Postal address.
-     * @return {@code True} if a postal address matches, {@code false} otherwise.
-     */
-    public final boolean existPostalAddress(final @NotNull IPostalAddress address)
+    @Override
+    public final boolean existPostalAddress(final @NonNull IPostalAddress address)
     {
-        return postalAddresses.stream().anyMatch(e -> e.equals(address));
+        return postalAddresses.stream().anyMatch(postalAddress -> postalAddress.equals(address));
     }
 
-    /**
-     * Retrieve postal addresses matching the given {@link AddressType}.
-     * @param type Address type.
-     * @return List of postal addresses.
-     */
+    @Override
+    public boolean existPostalAddressById(final @NonNull UUID id)
+    {
+        return postalAddresses.stream().anyMatch(postalAddress -> postalAddress.getId().equals(id));
+    }
+
+    @Override
+    public boolean existPostalAddressById(final @NonNull String id)
+    {
+        return existPostalAddressById(UUID.fromString(id));
+    }
+
+    @Override
     @SuppressWarnings("java:S6204")
-    public final List<IPostalAddress> findPostalAddressByType(final AddressType type)
+    public final Set<IPostalAddress> findPostalAddressByType(final AddressType type)
     {
         return postalAddresses.stream()
                 .filter(e -> e.getAddressType() == type)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    /**
-     * Retrieve postal addresses matching the given {@link EntityStatusType}.
-     * @param status Status type.
-     * @return List of postal addresses.
-     */
+    @Override
     @SuppressWarnings("java:S6204")
-    public final List<IPostalAddress> findPostalAddressByStatus(final EntityStatusType status)
+    public final Set<IPostalAddress> findPostalAddressByStatus(final EntityStatusType status)
     {
         return postalAddresses.stream()
                 .filter(e -> e.getStatusType() == status)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    /**
-     * Add a postal address.
-     * @param postalAddress Postal address.
-     * @throws DataModelEntityException Thrown to indicate an error occurred while adding a postal address.
-     */
+    @Override
     public final void addPostalAddress(final @NonNull IPostalAddress postalAddress) throws DataModelEntityException
     {
         postalAddress.setParent(this);
         postalAddresses.add((PostalAddress) postalAddress);
+    }
+
+    @Override
+    public final void deletePostalAddress(final @NonNull IPostalAddress address)
+    {
+        postalAddresses.removeIf(postalAddress -> postalAddress.equals(address));
+    }
+
+    @Override
+    public final void deletePostalAddressById(final @NonNull UUID id)
+    {
+        postalAddresses.removeIf(postalAddress -> postalAddress.getId().equals(id));
+    }
+
+    @Override
+    public final void deletePostalAddressById(final @NonNull String id)
+    {
+        deletePostalAddressById(UUID.fromString(id));
+    }
+
+    @Override
+    public final void deleteAllPostalAddress() throws DataModelEntityException
+    {
+        for (IPostalAddress postalAddress : postalAddresses)
+        {
+            postalAddress.setParent(null);
+        }
+
+        postalAddresses.clear();
     }
 
     @Override
@@ -489,81 +526,122 @@ public class Person extends DataModelEntity implements IPerson
         return phoneNumbers.size();
     }
 
-    /**
-     * Return the default phone number.
-     * @return Optional default phone number.
-     */
-    public final Optional<PhoneNumber> getDefaultPhoneNumber()
+    @Override
+    public final PhoneNumber getDefaultPhoneNumber()
     {
         return phoneNumbers.stream()
-                .filter(PhoneNumber::getIsDefault).findFirst();
+                .filter(PhoneNumber::getIsDefault).findFirst().orElse(null);
     }
 
-    /**
-     * Check if the person has a default phone number?
-     * @return {@code True} if the person has a default phone number, {@code false} otherwise.
-     */
+    @Override
     public final boolean hasDefaultPhoneNumber()
     {
         return phoneNumbers.stream().anyMatch(IPhoneNumber::getIsDefault);
     }
 
-    /**
-     * Check if the given phone number (only the number) already exist?
-     * @param phoneNumber Phone number to check.
-     * @return {@code True} if it already exist, {@code false} otherwise.
-     */
-    public final boolean existPhoneNumber(final @NonNull String phoneNumber)
-    {
-        return phoneNumbers.stream()
-                .anyMatch(e -> e.getNumber().equalsIgnoreCase(phoneNumber));
-    }
-
-    /**
-     * Check if the given phone number already exist?
-     * @param phoneNumber Phone number to check.
-     * @return {@code True} if it already exist, {@code false} otherwise.
-     */
+    @Override
     public final boolean existPhoneNumber(final @NonNull IPhoneNumber phoneNumber)
     {
         return phoneNumbers.stream()
                 .anyMatch(e -> e.equals(phoneNumber));
     }
 
-    /**
-     * Retrieve phone numbers matching the given {@link PhoneNumberType}.
-     * @param type Address type.
-     * @return List of phone numbers.
-     */
-    @SuppressWarnings("java:S6204")
-    public final List<IPhoneNumber> findPhoneNumberByType(final PhoneNumberType type)
+    @Override
+    public final boolean existPhoneNumberById(@NonNull UUID id)
     {
         return phoneNumbers.stream()
-                .filter(e -> e.getPhoneType() == type)
-                .collect(Collectors.toList());
+                .anyMatch(e -> e.getId().equals(id));
     }
 
-    /**
-     * Retrieve phone numbers matching the given {@link EntityStatusType}.
-     * @param status Status type.
-     * @return List of phone numbers.
-     */
-    @SuppressWarnings("java:S6204")
-    public final List<IPhoneNumber> findPhoneNumberByStatus(final EntityStatusType status)
+    @Override
+    public final boolean existPhoneNumberById(@NonNull String id)
+    {
+        return existPhoneNumberById(UUID.fromString(id));
+    }
+
+
+    @Override
+    public final boolean existPhoneNumberByValue(final @NonNull String number)
     {
         return phoneNumbers.stream()
-                .filter(e -> e.getStatusType() == status)
-                .collect(Collectors.toList());
+                .anyMatch(e -> e.getNumber().equalsIgnoreCase(number));
     }
 
-    /**
-     * Add a phone number.
-     * @param phoneNumber Phone number.
-     * @throws DataModelEntityException Thrown to indicate an error occurred while adding a postal address.
-     */
+    @Override
+    public final IPhoneNumber getPhoneNumber(@NonNull IPhoneNumber phone)
+    {
+        return phoneNumbers.stream()
+                .filter(phoneNumber -> phoneNumber.equals(phone))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public final IPhoneNumber getPhoneNumberById(@NonNull UUID id)
+    {
+        return phoneNumbers.stream()
+                .filter(phoneNumber -> phoneNumber.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public final IPhoneNumber getPhoneNumberById(@NonNull String id)
+    {
+        return getPhoneNumberById(UUID.fromString(id));
+    }
+
+    @Override
     public final void addPhoneNumber(final @NonNull IPhoneNumber phoneNumber) throws DataModelEntityException
     {
         phoneNumber.setParent(this);
         phoneNumbers.add((PhoneNumber) phoneNumber);
+    }
+
+    @Override
+    public final void deletePhoneNumber(@NonNull IPhoneNumber phone)
+    {
+        phoneNumbers.removeIf(phoneNumber -> phoneNumber.equals(phone));
+    }
+
+    @Override
+    public final void deletePhoneNumberById(@NonNull UUID id)
+    {
+        phoneNumbers.removeIf(phoneNumber -> phoneNumber.getId().equals(id));
+    }
+
+    @Override
+    public final void deletePhoneNumberById(@NonNull String id)
+    {
+        deletePostalAddressById(UUID.fromString(id));
+    }
+
+    @Override
+    public final void deleteAllPhoneNumber() throws DataModelEntityException
+    {
+        for (IPhoneNumber phoneNumber : phoneNumbers)
+        {
+            phoneNumber.setParent(null);
+        }
+
+        phoneNumbers.clear();
+    }
+
+    @Override
+    @SuppressWarnings("java:S6204")
+    public final Set<IPhoneNumber> findPhoneNumberByType(final PhoneNumberType type)
+    {
+        return phoneNumbers.stream()
+                .filter(e -> e.getPhoneType() == type)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @SuppressWarnings("java:S6204")
+    public final Set<IPhoneNumber> findPhoneNumberByStatus(final EntityStatusType status)
+    {
+        return phoneNumbers.stream()
+                .filter(e -> e.getStatusType() == status)
+                .collect(Collectors.toSet());
     }
 }

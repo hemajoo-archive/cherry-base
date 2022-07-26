@@ -47,6 +47,30 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
     private static final EnumRandomGenerator GENERATOR_GENDER_TYPE = new EnumRandomGenerator(GenderType.class);
 
     /**
+     * Generate a random person without any document nor email address, postal address and phone number.
+     * @param withRandomId Random identifier has to be generated?
+     * @return Random person.
+     */
+    public static IPerson generate(final boolean withRandomId)
+    {
+        IPerson person = new Person();
+        populateBaseFields(person);
+
+        if (withRandomId)
+        {
+            person.setId(UUID.randomUUID());
+        }
+
+        person.setFirstName(getRandomFirstName());
+        person.setLastName(getRandomLastName());
+        person.setBirthDate(FAKER.date().birthday(18, 70));
+        person.setPersonType(getRandomPersonType());
+        person.setGenderType(getRandomGenderType());
+
+        return person;
+    }
+
+    /**
      * Generate a random person.
      * @param withRandomId Random identifier has to be generated?
      * @param withEmailAddress Email addresses have to be generated?
@@ -60,13 +84,7 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      */
     public static IPerson generate(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IPerson person = new Person();
-        populateBaseFields(person);
-
-        if (withRandomId)
-        {
-            person.setId(UUID.randomUUID());
-        }
+        IPerson person = generate(withRandomId);
 
         if (withDocument)
         {
@@ -91,12 +109,6 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
                 person.addPhoneNumber(PhoneNumberRandomizer.generate(withRandomId, withDocument, withContent, count));
             }
         }
-
-        person.setFirstName(getRandomFirstName());
-        person.setLastName(getRandomLastName());
-        person.setBirthDate(FAKER.date().birthday(18, 70));
-        person.setPersonType(getRandomPersonType());
-        person.setGenderType(getRandomGenderType());
 
         return person;
     }

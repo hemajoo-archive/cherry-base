@@ -16,10 +16,15 @@ package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressException;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.IPostalAddress;
+import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressException;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
+import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberException;
+import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberType;
 import lombok.NonNull;
 
 import java.util.Date;
@@ -118,6 +123,8 @@ public interface IPerson extends IDataModelEntity
      */
     void setGenderType(final GenderType type);
 
+    // Email Address services
+
     /**
      * Add an email address.
      * @param email Email address.
@@ -155,8 +162,9 @@ public interface IPerson extends IDataModelEntity
 
     /**
      * Delete all email addresses.
+     * @throws DataModelEntityException Thrown in case an error occurred while delete email addresses.
      */
-    void deleteAllEmailAddress();
+    void deleteAllEmailAddress() throws DataModelEntityException;
 
     /**
      * Check if an email address exist.
@@ -231,8 +239,8 @@ public interface IPerson extends IDataModelEntity
     IEmailAddress getDefaultEmailAddress();
 
     /**
-     * Return if a default email address exist?
-     * @return <b>True</b> if a default email address exist, <b>false</b> otherwise.
+     * Return if the person has a default email address?
+     * @return <b>True</b> if the person has a default email address, <b>false</b> otherwise.
      */
     boolean hasDefaultEmailAddress();
 
@@ -243,11 +251,81 @@ public interface IPerson extends IDataModelEntity
     int getEmailAddressCount();
 
     /**
-     * Add a postal address.
-     * @param postal Postal address.
-     * @throws DataModelEntityException Thrown in case an error occurred while trying to add a postal address.
+     * Retrieve a list of email addresses matching the given address type.
+     * @param type Address type.
+     * @return Set of matching email addresses.
      */
-    void addPostalAddress(final @NonNull IPostalAddress postal) throws DataModelEntityException;
+    Set<IEmailAddress> findEmailAddressByType(final AddressType type);
+
+    /**
+     * Retrieve a list of email addresses matching the given status type.
+     * @param status Status type.
+     * @return Set of matching email addresses.
+     */
+    Set<IEmailAddress> findEmailAddressByStatus(final EntityStatusType status);
+
+
+    //
+    // Postal Address services
+    //
+
+    /**
+     * Add a postal address.
+     * @param address Postal address.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to add a postal address.
+     */
+    void addPostalAddress(final @NonNull IPostalAddress address) throws DataModelEntityException;
+
+    /**
+     * Delete a postal address.
+     * @param address Postal address.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to delete a postal address.
+     */
+    void deletePostalAddress(final @NonNull IPostalAddress address) throws PostalAddressException;
+
+    /**
+     * Delete a postal address given its identifier.
+     * @param id Postal address identifier.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to delete a postal address.
+     */
+    void deletePostalAddressById(final @NonNull UUID id) throws PostalAddressException;
+
+    /**
+     * Delete a postal address given its identifier.
+     * @param id Postal address identifier.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to delete a postal address.
+     */
+    void deletePostalAddressById(final @NonNull String id) throws PostalAddressException;
+
+    /**
+     * Delete all postal addresses.
+     * @throws DataModelEntityException Thrown in case an error occurred while delete postal addresses.
+     */
+    void deleteAllPostalAddress() throws DataModelEntityException;
+
+    /**
+     * Check if a postal address exist.
+     * @param address Postal address.
+     * @return <b>True</b> if the postal address exist, <b>false</b> otherwise.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to check the postal address.
+     */
+    boolean existPostalAddress(final @NonNull IPostalAddress address) throws PostalAddressException;
+
+    /**
+     * Check if a postal address exist.
+     * @param id Postal address identifier.
+     * @return <b>True</b> if the postal address exist, <b>false</b> otherwise.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to check the postal address.
+     */
+    boolean existPostalAddressById(final @NonNull UUID id) throws PostalAddressException;
+
+    /**
+     * Check if a postal address exist.
+     * @param id Postal address identifier.
+     * @return <b>True</b> if the postal address exist, <b>false</b> otherwise.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to check the postal address.
+     */
+    boolean existPostalAddressById(final @NonNull String id) throws PostalAddressException;
 
     /**
      * Return an unmodifiable collection of postal addresses.
@@ -256,10 +334,37 @@ public interface IPerson extends IDataModelEntity
     Set<IPostalAddress> getPostalAddresses();
 
     /**
+     * Retrieve a postal address.
+     * @param address Postal address.
+     * @return Matching postal address, <b>null</b> otherwise.
+     */
+    IPostalAddress getPostalAddress(final @NonNull IPostalAddress address);
+
+    /**
+     * Retrieve a postal address.
+     * @param id Postal address identifier.
+     * @return Matching postal address, <b>null</b> otherwise.
+     */
+    IPostalAddress getPostalAddressById(final @NonNull UUID id);
+
+    /**
+     * Retrieve a postal address.
+     * @param id Postal address identifier.
+     * @return Matching postal address, <b>null</b> otherwise.
+     */
+    IPostalAddress getPostalAddressById(final @NonNull String id);
+
+    /**
      * Return the default postal address.
      * @return Default postal address if one, <b>null</b> otherwise.
      */
     IPostalAddress getDefaultPostalAddress();
+
+    /**
+     * Return if the person has a default postal address?
+     * @return <b>True</b> if the person has a default postal address, <b>false</b> otherwise.
+     */
+    boolean hasDefaultPostalAddress();
 
     /**
      * Return the number of postal addresses.
@@ -268,21 +373,145 @@ public interface IPerson extends IDataModelEntity
     int getPostalAddressCount();
 
     /**
+     * Retrieve postal addresses matching the given address type.
+     * @param type Address type.
+     * @return Set of matching postal addresses.
+     */
+    Set<IPostalAddress> findPostalAddressByType(final AddressType type);
+
+    /**
+     * Retrieve postal addresses matching the given status type.
+     * @param status Status type.
+     * @return Set of matching postal addresses.
+     */
+    Set<IPostalAddress> findPostalAddressByStatus(final EntityStatusType status);
+
+    //
+    // Phone Number services
+    //
+
+    /**
+     * Add a phone number.
+     * @param phone Phone number.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to add a phone number.
+     */
+    void addPhoneNumber(final @NonNull IPhoneNumber phone) throws DataModelEntityException;
+
+    /**
+     * Delete a phone number.
+     * @param phone Phone number.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to delete a phone number.
+     */
+    void deletePhoneNumber(final @NonNull IPhoneNumber phone) throws PhoneNumberException;
+
+    /**
+     * Delete a phone number given its identifier.
+     * @param id Phone number identifier.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to delete a phone number.
+     */
+    void deletePhoneNumberById(final @NonNull UUID id) throws PhoneNumberException;
+
+    /**
+     * Delete a phone number given its identifier.
+     * @param id Phone number identifier.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to delete a phone number.
+     */
+    void deletePhoneNumberById(final @NonNull String id) throws PhoneNumberException;
+
+    /**
+     * Delete all phone numbers.
+     * @throws DataModelEntityException Thrown in case an error occurred while delete email addresses.
+     */
+    void deleteAllPhoneNumber() throws DataModelEntityException;
+
+    /**
+     * Check if a phone number exist.
+     * @param phone Phone number.
+     * @return <b>True</b> if the phone number exist, <b>false</b> otherwise.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to check the phone number.
+     */
+    boolean existPhoneNumber(final @NonNull IPhoneNumber phone) throws PhoneNumberException;
+
+    /**
+     * Check if a phone number exist.
+     * @param id Phone number identifier.
+     * @return <b>True</b> if the phone number exist, <b>false</b> otherwise.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to check the phone number.
+     */
+    boolean existPhoneNumberById(final @NonNull UUID id) throws PhoneNumberException;
+
+    /**
+     * Check if a phone number exist.
+     * @param id Phone number identifier.
+     * @return <b>True</b> if the phone number exist, <b>false</b> otherwise.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to check the phone number.
+     */
+    boolean existPhoneNumberById(final @NonNull String id) throws PhoneNumberException;
+
+    /**
+     * Check if a phone number exist.
+     * @param number Phone number.
+     * @return <b>True</b> if the phone number exist, <b>false</b> otherwise.
+     * @throws PhoneNumberException Thrown in case an error occurred while trying to check the phone number.
+     */
+    boolean existPhoneNumberByValue(final @NonNull String number) throws PhoneNumberException;
+
+    /**
      * Return an unmodifiable collection of phone numbers.
      * @return Phone numbers.
      */
     Set<IPhoneNumber> getPhoneNumbers();
 
     /**
-     * Add a phone number.
-     * @param phone Phone number.
-     * @throws DataModelEntityException Thrown in case an error occurred while trying to add a phone number.
+     * Retrieve a phone number.
+     * @param address Phone number.
+     * @return Matching phone number, <b>null</b> otherwise.
      */
-    void addPhoneNumber(final @NonNull IPhoneNumber phone) throws DataModelEntityException;
+    IPhoneNumber getPhoneNumber(final @NonNull IPhoneNumber address);
+
+    /**
+     * Retrieve a phone number.
+     * @param id Phone number identifier.
+     * @return Matching phone number, <b>null</b> otherwise.
+     */
+    IPhoneNumber getPhoneNumberById(final @NonNull UUID id);
+
+    /**
+     * Retrieve a phone number.
+     * @param id Phone number identifier.
+     * @return Matching phone number, <b>null</b> otherwise.
+     */
+    IPhoneNumber getPhoneNumberById(final @NonNull String id);
+
+    /**
+     * Return the default phone number.
+     * @return Default phone number if one, <b>null</b> otherwise.
+     */
+    IPhoneNumber getDefaultPhoneNumber();
+
+    /**
+     * Return if the person has a default phone number?
+     * @return <b>True</b> if the person has a default phone number, <b>false</b> otherwise.
+     */
+    boolean hasDefaultPhoneNumber();
 
     /**
      * Return the number of phone numbers.
      * @return Number of phone numbers.
      */
     int getPhoneNumberCount();
+
+    /**
+     * Retrieve phone numbers matching the given phone number type.
+     * @param type Phone number type.
+     * @return Set of matching phone numbers.
+     */
+    Set<IPhoneNumber> findPhoneNumberByType(final PhoneNumberType type);
+
+    /**
+     * Retrieve phone numbers matching the given status type.
+     * @param status Status type.
+     * @return Set of matching phone numbers.
+     */
+    Set<IPhoneNumber> findPhoneNumberByStatus(final EntityStatusType status);
 }

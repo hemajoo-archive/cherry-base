@@ -105,6 +105,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
     /**
      * Is it a default postal address?
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Column(name = "IS_DEFAULT")
@@ -113,6 +114,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
     /**
      * Postal address type.
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
@@ -122,6 +124,7 @@ public class PostalAddress extends DataModelEntity implements IPostalAddress
     /**
      * Postal address category type.
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)

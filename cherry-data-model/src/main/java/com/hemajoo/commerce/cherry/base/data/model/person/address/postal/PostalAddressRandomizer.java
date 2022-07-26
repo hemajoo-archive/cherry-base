@@ -44,9 +44,10 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
     /**
      * Generate a random postal address without any document.
      * @param withRandomId Does a random identifier has to be generated?
+     * @param isDefault Is a default postal address?
      * @return Postal address.
      */
-    public static IPostalAddress generate(final boolean withRandomId)
+    public static IPostalAddress generate(final boolean withRandomId, final boolean isDefault)
     {
         IPostalAddress postal = new PostalAddress();
         populateBaseFields(postal);
@@ -56,7 +57,6 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
             postal.setId(UUID.randomUUID());
         }
 
-        postal.setIsDefault(getRandomIsDefault());
         postal.setStreetName(getRandomStreetName());
         postal.setStreetNumber(getRandomStreetNumber());
         postal.setLocality(getRandomLocality());
@@ -66,6 +66,12 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
         postal.setCountryCode(getRandomCountryCode().toUpperCase());
         postal.setAddressType(getRandomAddressType());
         postal.setPostalAddressType(getRandomPostalAddressType());
+        postal.setIsDefault(isDefault);
+
+        if (postal.getName() == null)
+        {
+            postal.setName(postal.getStreetNumber() + ", " + postal.getStreetName() + " " + zipCode + " " + postal.getLocality() + " - " + postal.getCountryCode());
+        }
 
         return postal;
     }
@@ -81,7 +87,7 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
      */
     public static IPostalAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IPostalAddress postal = generate(withRandomId);
+        IPostalAddress postal = generate(withRandomId, false);
 
         if (withDocument)
         {

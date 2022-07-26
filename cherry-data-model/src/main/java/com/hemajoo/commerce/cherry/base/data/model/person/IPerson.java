@@ -128,9 +128,10 @@ public interface IPerson extends IDataModelEntity
     /**
      * Add an email address.
      * @param email Email address.
+     * @return <b>True</b> if the email address has been added to the person, <b>false</b> otherwise.
      * @throws EmailAddressException Thrown in case an error occurred while trying to add an email address.
      */
-    void addEmailAddress(final @NonNull IEmailAddress email) throws EmailAddressException;
+    boolean addEmailAddress(final @NonNull IEmailAddress email) throws EmailAddressException;
 
     /**
      * Delete an email address.
@@ -154,11 +155,11 @@ public interface IPerson extends IDataModelEntity
     void deleteEmailAddressById(final @NonNull String id) throws DataModelEntityException;
 
     /**
-     * Delete an email address given its email address value.
-     * @param email Email address value.
+     * Delete an email address given its email address name.
+     * @param name Email address name.
      * @throws EmailAddressException Thrown in case an error occurred while trying to delete an email address.
      */
-    void deleteEmailAddressByValue(final @NonNull String email) throws DataModelEntityException;
+    void deleteEmailAddressByName(final @NonNull String name) throws DataModelEntityException;
 
     /**
      * Delete all email addresses.
@@ -192,11 +193,11 @@ public interface IPerson extends IDataModelEntity
 
     /**
      * Check if an email address exist.
-     * @param email Email address value.
+     * @param name Email address name.
      * @return <b>True</b> if the email address exist, <b>false</b> otherwise.
      * @throws EmailAddressException Thrown in case an error occurred while trying to check the email address.
      */
-    boolean existEmailAddressByValue(final @NonNull String email) throws EmailAddressException;
+    boolean existEmailAddressByName(final @NonNull String name) throws EmailAddressException;
 
     /**
      * Return an unmodifiable collection of email addresses.
@@ -227,10 +228,10 @@ public interface IPerson extends IDataModelEntity
 
     /**
      * Retrieve an email address.
-     * @param value Email address value.
+     * @param name Email address name.
      * @return Matching email address, <b>null</b> otherwise.
      */
-    IEmailAddress getEmailAddressByValue(final @NonNull String value);
+    IEmailAddress getEmailAddressByName(final @NonNull String name);
 
     /**
      * Return the default email address.
@@ -272,9 +273,10 @@ public interface IPerson extends IDataModelEntity
     /**
      * Add a postal address.
      * @param address Postal address.
+     * @return <b>True</b> if the email address has been added to the person, <b>false</b> otherwise.
      * @throws PostalAddressException Thrown in case an error occurred while trying to add a postal address.
      */
-    void addPostalAddress(final @NonNull IPostalAddress address) throws DataModelEntityException;
+    boolean addPostalAddress(final @NonNull IPostalAddress address) throws DataModelEntityException;
 
     /**
      * Delete a postal address.
@@ -328,6 +330,14 @@ public interface IPerson extends IDataModelEntity
     boolean existPostalAddressById(final @NonNull String id) throws PostalAddressException;
 
     /**
+     * Check if a postal address exist.
+     * @param name Postal address name.
+     * @return <b>True</b> if the postal address exist, <b>false</b> otherwise.
+     * @throws PostalAddressException Thrown in case an error occurred while trying to check the postal address.
+     */
+    boolean existPostalAddressByName(final @NonNull String name) throws PostalAddressException;
+
+    /**
      * Return an unmodifiable collection of postal addresses.
      * @return Postal addresses.
      */
@@ -353,6 +363,13 @@ public interface IPerson extends IDataModelEntity
      * @return Matching postal address, <b>null</b> otherwise.
      */
     IPostalAddress getPostalAddressById(final @NonNull String id);
+
+    /**
+     * Retrieve a postal address.
+     * @param name Postal address name.
+     * @return Matching postal address, <b>null</b> otherwise.
+     */
+    IPostalAddress getPostalAddressByName(final @NonNull String name);
 
     /**
      * Return the default postal address.
@@ -393,9 +410,10 @@ public interface IPerson extends IDataModelEntity
     /**
      * Add a phone number.
      * @param phone Phone number.
+     * @return <b>True</b> if the email address has been added to the person, <b>false</b> otherwise.
      * @throws PhoneNumberException Thrown in case an error occurred while trying to add a phone number.
      */
-    void addPhoneNumber(final @NonNull IPhoneNumber phone) throws DataModelEntityException;
+    boolean addPhoneNumber(final @NonNull IPhoneNumber phone) throws DataModelEntityException;
 
     /**
      * Delete a phone number.
@@ -450,11 +468,11 @@ public interface IPerson extends IDataModelEntity
 
     /**
      * Check if a phone number exist.
-     * @param number Phone number.
+     * @param name Phone number name.
      * @return <b>True</b> if the phone number exist, <b>false</b> otherwise.
      * @throws PhoneNumberException Thrown in case an error occurred while trying to check the phone number.
      */
-    boolean existPhoneNumberByValue(final @NonNull String number) throws PhoneNumberException;
+    boolean existPhoneNumberByName(final @NonNull String name) throws PhoneNumberException;
 
     /**
      * Return an unmodifiable collection of phone numbers.
@@ -482,6 +500,13 @@ public interface IPerson extends IDataModelEntity
      * @return Matching phone number, <b>null</b> otherwise.
      */
     IPhoneNumber getPhoneNumberById(final @NonNull String id);
+
+    /**
+     * Retrieve a phone number.
+     * @param name Phone number name.
+     * @return Matching phone number, <b>null</b> otherwise.
+     */
+    IPhoneNumber getPhoneNumberByName(final @NonNull String name);
 
     /**
      * Return the default phone number.

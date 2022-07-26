@@ -56,13 +56,13 @@ public interface IEmailAddress extends IDataModelEntity
      * Returns if this email address if the default email address.
      * @return True if this email address is the default one, false otherwise.
      */
-    Boolean getIsDefaultEmail();
+    Boolean getIsDefault();
 
     /**
      * Sets if this email address is the default one.
      * @param isDefaultEmail True to set this email address as the default one, false otherwise.
      */
-    void setIsDefaultEmail(final Boolean isDefaultEmail);
+    void setIsDefault(final Boolean isDefaultEmail);
 
     /**
      * Returns the email address type.

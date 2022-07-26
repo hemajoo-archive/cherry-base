@@ -155,7 +155,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
         IDocument document = DocumentRandomizer.generate(true, false);
         IDocument other = DocumentRandomizer.generate(true, false);
 
-        IPhoneNumber phone = PhoneNumberRandomizer.generate(true);
+        IPhoneNumber phone = PhoneNumberRandomizer.generate(true, false);
 
         assertThat(phone).isNotNull();
         assertThat(phone.getDocumentCount()).isZero();

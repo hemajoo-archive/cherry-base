@@ -39,9 +39,10 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     /**
      * Generate a random email address without any document.
      * @param withRandomId Does a random entity identifier has to be generated?
+     * @param isDefault Is a default email address?
      * @return Email address.
      */
-    public static IEmailAddress generate(final boolean withRandomId)
+    public static IEmailAddress generate(final boolean withRandomId, final boolean isDefault)
     {
         IEmailAddress emailAddress = new EmailAddress();
         populateBaseFields(emailAddress);
@@ -53,7 +54,9 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
 
         emailAddress.setEmail(getRandomEmail());
         emailAddress.setAddressType(getRandomAddressType());
-        emailAddress.setIsDefaultEmail(getRandomIsDefault());
+        emailAddress.setIsDefault(isDefault);
+
+        emailAddress.setName(emailAddress.getEmail());
 
         return emailAddress;
     }
@@ -68,7 +71,7 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      */
     public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IEmailAddress emailAddress = generate(true);
+        IEmailAddress emailAddress = generate(withRandomId, false);
 
         if (withDocument)
         {

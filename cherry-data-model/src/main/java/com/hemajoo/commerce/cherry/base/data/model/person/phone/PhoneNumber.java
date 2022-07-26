@@ -65,6 +65,7 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
     /**
      * Phone number type.
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
@@ -74,6 +75,7 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
     /**
      * Phone number category type.
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
@@ -83,6 +85,7 @@ public class PhoneNumber extends DataModelEntity implements IPhoneNumber
     /**
      * Is it a default phone number?
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Column(name = "IS_DEFAULT")

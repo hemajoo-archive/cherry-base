@@ -348,6 +348,17 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
+    public final void deleteAllDocuments() throws DataModelEntityException
+    {
+        for (IDocument document : documents)
+        {
+            document.setParent(null); //TODO Later, we must ensure the document is deleted from the content store and the db!
+        }
+
+        documents.clear();
+    }
+
+    @Override
     public final Set<String> getTags()
     {
         return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);

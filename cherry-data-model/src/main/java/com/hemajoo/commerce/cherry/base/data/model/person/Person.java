@@ -34,6 +34,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberType;
 import com.hemajoo.commons.annotation.EnumNotNull;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@Log4j2
 @SuppressWarnings("java:S6204")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
@@ -231,13 +233,13 @@ public class Person extends DataModelEntity implements IPerson
     public final IEmailAddress getDefaultEmailAddress()
     {
         return emailAddresses.stream()
-                .filter(IEmailAddress::getIsDefaultEmail).findFirst().orElse(null);
+                .filter(IEmailAddress::getIsDefault).findFirst().orElse(null);
     }
 
     @Override
     public final boolean hasDefaultEmailAddress()
     {
-        return emailAddresses.stream().anyMatch(IEmailAddress::getIsDefaultEmail);
+        return emailAddresses.stream().anyMatch(IEmailAddress::getIsDefault);
     }
 
     @Override
@@ -261,10 +263,10 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final boolean existEmailAddressByValue(final @NonNull String email)
+    public final boolean existEmailAddressByName(final @NonNull String name)
     {
         return emailAddresses.stream()
-                .anyMatch(e -> e.getEmail().equals(email));
+                .anyMatch(e -> e.getName().equals(name));
     }
 
     @Override
@@ -288,15 +290,26 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final IEmailAddress getEmailAddressByValue(@NonNull String value)
+    public final IEmailAddress getEmailAddressByName(@NonNull String name)
     {
         return emailAddresses.stream()
-                .filter(e -> e.getEmail().equals(value)).findFirst().orElse(null);
+                .filter(e -> e.getEmail().equals(name)).findFirst().orElse(null);
     }
 
     @Override
-    public final void addEmailAddress(final @NonNull IEmailAddress emailAddress) throws EmailAddressException
+    public final boolean addEmailAddress(final @NonNull IEmailAddress emailAddress) throws EmailAddressException
     {
+        if (existEmailAddress(emailAddress))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add email address with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
+                    emailAddress.toString(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
         // An email address cannot be shared!
         if (emailAddress.getParent() != null)
         {
@@ -309,6 +322,32 @@ public class Person extends DataModelEntity implements IPerson
                     emailAddress.getParent().getId()));
         }
 
+        // Does the email address UUID already exist?
+        if (emailAddress.getId() != null && existEmailAddressById(emailAddress.getId()))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add email address with id: '%s', with email: '%s' to person with id: '%s', with name: '%s' because it already exist!",
+                    emailAddress.getId().toString(),
+                    emailAddress.getEmail(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
+        // Does the person already has a default email address?
+        if (emailAddress.getIsDefault() && hasDefaultEmailAddress())
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add email address with id: '%s', with email: '%s' to person with id: '%s', with name: '%s' because only one default email address per person is allowed!",
+                    emailAddress.getId() != null ? emailAddress.getId().toString() : "<null>",
+                    emailAddress.getEmail(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
         try
         {
             emailAddress.setParent(this);
@@ -319,6 +358,8 @@ public class Person extends DataModelEntity implements IPerson
         }
 
         emailAddresses.add(emailAddress);
+
+        return true;
     }
 
     @Override
@@ -347,14 +388,14 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final void deleteEmailAddressByValue(@NonNull String value) throws DataModelEntityException
+    public final void deleteEmailAddressByName(@NonNull String name) throws DataModelEntityException
     {
-        IEmailAddress email = getEmailAddressByValue(value);
+        IEmailAddress email = getEmailAddressByName(name);
 
         if (email != null)
         {
             email.setParent(null);
-            emailAddresses.removeIf(e -> e.getEmail().equals(value));
+            emailAddresses.removeIf(e -> e.getName().equals(name));
         }
     }
 
@@ -424,6 +465,15 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
+    public IPostalAddress getPostalAddressByName(final @NonNull String name)
+    {
+        return postalAddresses.stream()
+                .filter(postalAddress -> postalAddress.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public final IPostalAddress getDefaultPostalAddress()
     {
         return postalAddresses.stream()
@@ -455,6 +505,13 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
+    public final boolean existPostalAddressByName(final @NonNull String name)
+    {
+        return postalAddresses.stream()
+                .anyMatch(e -> e.getName().equals(name));
+    }
+
+    @Override
     @SuppressWarnings("java:S6204")
     public final Set<IPostalAddress> findPostalAddressByType(final AddressType type)
     {
@@ -473,10 +530,60 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final void addPostalAddress(final @NonNull IPostalAddress postalAddress) throws DataModelEntityException
+    public final boolean addPostalAddress(final @NonNull IPostalAddress postalAddress) throws DataModelEntityException
     {
+        if (existPostalAddress(postalAddress))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add postal address with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
+                    postalAddress.toString(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
+        // Does the postal address UUID already exist?
+        if (postalAddress.getId() != null && existPostalAddressById(postalAddress.getId()))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add postal address with id: '%s', with name: '%s' to person with id: '%s', with name: '%s' because it already exist!",
+                    postalAddress.getId().toString(),
+                    postalAddress.getName(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+        // Does the postal address name already exist?
+        if (existPostalAddressByName(postalAddress.getName()))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add postal address with id: '%s', with name: '%s' to person with id: '%s', with name: '%s' because it already exist!",
+                    postalAddress.getId() != null ? postalAddress.getId().toString() : "<null>",
+                    postalAddress.getName(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+        // Does the person already has a default postal address?
+        if (postalAddress.getIsDefault() && hasDefaultPostalAddress())
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add postal address with id: '%s', with value: '%s' to person with id: '%s', with name: '%s' because only one default postal address per person is allowed!",
+                    postalAddress.getId() != null ? postalAddress.getId().toString() : "<null>",
+                    postalAddress.getName(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
         postalAddress.setParent(this);
         postalAddresses.add((PostalAddress) postalAddress);
+
+        return true;
     }
 
     @Override
@@ -561,10 +668,10 @@ public class Person extends DataModelEntity implements IPerson
 
 
     @Override
-    public final boolean existPhoneNumberByValue(final @NonNull String number)
+    public final boolean existPhoneNumberByName(final @NonNull String name)
     {
         return phoneNumbers.stream()
-                .anyMatch(e -> e.getNumber().equalsIgnoreCase(number));
+                .anyMatch(e -> e.getName().equalsIgnoreCase(name));
     }
 
     @Override
@@ -592,10 +699,70 @@ public class Person extends DataModelEntity implements IPerson
     }
 
     @Override
-    public final void addPhoneNumber(final @NonNull IPhoneNumber phoneNumber) throws DataModelEntityException
+    public final IPhoneNumber getPhoneNumberByName(@NonNull String name)
     {
+        return phoneNumbers.stream()
+                .filter(phoneNumber -> phoneNumber.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public final boolean addPhoneNumber(final @NonNull IPhoneNumber phoneNumber) throws DataModelEntityException
+    {
+        if (existPhoneNumber(phoneNumber))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add phone number with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
+                    phoneNumber.toString(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
+        // UUID is unique
+        if (phoneNumber.getId() != null && existPhoneNumberById(phoneNumber.getId()))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add phone number with value: '%s' to person with id: '%s', with name: '%s' because it already exist!",
+                    phoneNumber.toString(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
+        // Name is unique
+        if (phoneNumber.getName() != null && existPhoneNumberByName(phoneNumber.getName()))
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add phone number with id: '%s', with number: '%s' to person with id: '%s', with name: '%s' because it already exist!",
+                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : "<null>",
+                    phoneNumber.getNumber(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
+        // Only one default phone number per person?
+        if (phoneNumber.getIsDefault() && hasDefaultPhoneNumber())
+        {
+            LOGGER.warn(String.format(
+                    "Cannot add phone number with id: '%s', with number: '%s' to person with id: '%s', with name: '%s' because only one default phone number per person is allowed!",
+                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : "<null>",
+                    phoneNumber.getNumber(),
+                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getName()));
+
+            return false;
+        }
+
         phoneNumber.setParent(this);
         phoneNumbers.add((PhoneNumber) phoneNumber);
+
+        return true;
     }
 
     @Override

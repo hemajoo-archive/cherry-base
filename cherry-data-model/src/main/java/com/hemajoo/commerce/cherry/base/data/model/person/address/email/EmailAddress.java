@@ -42,7 +42,7 @@ import java.util.Set;
  */
 @Log4j2
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "EMAIL_ADDRESS")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -62,14 +62,16 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
     /**
      * Is it the default email address?
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @Column(name = "IS_DEFAULT", columnDefinition = "BOOLEAN DEFAULT false")
-    private Boolean isDefaultEmail;
+    private Boolean isDefault;
 
     /**
      * Email type.
      */
+    @EqualsAndHashCode.Exclude
     @Getter
     @Setter
     @EnumNotNull(enumClass = AddressType.class)
@@ -96,7 +98,7 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
         super(EntityType.EMAIL_ADDRESS);
 
         this.addressType = AddressType.UNKNOWN;
-        this.isDefaultEmail = false;
+        this.isDefault = false;
     }
 
     /**
@@ -120,7 +122,7 @@ public class EmailAddress extends DataModelEntity implements IEmailAddress
         super(EntityType.EMAIL_ADDRESS, name, description, reference, statusType, parent, document, tags);
 
         this.email = email;
-        this.isDefaultEmail = isDefault;
+        this.isDefault = isDefault;
         setAddressType(addressType == null ? AddressType.UNKNOWN : addressType);
 
         if (getName() == null)

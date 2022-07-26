@@ -73,7 +73,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
         assertThat(email).isNotNull();
         assertThat(email.getEmail()).isEqualTo(EMAIL_ADDRESS);
-        assertThat(email.getIsDefaultEmail()).isFalse();
+        assertThat(email.getIsDefault()).isFalse();
         assertThat(email.getAddressType()).isEqualTo(AddressType.PRIVATE);
         assertThat(email.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
     }
@@ -113,7 +113,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         assertThat(email.getEmail()).isEqualTo(emailAddress);
         assertThat(email.getAddressType()).isEqualTo(emailAddressType);
         assertThat(email.getStatusType()).isEqualTo(statusType);
-        assertThat(email.getIsDefaultEmail()).isEqualTo(emailIsDefault);
+        assertThat(email.getIsDefault()).isEqualTo(emailIsDefault);
         assertThat(email.getName()).isEqualTo(name);
         assertThat(email.getDescription()).isEqualTo(description);
         assertThat(email.getReference()).isEqualTo(reference);

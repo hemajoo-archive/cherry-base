@@ -67,6 +67,8 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
         person.setPersonType(getRandomPersonType());
         person.setGenderType(getRandomGenderType());
 
+        person.setName(person.getLastName() + ", " + person.getFirstName());
+
         return person;
     }
 

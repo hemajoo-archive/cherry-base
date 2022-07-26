@@ -221,6 +221,12 @@ public interface IDataModelEntity extends IStatusEntity, IIdentity, Referable
     boolean deleteDocumentByName(final @NonNull String name);
 
     /**
+     * Delete all documents.
+     * @throws DataModelEntityException Thrown to indicate an error occurred while trying to delete documents.
+     */
+    void deleteAllDocuments() throws DataModelEntityException;
+
+    /**
      * Return the entity name.
      * @return DataModelEntity name.
      */

@@ -43,9 +43,10 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
     /**
      * Generate a random phone number without any document.
      * @param withRandomId Does a random identifier has to be generated?
+     * @param isDefault Is a default phone number?
      * @return Phone number.
      */
-    public static IPhoneNumber generate(final boolean withRandomId)
+    public static IPhoneNumber generate(final boolean withRandomId, final boolean isDefault)
     {
         IPhoneNumber phone = new PhoneNumber();
         populateBaseFields(phone);
@@ -59,7 +60,12 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
         phone.setCountryCode(getRandomCountryCode());
         phone.setPhoneType(getRandomPhoneNumberType());
         phone.setCategoryType(getRandomPhoneNumberCategoryType());
-        phone.setIsDefault(getRandomIsDefault());
+        phone.setIsDefault(isDefault);
+
+        if (phone.getName() == null)
+        {
+            phone.setName("+" + phone.getCountryCode() + " " + phone.getNumber());
+        }
 
         return phone;
     }
@@ -75,7 +81,7 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      */
     public static IPhoneNumber generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
     {
-        IPhoneNumber phone = generate(withRandomId);
+        IPhoneNumber phone = generate(withRandomId, false);
         populateBaseFields(phone);
 
         if (withRandomId)

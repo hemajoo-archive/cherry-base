@@ -61,7 +61,7 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
 
         if (withContent)
         {
-            document.setContent(DocumentRandomizer.getRandomFilename());
+            document.setContent(AbstractDataModelEntityRandomizer.getRandomFilename());
         }
 
         document.setTags(FAKER.elderScrolls().creature());

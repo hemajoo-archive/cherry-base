@@ -15,9 +15,9 @@
 package com.hemajoo.commerce.cherry.base.data.model.test.base;
 
 import com.hemajoo.commerce.cherry.base.commons.test.AbstractCherryUnitTest;
-import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Set;
@@ -60,7 +60,7 @@ public abstract class AbstractDataModelEntityUnitTest extends AbstractCherryUnit
     protected EntityStatusType statusType;
 
     @BeforeEach
-    protected void beforeEach() throws DataModelEntityException
+    protected void beforeEach() throws DocumentException
     {
         name = AbstractDataModelEntityRandomizer.getRandomName();
         description = AbstractDataModelEntityRandomizer.getRandomName();

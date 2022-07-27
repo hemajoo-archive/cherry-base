@@ -14,9 +14,9 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.test.document;
 
-import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.data.model.test.base.AbstractDataModelEntityUnitTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,16 +66,16 @@ public abstract class AbstractDocumentUnitTest extends AbstractDataModelEntityUn
     protected EntityStatusType documentStatusType;
 
     @BeforeEach
-    protected void beforeEach() throws DataModelEntityException
+    protected void beforeEach() throws DocumentException
     {
         super.beforeEach();
 
-        documentName = DocumentRandomizer.getRandomName();
-        documentDescription = DocumentRandomizer.getRandomName();
-        documentReference = DocumentRandomizer.getRandomName();
-        documentTags = DocumentRandomizer.getRandomTagList();
-        documentFilename = DocumentRandomizer.getRandomFilename();
-        documentType = DocumentRandomizer.getRandomDocumentType();
-        documentStatusType = DocumentRandomizer.getRandomStatusType();
+        documentName = AbstractDataModelEntityRandomizer.getRandomName();
+        documentDescription = AbstractDataModelEntityRandomizer.getRandomDescription();
+        documentReference = AbstractDataModelEntityRandomizer.getRandomReference();
+        documentTags = AbstractDataModelEntityRandomizer.getRandomTagList();
+        documentFilename = AbstractDataModelEntityRandomizer.getRandomFilename();
+        documentType = AbstractDataModelEntityRandomizer.getRandomDocumentType();
+        documentStatusType = AbstractDataModelEntityRandomizer.getRandomStatusType();
     }
 }

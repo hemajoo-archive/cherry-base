@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
@@ -268,7 +269,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException
     {
-        int count = DocumentRandomizer.getRandomInt(1, 20);
+        int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
 
         IPhoneNumber phone = generatePhoneNumber();
 
@@ -295,7 +296,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
         {
             // For each phone number entity created, we also create:
             // - from 1 to 3 documents
-            phones.add(PhoneNumberRandomizer.generate(true, true, false, PhoneNumberRandomizer.getRandomInt(1, 3)));
+            phones.add(PhoneNumberRandomizer.generate(true, true, false, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(phones).hasSize(count);
@@ -313,7 +314,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
         {
             // For each phone number entity created, we also create:
             // - from 1 to 3 documents
-            phones.add(PhoneNumberRandomizer.generate(true, true, true, PhoneNumberRandomizer.getRandomInt(1, 3)));
+            phones.add(PhoneNumberRandomizer.generate(true, true, true, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(phones).hasSize(count);

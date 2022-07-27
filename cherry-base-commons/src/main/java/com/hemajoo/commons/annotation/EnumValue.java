@@ -170,7 +170,7 @@ public @interface EnumValue
          */
         private boolean checkEnumValidValue(final Enum<?> value, final ConstraintValidatorContext context) throws EnumValueException
         {
-            if (enumClass != null && enumMethod != null)
+            if (enumClass != null && (enumMethod != null && !enumMethod.isEmpty()))
             {
                 try
                 {

@@ -58,7 +58,11 @@ import java.util.stream.Collectors;
 @EntityListeners(AuditingEntityListener.class)
 public class Person extends DataModelEntity implements IPerson
 {
+    /**
+     * Constant for null values in log messages.
+     */
     public static final String NULL_VALUE = "<null>";
+
     /**
      * Person last name.
      */

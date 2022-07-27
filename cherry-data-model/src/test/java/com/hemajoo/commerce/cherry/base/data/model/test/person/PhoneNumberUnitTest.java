@@ -285,7 +285,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 4000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 phone numbers with documents and no content")
     final void testPerformanceCreateMultiplePhoneNumbersWithoutDocumentContent() throws DataModelEntityException
     {
@@ -303,7 +303,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 6000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 phone numbers with documents and content")
     final void testPerformanceCreateMultiplePhoneNumbersWithDocumentAndContent() throws DataModelEntityException
     {

@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.configuration.DataModelConfiguration;
+import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.person.GenderType;
 import com.hemajoo.commerce.cherry.base.data.model.person.PersonRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.PersonType;
@@ -154,7 +155,7 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
 
 
     @BeforeEach
-    protected void beforeEach() throws DataModelEntityException
+    protected void beforeEach() throws DocumentException
     {
         super.beforeEach();
 

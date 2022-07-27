@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
@@ -323,7 +324,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException
     {
-        int count = DocumentRandomizer.getRandomInt(1, 20);
+        int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
 
         IPostalAddress address = generatePostalAddress();
 
@@ -350,7 +351,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each postal address entity created, we also create:
             // - from 1 to 3 documents
-            addresses.add(PostalAddressRandomizer.generate(true, true, false, PostalAddressRandomizer.getRandomInt(1, 3)));
+            addresses.add(PostalAddressRandomizer.generate(true, true, false, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(addresses).hasSize(count);
@@ -368,7 +369,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            addresses.add(PostalAddressRandomizer.generate(true, true, true, PostalAddressRandomizer.getRandomInt(1, 3)));
+            addresses.add(PostalAddressRandomizer.generate(true, true, true, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(addresses).hasSize(count);

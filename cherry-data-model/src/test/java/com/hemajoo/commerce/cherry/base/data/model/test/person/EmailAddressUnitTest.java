@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
+import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
@@ -64,15 +65,13 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Create an email address with a minimal set of attributes")
     final void testCreateEmailAddressWithMinimalAttributeSet() throws DataModelEntityException
     {
-        final String EMAIL_ADDRESS = FAKER.internet().emailAddress();
-
         IEmailAddress email = EmailAddress.builder()
-                .withEmail(EMAIL_ADDRESS)
+                .withEmail(emailAddress)
                 .withAddressType(AddressType.PRIVATE)
                 .build();
 
         assertThat(email).isNotNull();
-        assertThat(email.getEmail()).isEqualTo(EMAIL_ADDRESS);
+        assertThat(email.getEmail()).isEqualTo(emailAddress);
         assertThat(email.getIsDefault()).isFalse();
         assertThat(email.getAddressType()).isEqualTo(AddressType.PRIVATE);
         assertThat(email.getStatusType()).isEqualTo(EntityStatusType.ACTIVE);
@@ -270,7 +269,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException
     {
-        int count = DocumentRandomizer.getRandomInt(1, 20);
+        int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
 
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
@@ -300,7 +299,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            list.add(EmailAddressRandomizer.generate(true, true, false, EmailAddressRandomizer.getRandomInt(1, 3)));
+            list.add(EmailAddressRandomizer.generate(true, true, false, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(list).hasSize(count);
@@ -318,7 +317,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            list.add(EmailAddressRandomizer.generate(true, true, true, EmailAddressRandomizer.getRandomInt(1, 3)));
+            list.add(EmailAddressRandomizer.generate(true, true, true, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
         }
 
         assertThat(list).hasSize(count);

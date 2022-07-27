@@ -59,6 +59,11 @@ import java.util.stream.Collectors;
 public class Person extends DataModelEntity implements IPerson
 {
     /**
+     * Constant for null values in log messages.
+     */
+    public static final String NULL_VALUE = "<null>";
+
+    /**
      * Person last name.
      */
     @Getter
@@ -304,7 +309,7 @@ public class Person extends DataModelEntity implements IPerson
             LOGGER.warn(String.format(
                     "Cannot add email address with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
                     emailAddress.toString(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -329,20 +334,20 @@ public class Person extends DataModelEntity implements IPerson
                     "Cannot add email address with id: '%s', with email: '%s' to person with id: '%s', with name: '%s' because it already exist!",
                     emailAddress.getId().toString(),
                     emailAddress.getEmail(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
         }
 
         // Does the person already has a default email address?
-        if (emailAddress.getIsDefault() && hasDefaultEmailAddress())
+        if (Boolean.TRUE.equals(emailAddress.getIsDefault()) && hasDefaultEmailAddress())
         {
             LOGGER.warn(String.format(
                     "Cannot add email address with id: '%s', with email: '%s' to person with id: '%s', with name: '%s' because only one default email address per person is allowed!",
-                    emailAddress.getId() != null ? emailAddress.getId().toString() : "<null>",
+                    emailAddress.getId() != null ? emailAddress.getId().toString() : NULL_VALUE,
                     emailAddress.getEmail(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -537,7 +542,7 @@ public class Person extends DataModelEntity implements IPerson
             LOGGER.warn(String.format(
                     "Cannot add postal address with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
                     postalAddress.toString(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -550,7 +555,7 @@ public class Person extends DataModelEntity implements IPerson
                     "Cannot add postal address with id: '%s', with name: '%s' to person with id: '%s', with name: '%s' because it already exist!",
                     postalAddress.getId().toString(),
                     postalAddress.getName(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -560,21 +565,21 @@ public class Person extends DataModelEntity implements IPerson
         {
             LOGGER.warn(String.format(
                     "Cannot add postal address with id: '%s', with name: '%s' to person with id: '%s', with name: '%s' because it already exist!",
-                    postalAddress.getId() != null ? postalAddress.getId().toString() : "<null>",
+                    postalAddress.getId() != null ? postalAddress.getId().toString() : NULL_VALUE,
                     postalAddress.getName(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
         }
         // Does the person already has a default postal address?
-        if (postalAddress.getIsDefault() && hasDefaultPostalAddress())
+        if (Boolean.TRUE.equals(postalAddress.getIsDefault()) && hasDefaultPostalAddress())
         {
             LOGGER.warn(String.format(
                     "Cannot add postal address with id: '%s', with value: '%s' to person with id: '%s', with name: '%s' because only one default postal address per person is allowed!",
-                    postalAddress.getId() != null ? postalAddress.getId().toString() : "<null>",
+                    postalAddress.getId() != null ? postalAddress.getId().toString() : NULL_VALUE,
                     postalAddress.getName(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -715,7 +720,7 @@ public class Person extends DataModelEntity implements IPerson
             LOGGER.warn(String.format(
                     "Cannot add phone number with value: '%s' to person with id: '%s', name: '%s' because it already exist!",
                     phoneNumber.toString(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -727,7 +732,7 @@ public class Person extends DataModelEntity implements IPerson
             LOGGER.warn(String.format(
                     "Cannot add phone number with value: '%s' to person with id: '%s', with name: '%s' because it already exist!",
                     phoneNumber.toString(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
@@ -738,22 +743,22 @@ public class Person extends DataModelEntity implements IPerson
         {
             LOGGER.warn(String.format(
                     "Cannot add phone number with id: '%s', with number: '%s' to person with id: '%s', with name: '%s' because it already exist!",
-                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : "<null>",
+                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : NULL_VALUE,
                     phoneNumber.getNumber(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;
         }
 
         // Only one default phone number per person?
-        if (phoneNumber.getIsDefault() && hasDefaultPhoneNumber())
+        if (Boolean.TRUE.equals(phoneNumber.getIsDefault()) && hasDefaultPhoneNumber())
         {
             LOGGER.warn(String.format(
                     "Cannot add phone number with id: '%s', with number: '%s' to person with id: '%s', with name: '%s' because only one default phone number per person is allowed!",
-                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : "<null>",
+                    phoneNumber.getId() != null ? phoneNumber.getId().toString() : NULL_VALUE,
                     phoneNumber.getNumber(),
-                    this.getId() != null ? this.getId().toString() : "<null>",
+                    this.getId() != null ? this.getId().toString() : NULL_VALUE,
                     this.getName()));
 
             return false;

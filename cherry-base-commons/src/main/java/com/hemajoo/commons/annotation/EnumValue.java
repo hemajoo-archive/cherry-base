@@ -14,6 +14,7 @@
  */
 package com.hemajoo.commons.annotation;
 
+import lombok.SneakyThrows;
 import org.assertj.core.util.Strings;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 
@@ -109,73 +110,101 @@ public @interface EnumValue
             excluded = Arrays.asList(enumValue.excluded());
         }
 
+        @SneakyThrows
         @Override
         public boolean isValid(Enum<?> value, ConstraintValidatorContext context)
         {
-            if (value == null)
+            boolean result = true;
+
+            if (value == null || enumClass == null || enumMethod == null)
             {
                 return true;
             }
 
-            if (enumClass == null || enumMethod == null)
+            // Check for excluded values
+            result = checkEnumExcludedValues(value, context);
+
+            // Check for valid value
+            if (result)
             {
-                return true;
+                result = checkEnumValidValue(value, context);
             }
 
-            // Add some message parameters
-            ((ConstraintValidatorContextImpl) context).addMessageParameter("invalidValue", value);
-            ((ConstraintValidatorContextImpl) context).addMessageParameter("enumClassName", enumClass.getSimpleName());
+            return result;
+        }
 
-            String values = Arrays.stream(enumClass.getEnumConstants())
-                    .map(Enum::name)
-                    .collect(Collectors.joining(", "));
-            ((ConstraintValidatorContextImpl) context).addMessageParameter("validValues", values);
-
+        /**
+         * Check the enumerated value if it is not part of some excluded values.
+         * @param value Enumerated value.
+         * @param context Constraint validator context.
+         * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+         */
+        private boolean checkEnumExcludedValues(final Enum<?> value, final ConstraintValidatorContext context)
+        {
             Class<?> valueClass = value.getClass();
 
-            if (valueClass.isEnum())
+            if (valueClass.isEnum() && excluded.contains(value.name()))
             {
-                // Check if the value is an excluded one?
-                if (excluded.contains(value.name()))
-                {
-                    // Filter the allowed values.
-                    List<String> includedValues = new ArrayList<>(Arrays.stream(enumClass.getEnumConstants())
-                            .map(Enum::name)
-                            .toList());
-                    includedValues.removeAll(excluded);
+                // Filter the allowed values.
+                List<String> includedValues = new ArrayList<>(Arrays.stream(enumClass.getEnumConstants())
+                        .map(Enum::name)
+                        .toList());
+                includedValues.removeAll(excluded);
 
-                    // Inject message parameter(s).
-                    ((ConstraintValidatorContextImpl) context).addMessageParameter("validValues", includedValues);
+                // Inject message parameters
+                ((ConstraintValidatorContextImpl) context).addMessageParameter("invalidValue", value);
+                ((ConstraintValidatorContextImpl) context).addMessageParameter("validValues", includedValues);
+                ((ConstraintValidatorContextImpl) context).addMessageParameter("enumClassName", enumClass.getSimpleName());
 
-                    return false;
-                }
+                return false;
             }
-            else
+
+            return true;
+        }
+
+        /**
+         * Check the enumerated value if it contains a valid value.
+         * @param value Enumerated value.
+         * @param context Constraint validator context.
+         * @return <b>True</b> if the value is valid, <b>false</b> otherwise.
+         */
+        private boolean checkEnumValidValue(final Enum<?> value, final ConstraintValidatorContext context) throws EnumValueException
+        {
+            if (enumClass != null && (enumMethod != null && !enumMethod.isEmpty()))
             {
                 try
                 {
-                    Method method = enumClass.getMethod(enumMethod, valueClass);
+                    Method method = enumClass.getMethod(enumMethod, value.getClass());
+
                     if (!Boolean.TYPE.equals(method.getReturnType()) && !Boolean.class.equals(method.getReturnType()))
                     {
-                        throw new RuntimeException(Strings.formatIfArgs("%s method return is not boolean type in the %s class", enumMethod, enumClass));
+                        throw new EnumValueException(Strings.formatIfArgs("Method: '%s' return type is not of type boolean in class: '%s'!", enumMethod, enumClass));
                     }
 
                     if (!Modifier.isStatic(method.getModifiers()))
                     {
-                        throw new RuntimeException(Strings.formatIfArgs("%s method is not static method in the %s class", enumMethod, enumClass));
+                        throw new EnumValueException(Strings.formatIfArgs("Method: '%s' is not a static method in class: '%s'!", enumMethod, enumClass));
                     }
 
-                    Boolean result = (Boolean)method.invoke(null, value);
+                    Boolean invocation = (Boolean) method.invoke(null, value);
 
-                    return result != null && result;
+                    ((ConstraintValidatorContextImpl) context).addMessageParameter("enumClassName", enumClass.getSimpleName());
+
+                    // Inject message parameters
+                    String values = Arrays.stream(enumClass.getEnumConstants())
+                            .map(Enum::name)
+                            .collect(Collectors.joining(", "));
+                    ((ConstraintValidatorContextImpl) context).addMessageParameter("validValues", values);
+
+                    return invocation != null && invocation;
                 }
                 catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
                 {
-                    throw new RuntimeException(e);
+                    throw new EnumValueException(e);
                 }
                 catch (NoSuchMethodException | SecurityException e)
                 {
-                    throw new RuntimeException(Strings.formatIfArgs("This %s(%s) method does not exist in the %s", enumMethod, valueClass, enumClass), e);
+                    throw new EnumValueException(Strings.formatIfArgs("The method: '%s(%s)' does not exist in class: '%s'", enumMethod, value.getClass(), enumClass), e);
                 }
             }
 

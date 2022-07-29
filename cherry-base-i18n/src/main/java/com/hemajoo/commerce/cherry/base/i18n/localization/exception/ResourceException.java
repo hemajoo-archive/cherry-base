@@ -12,50 +12,46 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commons.annotation;
+package com.hemajoo.commerce.cherry.base.i18n.localization.exception;
 
 import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
 
-import java.io.Serial;
-
 /**
- * Exception thrown to indicate an error occurred with when trying to apply validation on a field annotated with the <b>EnumValue</b> annotation!
+ * Exception thrown to indicate an error occurred when manipulating a resource file.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class EnumValueException extends CherryException
+public class ResourceException extends CherryException
 {
     /**
-     * Default serialization identifier.
+     * Thrown to indicate that an error occurred when manipulating a resource file.
+     *
+     * @param exception Parent exception.
      */
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Thrown to indicate that an error occurred with when trying to apply validation on a field annotated with the <b>EnumValue</b> annotation!
-     * @param exception Parent {@link Exception}.
-     */
-    public EnumValueException(final Exception exception)
+    public ResourceException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred with when trying to apply validation on a field annotated with the <b>EnumValue</b> annotation!
+     * Thrown to indicate that an error occurred when manipulating a resource file.
+     *
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public EnumValueException(final String message)
+    public ResourceException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred with when trying to apply validation on a field annotated with the <b>EnumValue</b> annotation!
+     * Thrown to indicate that an error occurred when manipulating a resource file.
+     *
      * @param message Message describing the error being the cause of the raised exception.
-     * @param exception Parent {@link Exception}.
+     * @param exception Parent exception.
      */
-    public EnumValueException(final String message, final Exception exception)
+    public ResourceException(final String message, final Exception exception)
     {
         super(message, exception);
     }
 }
+

@@ -14,13 +14,13 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.document;
 
+import com.hemajoo.commerce.cherry.base.commons.annotation.validation.EnumValue;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.utilities.UuidGenerator;
-import com.hemajoo.commons.annotation.EnumValue;
 import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;

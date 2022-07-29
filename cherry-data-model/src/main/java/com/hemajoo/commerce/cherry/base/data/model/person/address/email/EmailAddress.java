@@ -14,6 +14,7 @@
  */
 package com.hemajoo.commerce.cherry.base.data.model.person.address.email;
 
+import com.hemajoo.commerce.cherry.base.commons.annotation.validation.EnumNotNull;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
@@ -24,7 +25,6 @@ import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.IPerson;
 import com.hemajoo.commerce.cherry.base.data.model.person.Person;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import com.hemajoo.commons.annotation.EnumNotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

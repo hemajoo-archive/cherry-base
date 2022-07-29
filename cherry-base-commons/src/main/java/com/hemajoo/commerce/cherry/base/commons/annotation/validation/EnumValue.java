@@ -12,7 +12,7 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commons.annotation;
+package com.hemajoo.commerce.cherry.base.commons.annotation.validation;
 
 import lombok.SneakyThrows;
 import org.assertj.core.util.Strings;

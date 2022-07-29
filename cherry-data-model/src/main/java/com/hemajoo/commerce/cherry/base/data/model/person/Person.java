@@ -15,6 +15,7 @@
 package com.hemajoo.commerce.cherry.base.data.model.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hemajoo.commerce.cherry.base.commons.annotation.validation.EnumNotNull;
 import com.hemajoo.commerce.cherry.base.data.model.base.DataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
@@ -31,7 +32,6 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalA
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberType;
-import com.hemajoo.commons.annotation.EnumNotNull;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;

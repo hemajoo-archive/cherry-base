@@ -27,7 +27,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.validation.DataModelEnti
 import com.hemajoo.commerce.cherry.base.data.model.document.Document;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
-import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringHelper;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.GenericGenerator;

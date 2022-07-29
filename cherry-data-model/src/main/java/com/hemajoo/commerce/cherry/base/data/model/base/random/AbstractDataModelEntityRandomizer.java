@@ -19,7 +19,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
-import com.hemajoo.commerce.cherry.base.utilities.StringHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringHelper;
 import lombok.NonNull;
 import org.ressec.avocado.core.exception.checked.FileException;
 import org.ressec.avocado.core.helper.FileHelper;

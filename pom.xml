@@ -39,6 +39,7 @@
         <module>cherry-base-utilities</module>
         <module>cherry-data-model</module>
         <module>cherry-base-coverage</module>
+        <module>cherry-base-i18n</module>
     </modules>
 
     <properties>

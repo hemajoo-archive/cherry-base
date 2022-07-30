@@ -88,6 +88,7 @@ public final class I18nManager
     private I18nManager()
     {
         this.locale = Locale.forLanguageTag("en"); // Set the default manager's locale to english.
+        LOGGER.debug(String.format("I18nManager initialized with locale: '%s (%s)'", this.locale, this.locale.getDisplayLanguage()));
     }
 
     /**
@@ -97,8 +98,8 @@ public final class I18nManager
     @Synchronized
     public void setLocale(final @NonNull Locale locale)
     {
-        LOGGER.info(String.format("Locale set to: '%s'", locale.getDisplayLanguage()));
         this.locale = locale;
+        LOGGER.info(String.format("Locale set to: '%s (%s)'", this.locale, this.locale.getDisplayLanguage()));
     }
 
     /**

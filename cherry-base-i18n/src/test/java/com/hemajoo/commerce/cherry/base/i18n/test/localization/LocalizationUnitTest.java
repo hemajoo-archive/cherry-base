@@ -112,6 +112,7 @@ class LocalizationUnitTest
     void testLoadBundle() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
+        I18nManager.getInstance().setLocale(Locale.ENGLISH);
 
         assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
     }
@@ -122,6 +123,7 @@ class LocalizationUnitTest
     {
         I18nManager.getInstance().load("i18n/test");
         I18nManager.getInstance().clearAll();
+        I18nManager.getInstance().setLocale(Locale.ENGLISH);
 
         assertThrows(LocalizationException.class, () -> InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)); // No bundle registered!
     }
@@ -158,6 +160,7 @@ class LocalizationUnitTest
         assertThat(i18n).isNotNull();
         assertThat(i18n.getBundle()).isNotNull();
 
+        I18nManager.getInstance().setLocale(Locale.ENGLISH);
         i18n.localize();
         assertThat(i18n.getValue()).isEqualTo("Highway");
 
@@ -174,6 +177,7 @@ class LocalizationUnitTest
     void testLocalizeAsString() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
+        I18nManager.getInstance().setLocale(Locale.ENGLISH);
 
         assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
         assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME, Locale.FRENCH)).isEqualTo("Autoroute");

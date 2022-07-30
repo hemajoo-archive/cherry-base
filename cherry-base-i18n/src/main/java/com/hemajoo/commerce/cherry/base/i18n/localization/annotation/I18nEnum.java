@@ -19,12 +19,12 @@ import java.lang.annotation.*;
 /**
  * Annotation used to be placed on enum types <u>only</u> which makes this enumeration automatically localized by the framework.
  * <br><br>
- * Such annotated enumerations must implement the <b>LocalizeEnum</b> interface without the need to provide
+ * Such annotated enumerations must implement the <b>LocalizeEnumAware</b> interface without the need to provide
  * any implementation for the interface's services as it already provides a <b>default</b> one for the <b>getName</b> services.
  * <br><br><b>Example:</b><br>
  * <pre>
  * I18nEnum(bundle = "i18n/geo/continent", key = "com.hemajoo.commerce.cherry.base.i18n.geo.continent.${this}.name")
- * public enum ContinentType implements LocalizeEnum
+ * public enum ContinentType implements LocalizeEnumAware
  * {
  *      AFRICA,
  *      AMERICA,

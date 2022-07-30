@@ -19,11 +19,12 @@ import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
+import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
 import com.hemajoo.commerce.cherry.base.utilities.helper.StringHelper;
 import lombok.NonNull;
-import org.ressec.avocado.core.exception.checked.FileException;
-import org.ressec.avocado.core.helper.FileHelper;
-import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.io.File;
 import java.security.SecureRandom;
@@ -75,19 +76,21 @@ public abstract class AbstractDataModelEntityRandomizer
     /**
      * Returns a random document type.
      * @return Document type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static DocumentType getRandomDocumentType()
+    public static DocumentType getRandomDocumentType() throws GeneratorException
     {
-        return (DocumentType) GENERATOR_DOCUMENT_TYPE.gen();
+        return (DocumentType) GENERATOR_DOCUMENT_TYPE.generate();
     }
 
     /**
      * Returns a random entity sttaus type.
      * @return Status type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static EntityStatusType getRandomStatusType()
+    public static EntityStatusType getRandomStatusType() throws GeneratorException
     {
-        return (EntityStatusType) GENERATOR_STATUS_TYPE.gen();
+        return (EntityStatusType) GENERATOR_STATUS_TYPE.generate();
     }
 
     /**
@@ -157,8 +160,9 @@ public abstract class AbstractDataModelEntityRandomizer
      * Populate the base fields of a data model entity with random values.
      * @param parent Parent entity.
      * @param <T> Entity type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static <T extends IDataModelEntity> void populateBaseFields(final @NonNull T parent)
+    public static <T extends IDataModelEntity> void populateBaseFields(final @NonNull T parent) throws GeneratorException
     {
         final Instant dateEnd = Instant.now();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS z");

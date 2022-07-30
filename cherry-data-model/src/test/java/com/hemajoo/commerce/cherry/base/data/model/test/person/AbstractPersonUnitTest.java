@@ -30,6 +30,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalA
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressType;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.*;
 import com.hemajoo.commerce.cherry.base.data.model.test.document.AbstractDocumentUnitTest;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -155,7 +156,7 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
 
 
     @BeforeEach
-    protected void beforeEach() throws DocumentException
+    protected void beforeEach() throws DocumentException, GeneratorException
     {
         super.beforeEach();
 

@@ -16,8 +16,6 @@ package com.hemajoo.commerce.cherry.base.utilities.helper;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.exception.checked.StringExpanderException;
-import org.ressec.avocado.core.helper.ReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -90,7 +88,7 @@ public class StringExpander
      * @return Expanded text.
      * @throws StringExpanderException Thrown to indicate an error occurred while trying to expand a string.
      */
-    public static String expandVariables(final @NonNull Object instance, final @NonNull String text) throws StringExpanderException
+    public static String expandVariables(final Object instance, final @NonNull String text) throws StringExpanderException
     {
         Object value;
         Field field;

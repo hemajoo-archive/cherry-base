@@ -16,23 +16,26 @@ package com.hemajoo.commerce.cherry.base.i18n.localization;
 
 import com.google.common.collect.Maps;
 import com.hemajoo.commerce.cherry.base.commons.exception.AnnotationException;
+import com.hemajoo.commerce.cherry.base.commons.exception.NotYetImplementedException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
+import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18nBundle;
 import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18nEnum;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.I18nException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.ResourceException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.internal.LocalizationInvocationContext;
+import com.hemajoo.commerce.cherry.base.i18n.localization.type.LocalizationInvocationType;
 import com.hemajoo.commerce.cherry.base.i18n.translation.Translation;
 import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslator;
 import com.hemajoo.commerce.cherry.base.i18n.translation.engine.google.GoogleFreeTranslator;
 import com.hemajoo.commerce.cherry.base.i18n.translation.exception.TranslationException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.ReflectionHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpander;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpanderException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import org.ressec.avocado.core.exception.checked.StringExpanderException;
-import org.ressec.avocado.core.exception.unchecked.NotImplementedException;
-import org.ressec.avocado.core.helper.ReflectionHelper;
-import org.ressec.avocado.core.helper.StringExpander;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -126,7 +129,7 @@ public final class I18nManager
             }
             catch (MissingResourceException e)
             {
-                int i = 0;
+                LOGGER.warn(String.format("No resource bundle found: '%s' for locale: '%s'", path, locale));
             }
         }
         else
@@ -137,9 +140,9 @@ public final class I18nManager
                 {
                     add(path,current);
                 }
-                catch (Exception e)
+                catch (MissingResourceException e)
                 {
-                    // Do nothing!
+                    LOGGER.warn(String.format("No resource bundle found: '%s' for locale: '%s'", path, current));
                 }
             }
         }
@@ -182,9 +185,8 @@ public final class I18nManager
     private void add(final @NonNull String path, final @NonNull Locale locale)
     {
         ResourceBundle bundle = ResourceBundle.getBundle(path, locale);
-        bundles.computeIfAbsent(
-                Locale.forLanguageTag(locale.getLanguage()),
-                function -> Maps.newHashMap()).put(path, bundle);
+        bundles.computeIfAbsent(Locale.forLanguageTag(locale.getLanguage()), function -> Maps.newHashMap()).put(path, bundle);
+        LOGGER.debug(String.format("Resource bundle: '%s' for language: '%s' loaded", path, locale));
     }
 
     /**
@@ -296,6 +298,209 @@ public final class I18nManager
         }
     }
 
+    public String localize(final Locale locale) throws LocalizationException
+    {
+        return localize(null, locale);
+    }
+
+    public String localize(final Object instance, final Locale locale) throws LocalizationException
+    {
+        LocalizationInvocationContext context = new LocalizationInvocationContext();
+        context.setInvocationType(LocalizationInvocationType.UNKNOWN);
+
+        // Compute the invocation context
+        findInvocationMethod(context, instance);
+
+        switch (context.getInvocationType())
+        {
+            case METHOD:
+                return localizeFromMethod(context, instance, locale);
+
+            case FIELD:
+                localizeFromField(context, instance, locale);
+                break;
+
+            case UNKNOWN:
+            default:
+                throw new LocalizationException(String.format("Unknown localize() service invocation for object of type: '%s' and locale: '%s'", instance.getClass().getName(), locale));
+        }
+
+        throw new LocalizationException("What is the hell!");
+    }
+
+    private String localizeFromMethod(final @NonNull LocalizationInvocationContext context, final Object instance, final Locale locale) throws LocalizationException
+    {
+        String classBundle = null;
+        String classKey = null;
+        String bundle = null;
+        String key = null;
+        String localized;
+
+        try
+        {
+            if (context.getInstanceClassAnnotation() != null)
+            {
+                I18n annotation = (I18n) context.getInstanceClassAnnotation();
+
+                if (!annotation.bundle().isEmpty())
+                {
+                    classBundle = StringExpander.expandVariables(instance, annotation.bundle());
+                }
+
+                if (!annotation.key().isEmpty())
+                {
+                    classKey = StringExpander.expandVariables(instance, annotation.key());
+                }
+            }
+
+            if (context.getMethodAnnotation() != null)
+            {
+                I18n annotation = (I18n) context.getMethodAnnotation();
+
+                if (!annotation.bundle().isEmpty())
+                {
+                    bundle = StringExpander.expandVariables(instance, annotation.bundle());
+                }
+
+                if (!annotation.key().isEmpty())
+                {
+                    key = StringExpander.expandVariables(instance, annotation.key());
+                }
+            }
+
+            if ((bundle == null || bundle.isBlank()) && (classBundle == null || Objects.requireNonNull(classBundle).isBlank()))
+            {
+                throw new LocalizationException("classBundle & bundle cannot be both null or blank!"); // TODO Re-write exception message!
+            }
+
+            if ((key == null || key.isBlank()) && (classKey == null || Objects.requireNonNull(classKey).isBlank()))
+            {
+                throw new LocalizationException("classKey & key cannot be both null or blank!"); // TODO Re-write exception message!
+            }
+
+            localized = getKey(bundle != null ? bundle : classBundle, key != null ? key : classKey, locale != null ? locale : Locale.forLanguageTag(locale.getLanguage()));
+        }
+        catch (Exception e)
+        {
+            throw new LocalizationException(e.getMessage());
+        }
+
+        return localized;
+    }
+
+    private void localizeFromField(final @NonNull LocalizationInvocationContext context, final Object instance, final Locale locale)
+    {
+
+    }
+
+    private void findInvocationMethod(final @NonNull LocalizationInvocationContext context, final Object instance)
+    {
+        Class<?> clazz;
+
+        for (StackTraceElement trace : Thread.currentThread().getStackTrace())
+        {
+            try
+            {
+                clazz = Class.forName(trace.getClassName());
+
+                isInvocationMethodValid(context, instance, clazz, trace);
+                if (context.getMethod() != null)
+                {
+                    return;
+                }
+            }
+            catch (ClassNotFoundException e)
+            {
+                // Do nothing, just process the next trace!
+            }
+        }
+    }
+
+    private void isInvocationMethodValid(final @NonNull LocalizationInvocationContext context, final Object instance, final @NonNull Class<?> clazz, final @NonNull StackTraceElement trace)
+    {
+        Method method;
+
+        try
+        {
+            method = clazz.getMethod(trace.getMethodName());
+            verifyMethodSignature(context, instance, method);
+        }
+        catch (NoSuchMethodException e)
+        {
+            try
+            {
+                // Maybe the method has a parameter of type Locale
+                method = clazz.getMethod(trace.getMethodName(), Locale.class);
+                verifyMethodSignature(context, instance, method);
+            }
+            catch (NoSuchMethodException oe)
+            {
+                // Do nothing, seems to be the wrong method!
+            }
+        }
+    }
+
+    private void verifyMethodSignature(final @NonNull LocalizationInvocationContext context, final Object instance, final @NonNull Method method)
+    {
+        if (method.isAnnotationPresent(I18n.class)) // Method should be annotated with I18n annotation
+        {
+            fillInvocationContext(context, instance, method);
+        }
+
+        if (method.getDeclaringClass().isAssignableFrom(LocalizeEnumAware.class)) // Method's class should implement the LocalizeEnumAware interface
+        {
+            fillInvocationContext(context, instance, method);
+        }
+    }
+
+    private void fillInvocationContext(final @NonNull LocalizationInvocationContext context, final Object instance, final @NonNull Method method)
+    {
+        // Fill the method's context data
+        context.setMethod(method);
+        context.setInvocationType(LocalizationInvocationType.METHOD);
+
+        if (method.isAnnotationPresent(I18n.class))
+        {
+            context.setMethodAnnotation(method.getAnnotation(I18n.class));
+        }
+
+        // Fill the class's context data
+        Class<?> declaringClass = method.getDeclaringClass();
+        context.setDeclaringClass(declaringClass);
+
+        if (declaringClass.isAnnotationPresent(I18nBundle.class))
+        {
+            context.setDeclaringClassAnnotation(declaringClass.getAnnotation(I18nBundle.class));
+        }
+
+        if (instance instanceof Enum<?> value)
+        {
+            Class<?> instanceClass = value.getClass();
+            context.setInstanceClass(instanceClass);
+            if (instanceClass.isAnnotationPresent(I18n.class))
+            {
+                context.setInstanceClassAnnotation(instanceClass.getAnnotation(I18n.class));
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Localize an enum element.
      * @param instance Object instance containing the element to localize.
@@ -305,10 +510,18 @@ public final class I18nManager
      */
     public String localizeEnum(final @NonNull Object instance, final Locale locale) throws LocalizationException
     {
-        // Invoked from an enumeration?
+        Method method = getCallerMethod();
+
         if (instance instanceof Enum)
         {
             return resolveEnum(instance, locale);
+        }
+        else
+        {
+            if (method != null && method.isAnnotationPresent(I18n.class))
+            {
+                resolveMethod(instance, method.getAnnotation(I18n.class), method, locale);
+            }
         }
 
         throw new LocalizationException(String.format("Service localizeEnum() can only be invoked on a Enum types! Class of type: '%s' is not an enum.", instance.getClass().getName()));
@@ -326,9 +539,9 @@ public final class I18nManager
         Class<?> declaringClass = ((Enum<?>) instance).getDeclaringClass();
         Method method = getCallerMethod();
 
-        /* For enumerations, the class itself can be annotated with the I18nEnum annotation
-           or some of the methods can be annotated with the I18nEnum annotation.
-         */
+
+        // For enumerations, the class itself can be annotated with the I18nEnum annotation
+        // or some of the methods can be annotated with the I18nEnum annotation.
 
         // Does the method of the enumeration class is annotated with I18nEnum annotation?
         if (method != null)
@@ -401,7 +614,7 @@ public final class I18nManager
      * @return Localized value.
      * @throws LocalizationException Thrown to indicate an error with a localization.
      */
-    private String resolveAnnotatedEnumMethod(final @NonNull Object instance, final @NonNull Method method,final Locale locale) throws LocalizationException
+    private String resolveAnnotatedEnumMethod(final @NonNull Object instance, final @NonNull Method method, final Locale locale) throws LocalizationException
     {
         Class<?> declaringClass = ((Enum<?>) instance).getDeclaringClass();
 
@@ -672,7 +885,7 @@ public final class I18nManager
                     }
                     else
                     {
-                        throw new NotImplementedException(""); // TODO Fix this!
+                        throw new NotYetImplementedException(""); // TODO Fix this!
                     }
                 }
                 else
@@ -848,6 +1061,10 @@ public final class I18nManager
             {
                 return method;
             }
+            else if (method.getDeclaringClass().isAssignableFrom(LocalizeEnumAware.class))
+            {
+                return method;
+            }
 
             if (method.getName().startsWith("getI18n"))
             {
@@ -940,7 +1157,7 @@ public final class I18nManager
             {
                 if (!bundle.getLocale().toLanguageTag().equals(currentLocale.toLanguageTag()))
                 {
-                    LOGGER.warn(String.format("Warning: cannot find for resource bundle: '%s', language-tag: '%s', language: '%s'!",
+                    LOGGER.warn(String.format("Warning: cannot find resource bundle: '%s', language-tag: '%s', language: '%s'!",
                             bundle.getBaseBundleName(), currentLocale, currentLocale.getDisplayLanguage()));
                 }
 
@@ -952,9 +1169,9 @@ public final class I18nManager
                 {
                     throw new ResourceException(
                             String.format(
-                                    "Can't find resource in bundle: '%s', for key: '%s, and locale:%s'",
-                                    filePath,
+                                    "Cannot find key: '%s' in bundle: '%s' for locale: '%s'",
                                     key,
+                                    filePath,
                                     currentLocale));
                 }
             }

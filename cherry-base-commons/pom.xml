@@ -105,9 +105,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.ressec.avocado</groupId>
-            <artifactId>avocado-core</artifactId>
-            <version>${version.ressec.avocado}</version>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
     </dependencies>

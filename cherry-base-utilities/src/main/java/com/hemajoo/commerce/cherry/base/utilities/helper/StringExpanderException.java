@@ -12,7 +12,9 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.commons.exception;
+package com.hemajoo.commerce.cherry.base.utilities.helper;
+
+import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
 
 /**
  * Exception thrown to indicate an error occurred while trying to expand a variable string.

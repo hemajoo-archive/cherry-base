@@ -20,9 +20,9 @@ import com.hemajoo.commerce.cherry.base.i18n.localization.Localization;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.I18nException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.ResourceException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpanderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.ressec.avocado.core.exception.checked.StringExpanderException;
 
 import java.util.Locale;
 

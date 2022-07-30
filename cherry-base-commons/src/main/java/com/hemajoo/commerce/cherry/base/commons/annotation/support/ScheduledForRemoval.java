@@ -33,6 +33,7 @@ public @interface ScheduledForRemoval
 {
     /**
      * Version of the library.
+     * @return Version.
      */
     String version() default "";
 }

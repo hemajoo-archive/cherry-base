@@ -25,27 +25,24 @@ import java.util.Locale;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public interface LocalizeEnum extends Serializable
+public interface LocalizeEnumAware extends Serializable
 {
     /**
-     * Return the enumerated value localized name.
+     * Return the enumerated value localized <b>name</b>.
      * @return Localized enumerated value name.
      */
-//    default String getName() throws StringExpanderException, AnnotationException, ResourceException
     default String getName() throws LocalizationException
     {
-        return I18nManager.getInstance().resolveEnum(this, I18nManager.getInstance().getLocale());
-        //return I18nManager.getInstance().resolveDirect(this, I18nManager.getInstance().getLocale());
+        return I18nManager.getInstance().localize(this, I18nManager.getInstance().getLocale());
     }
 
     /**
-     * Return the enumerated value localized name.
-     * @param locale Locale to use for localization resolving.
+     * Return the enumerated value localized <b>name</b>.
+     * @param locale Locale to use.
      * @return Localized enumerated value name.
      */
     default String getName(final @NonNull Locale locale) throws LocalizationException
     {
-        return I18nManager.getInstance().resolveEnum(this, locale);
-        //return I18nManager.getInstance().resolveDirect(this, locale);
+        return I18nManager.getInstance().localize(this, locale);
     }
 }

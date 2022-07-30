@@ -17,8 +17,8 @@ package com.hemajoo.commerce.cherry.base.i18n.localization;
 import com.hemajoo.commerce.cherry.base.commons.exception.AnnotationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.ResourceException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpanderException;
 import lombok.NonNull;
-import org.ressec.avocado.core.exception.checked.StringExpanderException;
 
 import java.io.Serializable;
 import java.util.Locale;

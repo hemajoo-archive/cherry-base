@@ -20,8 +20,9 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberRandomizer;
+import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,8 +51,9 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      * Generate a random person without any document nor email address, postal address and phone number.
      * @param withRandomId Random identifier has to be generated?
      * @return Random person.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IPerson generate(final boolean withRandomId)
+    public static IPerson generate(final boolean withRandomId) throws GeneratorException
     {
         IPerson person = new Person();
         populateBaseFields(person);
@@ -83,8 +85,9 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      * @param count Number of child entities to generate.
      * @return Random person.
      * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IPerson generate(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
+    public static IPerson generate(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException, GeneratorException
     {
         IPerson person = generate(withRandomId);
 
@@ -126,8 +129,9 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
      * @param count Number of entities to generate.
      * @return List of random persons.
      * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static List<IPerson> generateList(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
+    public static List<IPerson> generateList(final boolean withRandomId, final boolean withEmailAddress, final boolean withPostalAddress, final boolean withPhoneNumber, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException, GeneratorException
     {
         List<IPerson> persons = new ArrayList<>();
 
@@ -142,19 +146,21 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
     /**
      * Returns a random person type.
      * @return Person type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static PersonType getRandomPersonType()
+    public static PersonType getRandomPersonType() throws GeneratorException
     {
-        return (PersonType) GENERATOR_PERSON_TYPE.gen();
+        return (PersonType) GENERATOR_PERSON_TYPE.generate();
     }
 
     /**
      * Returns a random gender type.
      * @return Gender type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static GenderType getRandomGenderType()
+    public static GenderType getRandomGenderType() throws GeneratorException
     {
-        return (GenderType) GENERATOR_GENDER_TYPE.gen();
+        return (GenderType) GENERATOR_GENDER_TYPE.generate();
     }
 
     /**

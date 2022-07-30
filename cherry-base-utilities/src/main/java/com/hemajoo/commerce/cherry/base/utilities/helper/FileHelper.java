@@ -18,7 +18,6 @@ import lombok.Cleanup;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FileUtils;
-import org.ressec.avocado.core.exception.checked.FileException;
 
 import java.io.File;
 import java.io.IOException;

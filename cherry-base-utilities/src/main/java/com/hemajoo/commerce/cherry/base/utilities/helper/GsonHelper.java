@@ -20,7 +20,6 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Cleanup;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.exception.checked.FileException;
 
 import java.io.File;
 import java.io.FileReader;

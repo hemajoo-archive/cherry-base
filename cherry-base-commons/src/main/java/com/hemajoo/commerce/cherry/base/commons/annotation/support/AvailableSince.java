@@ -33,6 +33,7 @@ public @interface AvailableSince
 {
     /**
      * Version of the library.
+     * @return Version.
      */
     String version() default "";
 }

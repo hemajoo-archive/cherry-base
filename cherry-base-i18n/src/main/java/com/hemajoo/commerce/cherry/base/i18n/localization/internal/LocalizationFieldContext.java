@@ -12,31 +12,46 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.i18n.localization.type;
+package com.hemajoo.commerce.cherry.base.i18n.localization.internal;
 
-import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 /**
- * Enumeration representing the several possible <b>localization invocation</b> types.
+ * Field localization context.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
- * @since 0.3.0
  * @version 1.0.0
- * @see I18n
  */
-public enum LocalizationInvocationType
+@NoArgsConstructor
+public class LocalizationFieldContext
 {
     /**
-     * Localization invocation is unknown.
+     * Field.
      */
-    UNKNOWN,
+    @Getter
+    @Setter
+    private Field field;
 
     /**
-     * Localization invocation has been done through a method.
+     * Field's localization annotation.
      */
-    METHOD,
+    @Getter
+    @Setter
+    private Annotation fieldAnnotation;
 
     /**
-     * Localization invocation has been done through a field.
+     * Create a field localization context.
+     * @param field Field.
+     * @param annotation Localization annotation.
      */
-    FIELD
+    public LocalizationFieldContext(final @NonNull Field field, final @NonNull Annotation annotation)
+    {
+        this.field = field;
+        this.fieldAnnotation = annotation;
+    }
 }

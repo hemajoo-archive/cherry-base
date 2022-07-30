@@ -48,14 +48,23 @@ public final class Translation implements Serializable
     @Setter
     private String translated;
 
+    /**
+     * Source locale.
+     */
     @Getter
     @Setter
     private Locale sourceLocale;
 
+    /**
+     * Target locale.
+     */
     @Getter
     @Setter
     private Locale targetLocale;
 
+    /**
+     * <b>True</b> if the text has been translated, <b>false</b> otherwise.
+     */
     private boolean isTranslated;
 
     /**
@@ -68,6 +77,9 @@ public final class Translation implements Serializable
      */
     private transient Locale previousLocale;
 
+    /**
+     * Create a translation instance.
+     */
     public Translation()
     {
         setSourceLocale(Locale.ENGLISH);
@@ -88,6 +100,14 @@ public final class Translation implements Serializable
         this.targetLocale = target != null ? target : Locale.ENGLISH;
     }
 
+    /**
+     * Translate a text.
+     * @param text Text tp translate.
+     * @param source Source locale.
+     * @param target Target locale.
+     * @return Translated text.
+     * @throws TranslationException Thrown to indicate an error occurred while trying to translate a text.
+     */
     public static String translate(final @NonNull String text, final @NonNull Locale source, final @NonNull Locale target) throws TranslationException
     {
         Translation translation = Translation.builder()
@@ -106,7 +126,7 @@ public final class Translation implements Serializable
      * <hr>
      * Be careful as this process involves invocation of a remote service to translate the given text, it's quite a long process that could introduce latency in your application!
      * @return <b>True</b> if the text has been translated, <b>false</b> otherwise.
-     * @throws TranslationException Thrown to indicate that an error occurred during a translation.
+     * @throws TranslationException Thrown to indicate an error occurred while trying to translate a text.
      */
     public boolean translate() throws TranslationException
     {
@@ -120,7 +140,7 @@ public final class Translation implements Serializable
      * @param source Source locale.
      * @param target Target locale.
      * @return <b>True</b> if the text has been translated, <b>false</b> otherwise.
-     * @throws TranslationException Thrown to indicate that an error occurred during a translation.
+     * @throws TranslationException Thrown to indicate an error occurred while trying to translate a text.
      */
     public boolean translate(final @NonNull Locale source, final @NonNull Locale target) throws TranslationException
     {

@@ -22,8 +22,8 @@ import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslationResu
 import java.lang.reflect.Type;
 
 /**
- * Deserializer to be used when JSON encounters a {@link ITranslationResultSentence} interface. It indicates which
- * concrete implementation is to be used.
+ * A <b>Google</b> translation result sentence deserializer to use when JSON encounters a {@link ITranslationResultSentence} interface.
+ * It then indicates which concrete implementation to use to process the de-serialization.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

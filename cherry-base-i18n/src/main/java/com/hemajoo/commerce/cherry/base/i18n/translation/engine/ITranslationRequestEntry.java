@@ -27,49 +27,49 @@ import java.time.LocalDateTime;
 public interface ITranslationRequestEntry
 {
     /**
-     * Retrieves the key for this translation request entry.
+     * Retrieve the key for this translation request entry.
      * @return The entry key.
      */
     String getKey();
 
     /**
-     * Retrieves the source text for this translation request entry.
+     * Retrieve the source text for this translation request entry.
      * @return The source text.
      */
     String getSource();
 
     /**
-     * Retrieves the translated (target) text for this translation request entry.
+     * Retrieve the translated (target) text for this translation request entry.
      * @return The translated (target) text.
      */
     String getTranslation();
 
     /**
-     * Sets the translation text for this translation request entry.
+     * Set the translation text for this translation request entry.
      * @param translation Translation text to set.
      */
     void setTranslation(final @NonNull String translation);
 
     /**
-     * Sets the translation result for this translation request entry.
+     * Set the translation result for this translation request entry.
      * @param result Translation result to set.
      */
     void setResult(final @NonNull ITranslationResult result);
 
     /**
-     * Retrieves the translation result for this translation request entry.
+     * Retrieve the translation result for this translation request entry.
      * @return Translation result.
      */
     ITranslationResult getResult();
 
     /**
-     * Returns if this translation request entry requires a translation.
+     * Return if this translation request entry requires a translation.
      * @return True if this translation request entry requires a translation, false otherwise.
      */
     boolean requireTranslation();
 
     /**
-     * Returns the time stamp of the translation.
+     * Return the time stamp of the translation.
      * @return Translation time stamp.
      */
     LocalDateTime getTranslationTimeStamp();

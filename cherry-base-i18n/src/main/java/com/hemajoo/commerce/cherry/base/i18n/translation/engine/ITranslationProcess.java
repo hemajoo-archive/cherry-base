@@ -18,7 +18,7 @@ import com.hemajoo.commerce.cherry.base.i18n.translation.exception.TranslationEx
 import lombok.NonNull;
 
 /**
- * Provides the basic behavior of a generic translation process (composed of a request, request entries, a processor
+ * Interface defining the behavior of a translation process (composed of a request, request entries, a processor
  * and their associated results).
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
@@ -30,19 +30,19 @@ import lombok.NonNull;
 public interface ITranslationProcess
 {
     /**
-     * Returns the translation request associated to this translation process.
+     * Return the translation request associated to this translation process.
      * @return {@link ITranslationRequest}.
      */
     ITranslationRequest getRequest();
 
     /**
-     * Sets the translation request associated to this translation process.
+     * Set the translation request associated to this translation process.
      * @param request {@link ITranslationRequest}.
      */
     void setRequest(final @NonNull ITranslationRequest request);
 
     /**
-     * Returns the translation result associated to this translation process.
+     * Return the translation result associated to this translation process.
      * <br>
      * A translation process has a translation result only if the request is in compact mode,
      * see {@link ITranslationRequest#isCompactMode()}, otherwise each translation request entry has its own
@@ -52,7 +52,7 @@ public interface ITranslationProcess
     ITranslationResult getResult();
 
     /**
-     * Sets the translation result associated to this translation process.
+     * Set the translation result associated to this translation process.
      * <br>
      * A translation process has a translation result only if the request is in compact mode,
      * see {@link ITranslationRequest#isCompactMode()}, otherwise each translation request entry has its own
@@ -62,20 +62,19 @@ public interface ITranslationProcess
     void setResult(final @NonNull ITranslationResult result);
 
     /**
-     * Returns the translation processor associated to this translation process.
+     * Return the translation processor associated to this translation process.
      * @return {@link ITranslationProcessor}.
      */
     ITranslationProcessor getProcessor();
 
     /**
-     * Returns if the translation process has been successfully processed by a translation processor?
+     * Return if the translation process has been successfully processed by a translation processor?
      * @return True if it has been successfully processed, false otherwise.
      */
     boolean isTranslated();
-    void hasBeenTranslated(); //TODO Deprecate this!
 
     /**
-     * Returns if this translation process requires to be processed by a translation processor?
+     * Return if this translation process requires to be processed by a translation processor?
      * <br>
      * Under certain circumstances, a translation request does not require a translation.
      * @return True if it requires to be processed, false otherwise.
@@ -83,7 +82,7 @@ public interface ITranslationProcess
     boolean requireProcessing();
 
     /**
-     * Returns the content of the document of the underlying property file as text.
+     * Return the content of the document of the underlying property file as text.
      * @return Document content.
      * @throws TranslationException Thrown in case an error occurred while generating the document content.
      */

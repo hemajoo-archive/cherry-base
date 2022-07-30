@@ -20,10 +20,8 @@ import com.hemajoo.commerce.cherry.base.i18n.translation.exception.TranslationEx
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -121,20 +119,32 @@ class TranslationUnitTest extends AbstractCherryUnitTest
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    @DisplayName("Translate 50 quotes in less than 5 seconds")
+    @DisplayName("Translate multiple Back To The Future quotes")
     void testTranslateQuotes() throws TranslationException
     {
+        final int COUNT = 20;
         String translated;
+        String original;
 
         // Translate using the static service
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < COUNT; i++)
         {
             translated = null;
-            // Translate and just get the translated text
-            translated = Translation.translate(FAKER.backToTheFuture().quote(), Locale.ENGLISH, Locale.FRENCH);
+            original = FAKER.backToTheFuture().quote();
+            translated = Translation.translate(original, Locale.ENGLISH, Locale.FRENCH);
+            LOGGER.debug(String.format("BackToTheFuture: (%s) - %s", Locale.ENGLISH, original));
+            LOGGER.debug(String.format("Translation: (%s) - %s", Locale.FRENCH, translated));
             assertThat(translated).isNotNull();
         }
+    }
+
+    @Test
+    @DisplayName("Translate multiple Chuck Norris quotes")
+    void testTranslateChuckNorrisQuotes() throws TranslationException
+    {
+        String original;
+
+        final int COUNT = 20;
 
         // Translate using the instance
         Translation translation = Translation.builder()
@@ -142,10 +152,14 @@ class TranslationUnitTest extends AbstractCherryUnitTest
                 .withTarget(Locale.FRENCH)
                 .build();
 
-        for (int i = 0; i < 25; i++)
+        LOGGER.debug("");
+        for (int i = 0; i < COUNT; i++)
         {
-            translation.setText(FAKER.chuckNorris().fact());
+            original = FAKER.chuckNorris().fact();
+            translation.setText(original);
             translation.translate();
+            LOGGER.debug(String.format("CheckNorris: (%s) - %s", translation.getSourceLocale(), translation.getText()));
+            LOGGER.debug(String.format("Translation: (%s) - %s", translation.getTargetLocale(), translation.getTranslated()));
             assertThat(translation).isNotNull();
         }
     }

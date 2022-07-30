@@ -15,6 +15,7 @@
 package com.hemajoo.commerce.cherry.base.i18n.localization;
 
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.type.LanguageType;
 import lombok.NonNull;
 
 import java.io.Serializable;
@@ -30,6 +31,7 @@ public interface LocalizeEnumAware extends Serializable
     /**
      * Return the enumerated value localized <b>name</b>.
      * @return Localized enumerated value name.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to process a localization.
      */
     default String getName() throws LocalizationException
     {
@@ -40,9 +42,21 @@ public interface LocalizeEnumAware extends Serializable
      * Return the enumerated value localized <b>name</b>.
      * @param locale Locale to use.
      * @return Localized enumerated value name.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to process a localization.
      */
     default String getName(final @NonNull Locale locale) throws LocalizationException
     {
         return I18nManager.getInstance().localize(this, locale);
+    }
+
+    /**
+     * Return the enumerated value localized <b>name</b>.
+     * @param language Language.
+     * @return Localized enumerated value name.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to process a localization.
+     */
+    default String getName(final @NonNull LanguageType language) throws LocalizationException
+    {
+        return getName(language.getLocale());
     }
 }

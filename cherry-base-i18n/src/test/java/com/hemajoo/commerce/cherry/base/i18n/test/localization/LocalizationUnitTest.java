@@ -14,13 +14,10 @@
  */
 package com.hemajoo.commerce.cherry.base.i18n.test.localization;
 
-import com.hemajoo.commerce.cherry.base.commons.exception.AnnotationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.I18nManager;
-import com.hemajoo.commerce.cherry.base.i18n.localization.Localization;
-import com.hemajoo.commerce.cherry.base.i18n.localization.exception.I18nException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.InstantLocalization;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
-import com.hemajoo.commerce.cherry.base.i18n.localization.exception.ResourceException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpanderException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.type.LanguageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * A unit test class for testing the <b>Localization</b> entity.
+ * A unit test class for testing the <b>InstantLocalization</b> entity.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -64,22 +61,22 @@ class LocalizationUnitTest
 
     @Test
     @DisplayName("Create a localized resource")
-    void testCreateLocalization() throws I18nException
+    void testCreateLocalization() throws LocalizationException
     {
-        Localization i18n;
+        InstantLocalization i18n;
 
         // Create an empty localization object using its builder.
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .build();
         assertThat(i18n).isNotNull();
 
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .withBundle(TEST_RESOURCE_BUNDLE)
                 .build();
         assertThat(i18n).isNotNull();
         assertThat(i18n.getBundle()).isNotNull();
 
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .withBundle(TEST_RESOURCE_BUNDLE)
                 .withKey(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)
                 .build();
@@ -87,7 +84,7 @@ class LocalizationUnitTest
         assertThat(i18n.getBundle()).isNotNull();
         assertThat(i18n.getKey()).isNotNull();
 
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .withBundle(TEST_RESOURCE_BUNDLE)
                 .withKey(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)
                 .withValue("Initial value")
@@ -103,7 +100,7 @@ class LocalizationUnitTest
         assertThat(i18n.getValue()).isNotEqualTo("Initial value");
 
         // Create an empty localization object using its no arg constructor.
-        i18n = new Localization();
+        i18n = new InstantLocalization();
         assertThat(i18n).isNotNull();
         assertThat(i18n.getBundle()).isNull();
         assertThat(i18n.getKey()).isNull();
@@ -112,48 +109,48 @@ class LocalizationUnitTest
 
     @Test
     @DisplayName("Load a resource bundle")
-    void testLoadBundle() throws I18nException
+    void testLoadBundle() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
 
-        assertThat(Localization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
+        assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
     }
 
     @Test
     @DisplayName("clear all registered resource bundles")
-    void testClearAllBundle()
+    void testClearAllBundle() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
         I18nManager.getInstance().clearAll();
 
-        assertThrows(I18nException.class, () -> Localization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)); // No bundle registered!
+        assertThrows(LocalizationException.class, () -> InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)); // No bundle registered!
     }
 
     @Test
     @DisplayName("Cannot localize a resource bundle key")
-    void testCannotLocalize()
+    void testCannotLocalize() throws LocalizationException
     {
-        Localization i18n;
+        InstantLocalization i18n;
 
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .withBundle(TEST_RESOURCE_BUNDLE)
                 .build();
         assertThat(i18n).isNotNull();
         assertThat(i18n.getBundle()).isNotNull();
 
-        assertThrows(I18nException.class, i18n::localize); // No key provided!
-        assertThrows(I18nException.class, () -> i18n.localize(Locale.GERMAN)); // No key provided!
-        assertThrows(I18nException.class, () -> Localization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_DOES_NOT_EXIST)); // Key does not exist!
-        assertThrows(I18nException.class, () -> Localization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_DOES_NOT_EXIST, Locale.ITALIAN)); // Key does not exist!
+        assertThrows(LocalizationException.class, i18n::localize); // No key provided!
+        assertThrows(LocalizationException.class, () -> i18n.localize(Locale.GERMAN)); // No key provided!
+        assertThrows(LocalizationException.class, () -> InstantLocalization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_DOES_NOT_EXIST)); // Key does not exist!
+        assertThrows(LocalizationException.class, () -> InstantLocalization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_DOES_NOT_EXIST, Locale.ITALIAN)); // Key does not exist!
     }
 
     @Test
     @DisplayName("Localize a resource bundle key as a localized resource")
-    void testLocalize() throws I18nException
+    void testLocalize() throws LocalizationException
     {
-        Localization i18n;
+        InstantLocalization i18n;
 
-        i18n = Localization.builder()
+        i18n = InstantLocalization.builder()
                 .withBundle(TEST_RESOURCE_BUNDLE)
                 .withKey(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)
                 .build();
@@ -168,34 +165,34 @@ class LocalizationUnitTest
         assertThat(i18n.getValue()).isEqualTo("Autoroute");
 
         // Directly localize a resource bundle key
-        i18n = Localization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME, Locale.forLanguageTag("es"));
+        i18n = InstantLocalization.from(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME, Locale.forLanguageTag("es"));
         assertThat(i18n.getValue()).isEqualTo("Autopista");
     }
 
     @Test
     @DisplayName("Localize a resource bundle key as a string")
-    void testLocalizeAsString() throws I18nException
+    void testLocalizeAsString() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
 
-        assertThat(Localization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
-        assertThat(Localization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME, Locale.FRENCH)).isEqualTo("Autoroute");
+        assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME)).isEqualTo("Highway");
+        assertThat(InstantLocalization.asString(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME, Locale.FRENCH)).isEqualTo("Autoroute");
     }
 
     @Test
-    @DisplayName("Localization as free text")
-    void testLocalizationFreeText() throws I18nException
+    @DisplayName("InstantLocalization as free text")
+    void testLocalizationFreeText() throws LocalizationException
     {
         I18nManager.getInstance().load("i18n/test");
 
-        Localization i18n = Localization.builder()
+        InstantLocalization i18n = InstantLocalization.builder()
                 .withValue("This is a test")
                 .build();
 
         assertThat(i18n.getValue()).isNotNull();
         assertThat(i18n.getValue()).isEqualTo("This is a test");
 
-        assertThrows(I18nException.class, i18n::localize); // No key provided!
+        assertThrows(LocalizationException.class, i18n::localize); // No key provided!
 
         i18n.setKey(TEST_RESOURCE_BUNDLE_KEY_HIGHWAY_NAME);
         i18n.localize();
@@ -206,9 +203,9 @@ class LocalizationUnitTest
 
     @Test
     @DisplayName("Localize a quote")
-    void testLocalizationQuote() throws LocalizationException, StringExpanderException, AnnotationException, ResourceException
+    void testLocalizationQuote() throws LocalizationException
     {
-        I18nManager.getInstance().load("i18n/test");
+        //I18nManager.getInstance().load("i18n/test");
 
         QuoteOfTheDay quote = QuoteOfTheDay.builder()
                 .withNumber(2)
@@ -216,20 +213,8 @@ class LocalizationUnitTest
 
         assertThat(quote).isNotNull();
 
-        quote.localize(Locale.FRENCH);
-        String localized = quote.getQuoteName();
-        assertThat(localized).isNotNull();
-
+        quote.localize(Locale.ITALIAN);
+        quote.localize(LanguageType.SPANISH);
+        assertThat(quote.getQuoteName()).isEqualTo("(ES) Failure");
     }
-
-//    @Test
-//    public final void testRopeTranslateText() throws TranslationException
-//    {
-//        // Set default locale to english
-//        I18nManager.getInstance().setLocale(Locale.ENGLISH);
-//
-//        Localization text = Localization.valueOf("Un petit bout de texte à faire traduire dans une langue étrangère");
-//        text.translate(LanguageType.FRENCH.getLocale(), LanguageType.HEBREW.getLocale());
-//        Assert.assertNotNull(text.getValue());
-//    }
 }

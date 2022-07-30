@@ -14,10 +14,8 @@
  */
 package com.hemajoo.commerce.cherry.base.i18n.localization;
 
-import com.hemajoo.commerce.cherry.base.commons.exception.AnnotationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
-import com.hemajoo.commerce.cherry.base.i18n.localization.exception.ResourceException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.StringExpanderException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.type.LanguageType;
 import lombok.NonNull;
 
 import java.io.Serializable;
@@ -31,42 +29,31 @@ import java.util.Locale;
 public interface Localize extends Serializable
 {
     /**
-     * Localizes all entities (annotated fields and annotated methods) implementing the {@link Localize} interface
-     * using the locale set in {@link I18nManager}.
-     * @return Locale used to realize the localization.
+     * Localize fields annotated with the <b>I18n</b> annotation.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize an element.
      */
-    default Locale localize() throws LocalizationException, StringExpanderException, AnnotationException, ResourceException
+    default void localize() throws LocalizationException
     {
-        I18nManager.getInstance().resolveIndirect(this, I18nManager.getInstance().getLocale());
-        return I18nManager.getInstance().getLocale();
+        I18nManager.getInstance().localize(this, I18nManager.getInstance().getLocale());
     }
 
     /**
-     * Localizes all entities (annotated fields and annotated methods) implementing the {@link Localize} interface
-     * using the provided locale.
+     * Localize fields annotated with the <b>I18n</b> annotation.
      * @param locale Locale.
-     * @return Locale used to realize the localization.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize an element.
      */
-    default Locale localize(final @NonNull Locale locale) throws LocalizationException, StringExpanderException, AnnotationException, ResourceException
+    default void localize(final @NonNull Locale locale) throws LocalizationException
     {
-        I18nManager.getInstance().resolveIndirect(this, locale);
-        return locale;
+        I18nManager.getInstance().localize(this, locale);
     }
 
     /**
-     * Localizes all entities (annotated fields and annotated methods) implementing the {@link Localize} interface
-     * using the provided locale.
-     * @param locale Locale.
-     * @param previous Previous locale used for a localization.
-     * @return Locale used to realize the localization.
+     * Localize fields annotated with the <b>I18n</b> annotation.
+     * @param language Language.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize an element.
      */
-    default Locale localize(final @NonNull Locale locale, final @NonNull Locale previous) throws LocalizationException, StringExpanderException, AnnotationException, ResourceException
+    default void localize(final LanguageType language) throws LocalizationException
     {
-        if (!locale.equals(previous))
-        {
-            I18nManager.getInstance().resolveIndirect(this, locale);
-        }
-
-        return locale;
+        localize(language.getLocale());
     }
 }

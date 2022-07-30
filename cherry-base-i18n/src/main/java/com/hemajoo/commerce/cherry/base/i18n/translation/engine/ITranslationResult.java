@@ -14,11 +14,13 @@
  */
 package com.hemajoo.commerce.cherry.base.i18n.translation.engine;
 
+import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Provides the basic behavior of a generic translation result.
+ * Interface defining the behavior of a translation result.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  * see {@link ITranslationRequest}
@@ -26,23 +28,49 @@ import java.util.List;
  */
 public interface ITranslationResult extends Serializable
 {
+    /**
+     * Enumeration providing the available values for a <b>translation provider</b> type.
+     * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+     * @since 0.3.0
+     * @version 1.0.0
+     * @see I18n
+     */
     enum TranslationProviderType
     {
+        /**
+         * Unknown translation provider.
+         */
         UNKNOWN,
+
+        /**
+         * <b>Microsoft Azure</b>> translation provider.
+         */
         AZURE_TRANSLATE_API,
+
+        /**
+         * <b>IBM</b>> translation provider.
+         */
         IBM_TRANSLATE_API,
+
+        /**
+         * <b>Google</b>> free translation provider.
+         */
         GOOGLE_FREE_TRANSLATE_API,
+
+        /**
+         * <b>Google</b>> translation provider.
+         */
         GOOGLE_TRANSLATE_API;
     }
 
     /**
-     * Returns the result sentences of a translation.
+     * Return the result sentences of a translation.
      * @return List of translation sentences.
      */
     List<ITranslationResultSentence> getSentences();
 
     /**
-     * Returns the translation provider type.
+     * Return the translation provider type.
      * @return Translation provider type.
      */
     TranslationProviderType getProviderType();

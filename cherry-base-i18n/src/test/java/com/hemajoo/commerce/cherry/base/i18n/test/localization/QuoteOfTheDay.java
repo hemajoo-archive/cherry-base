@@ -16,25 +16,24 @@ package com.hemajoo.commerce.cherry.base.i18n.test.localization;
 
 import com.hemajoo.commerce.cherry.base.i18n.localization.Localize;
 import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
-import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18nBundle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@I18nBundle(bundle = "i18n/test")
-public class QuoteOfTheDay implements Localize
+@I18n(bundle = "i18n/test")
+public final class QuoteOfTheDay implements Localize
 {
     @Getter
     private final String quoteNumber;
 
     @Setter
     @Getter
-    @I18n(bundle = "i18n/test", key = "com.hemajoo.commerce.cherry.base.i18n.quote.${quoteNumber}.title")
+    @I18n(key = "com.hemajoo.commerce.cherry.base.i18n.quote.${quoteNumber}.name")
     private String quoteName;
 
     @Setter
     @Getter
-    @I18n(bundle = "i18n/test", key = "com.hemajoo.commerce.cherry.base.i18n.quote.${quoteNumber}.text")
+    @I18n(key = "com.hemajoo.commerce.cherry.base.i18n.quote.${quoteNumber}.text")
     private String quoteDescription;
 
     @Builder(setterPrefix = "with")
@@ -42,17 +41,4 @@ public class QuoteOfTheDay implements Localize
     {
         this.quoteNumber = String.valueOf(number); // Only 1 or 2 at this time!
     }
-//
-//    public String getQuoteName() throws StringExpanderException, AnnotationException, ResourceException
-//    {
-//        I18nManager.getInstance().resolveIndirect(this, I18nManager.getInstance().getLocale());
-//        I18nManager.getInstance().localize(this, I18nManager.getInstance().getLocale());
-//        return quoteName;
-//    }
-//
-//    public String getQuoteDescription() throws StringExpanderException, AnnotationException, ResourceException
-//    {
-//        I18nManager.getInstance().resolveIndirect(this, I18nManager.getInstance().getLocale());
-//        return quoteDescription;
-//    }
 }

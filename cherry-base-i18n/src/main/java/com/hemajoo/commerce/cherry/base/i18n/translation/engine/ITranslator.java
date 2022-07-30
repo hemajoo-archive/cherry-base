@@ -20,7 +20,20 @@ import lombok.NonNull;
 
 import java.util.Locale;
 
+/**
+ * Interface defining the behavior of a translator.
+ * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+ * @version 1.0.0
+ */
 public interface ITranslator
 {
+    /**
+     * Translate some text.
+     * @param text Text to translate.
+     * @param source Source locale.
+     * @param target Target locale.
+     * @return Translated text.
+     * @throws TranslationException Thrown to indicate an error occurred while trying to translate some text.
+     */
     String translate(final @NonNull Translation text, final @NonNull Locale source, final @NonNull Locale target) throws TranslationException;
 }

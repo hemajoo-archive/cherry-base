@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Concrete implementation of a translation process.
+ * A translation process.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -61,6 +61,10 @@ public class TranslationProcess implements ITranslationProcess
      */
     private final StringBuilder document = new StringBuilder();
 
+    /**
+     * Create a translation process.
+     * @param processor Translation processor.
+     */
     public TranslationProcess(final @NonNull ITranslationProcessor processor)
     {
         this.processor = processor;
@@ -73,9 +77,9 @@ public class TranslationProcess implements ITranslationProcess
     }
 
     @Override
-    public final void hasBeenTranslated()
+    public final boolean isTranslated()
     {
-        translated = true;
+        return translated;
     }
 
     @Override

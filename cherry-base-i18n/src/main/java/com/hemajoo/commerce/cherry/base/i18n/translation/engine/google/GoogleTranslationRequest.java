@@ -17,7 +17,7 @@ package com.hemajoo.commerce.cherry.base.i18n.translation.engine.google;
 import com.hemajoo.commerce.cherry.base.i18n.translation.engine.TranslationRequest;
 
 /**
- * Represents a {@code Google Translate API} translation request.
+ * A <b>Google</b> translation request.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

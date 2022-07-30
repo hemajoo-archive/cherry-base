@@ -19,19 +19,32 @@ import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslationResu
 import lombok.Getter;
 import lombok.Setter;
 
-//@EqualsAndHashCode
+/**
+ * A translation result sentence for the free <b>Google</b> translation service.
+ * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+ * @version 1.0.0
+ */
 public final class GoogleTranslationResultSentence implements ITranslationResultSentence
 {
+    /**
+     * Translated text.
+     */
     @Getter
     @Setter
     @SerializedName("trans")
     private String translation;
 
+    /**
+     * Text to translate.
+     */
     @Getter
     @Setter
     @SerializedName("orig")
     private String original;
 
+    /**
+     * Backend.
+     */
     @Getter
     @Setter
     @SerializedName("backend")

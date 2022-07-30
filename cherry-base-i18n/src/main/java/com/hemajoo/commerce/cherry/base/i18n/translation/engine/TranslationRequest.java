@@ -22,7 +22,7 @@ import lombok.Setter;
 import java.util.*;
 
 /**
- * Concrete implementation of a translation request.
+ * A translation request.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

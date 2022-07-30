@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Provides the basic behavior of a generic translation request.
+ * Interface defining the behavior of a translation request.
  * <br>
  * A translation request is composed of individual entries. Each of them represents a single word or a phrase or even
  * a text to be translated.
@@ -33,38 +33,38 @@ import java.util.Map;
 public interface ITranslationRequest
 {
     /**
-     * Returns the source property entries.
+     * Return the source property entries.
      * @return Source property entries.
      */
     Map<String, String> getSources();
 
     /**
-     * Returns the target property entries.
+     * Return the target property entries.
      * @return Target property entries.
      */
     Map<String, String> getTargets();
 
     /**
-     * Returns the translation request entries.
+     * Return the translation request entries.
      * @return Translation request entries.
      */
     List<TranslationRequestEntry> getEntries();
 
     /**
-     * Retrieves a target property entry given its key.
+     * Retrieve a target property entry given its key.
      * @param key Target property key.
      * @return Value of the target property key.
      */
     String getTarget(String key);
 
     /**
-     * Returns the query containing the translation to realize.
+     * Return the query containing the translation to realize.
      * @return String representing the query to translate.
      */
     String getQuery();
 
     /**
-     * Returns the query containing the translation to realize for a specific request entry.
+     * Return the query containing the translation to realize for a specific request entry.
      * @param key Key.
      * @return String representing the query to translate for a specific request entry.
      * @throws TranslationException Thrown in case an error occurred while retrieving the query.
@@ -72,67 +72,73 @@ public interface ITranslationRequest
     String getQuery(final @NonNull String key) throws TranslationException;
 
     /**
-     * Sets the source properties.
+     * Set the source properties.
      * @param content Source property content.
      */
     void setSourceProperties(final @NonNull String content);
 
     /**
-     * Sets the locale for the source.
+     * Set the locale for the source.
      * @param locale Locale for the source.
      */
     void setSourceLocale(final @NonNull Locale locale);
 
     /**
-     * Sets the target properties.
+     * Set the target properties.
      * @param content Target property content.
      */
     void setTargetProperties(final @NonNull String content);
 
     /**
-     * Sets the locale for the target.
+     * Set the locale for the target.
      * @param locale Locale for the target.
      */
     void setTargetLocale(final @NonNull Locale locale);
 
     /**
-     * Returns the locale for the source translation.
+     * Return the locale for the source translation.
      * @return Locale.
      */
     Locale getSourceLocale();
 
     /**
-     * Returns the locale for the target translation.
+     * Return the locale for the target translation.
      * @return Locale.
      */
     Locale getTargetLocale();
 
 
     /**
-     * Returns if the request is to be processed in {@code compact mode} or not.
+     * Return if the request is to be processed in {@code compact mode} or not.
      * @return True if the translation is to be processed in compact mode, false otherwise.
      */
     boolean isCompactMode();
 
     /**
-     * Sets the compact mode.
+     * Set the compact mode.
      * @param mode True if the translation has to be realized in compact mode, false otherwise.
      */
     void setCompactMode(final boolean mode);
 
     /**
-     * Returns the number of request entries to translate.
+     * Return the number of request entries to translate.
      * @return Number of request entries to translate.
      */
     int getCount();
 
+    /**
+     * Find the translation request entry for the given value.
+     * @param value value.
+     * @return Translation request entry if one matches, <b>null</b> otherwise.
+     * @throws TranslationException Throw in case an error occurred while looking for a translation request entry.
+     */
     ITranslationRequestEntry findEntryKeyFor(@NonNull String value) throws TranslationException;
 
     /**
-     * Returns the request entry for the given key.
+     * Return the request entry for the given key.
      * @param key Key of the entry to retrieve.
      * @return {@link ITranslationRequestEntry} representing the request entry.
-     * @throws TranslationException Throw in case an error occurred while retrieving a request entry.
+     * @throws TranslationException Throw in case an error occurred while retrieving a translation request entry.
      */
     ITranslationRequestEntry getEntry(final @NonNull String key) throws TranslationException;
 }

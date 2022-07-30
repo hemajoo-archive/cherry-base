@@ -17,7 +17,7 @@ package com.hemajoo.commerce.cherry.base.i18n.translation.engine;
 import java.io.Serializable;
 
 /**
- * Provides the basic behavior of a generic translation result sentence.
+ * Interface defining the behavior of a translation result sentence.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  * see {@link ITranslationRequest}
@@ -25,13 +25,13 @@ import java.io.Serializable;
 public interface ITranslationResultSentence extends Serializable
 {
     /**
-     * Returns the original text of the translation result sentence.
+     * Return the original text of the translation result sentence.
      * @return Original text.
      */
     String getOriginal();
 
     /**
-     * Returns the translated text of the translation result sentence.
+     * Return the translated text of the translation result sentence.
      * @return Translated text.
      */
     String getTranslation();

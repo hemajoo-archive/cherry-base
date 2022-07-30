@@ -21,7 +21,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 /**
- * Concrete implementation of a translation request entry.
+ * A translation request entry.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -63,6 +63,12 @@ public class TranslationRequestEntry implements ITranslationRequestEntry
     @Getter
     private ITranslationResult result;
 
+    /**
+     * Create a translation request entry.
+     * @param key Key.
+     * @param source Source.
+     * @param requireTranslation Does it require a translation?
+     */
     public TranslationRequestEntry(final @NonNull String key, final @NonNull String source, final boolean requireTranslation)
     {
         this.key = key;

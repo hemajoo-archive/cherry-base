@@ -16,8 +16,10 @@ package com.hemajoo.commerce.cherry.base.utilities.helper;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +95,8 @@ public class StringExpander
         Object value;
         Field field;
         String result = text;
+        Class<?> declaringClass;
+        Method method;
 
         if (!containsVariable(text))
         {
@@ -110,18 +114,12 @@ public class StringExpander
                 try
                 {
                     field = ReflectionHelper.findFieldInObjectInstance(instance, name);
-                    if (!field.canAccess(instance))
-                    {
-                        field.setAccessible(true);
-                    }
-                    value = field.get(instance);
-                    if (value.getClass().isEnum())
-                    {
-                        value = ((Enum<?>) field.get(instance)).name();
-                    }
+                    declaringClass = instance.getClass();
+                    method = declaringClass.getMethod("get" + StringUtils.capitalize(field.getName()));
+                    value = method.invoke(instance);
                     result = StringExpander.expandVariable(result, name, (String) value);
                 }
-                catch (NoSuchFieldException | IllegalAccessException e)
+                catch (Exception e)
                 {
                     throw new StringExpanderException(e);
                 }

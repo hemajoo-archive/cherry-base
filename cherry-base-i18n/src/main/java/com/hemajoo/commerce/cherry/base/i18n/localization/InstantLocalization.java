@@ -15,7 +15,7 @@
 package com.hemajoo.commerce.cherry.base.i18n.localization;
 
 import com.google.gson.annotations.SerializedName;
-import com.hemajoo.commerce.cherry.base.i18n.localization.exception.I18nException;
+import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,7 +30,7 @@ import java.util.Locale;
 @Log4j2
 @NoArgsConstructor
 @EqualsAndHashCode
-public final class Localization implements Serializable
+public final class InstantLocalization implements Serializable
 {
     /**
      * Localized value.
@@ -91,9 +91,10 @@ public final class Localization implements Serializable
      * @param bundle Resource bundle file path and name or <b>null</b> if object is to be used with a free text string.
      * @param key Resource bundle key or <b>null</b> if object is to be used as a free text string.
      * @param value Free text string (optional).
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
     @Builder(setterPrefix = "with")
-    public Localization(final String bundle, final String key, final String value)
+    public InstantLocalization(final String bundle, final String key, final String value) throws LocalizationException
     {
         this.bundle = bundle;
         this.key = key;
@@ -108,22 +109,23 @@ public final class Localization implements Serializable
     /**
      * Create a localized string given a free text.
      * @param input Input text.
-     * @return {@link Localization} object.
+     * @return {@link InstantLocalization} object.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
-    public static Localization valueOf(final @NonNull String input)
+    public static InstantLocalization valueOf(final @NonNull String input) throws LocalizationException
     {
-        return new Localization(null, null, input);
+        return new InstantLocalization(null, null, input);
     }
 
     /**
      * Create a localized string given a resource bundle property key (referencing the text to be localized).
      * @param key Resource bundle property key.
-     * @return {@link Localization}.
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @return {@link InstantLocalization}.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public static Localization from(final @NonNull String key) throws I18nException
+    public static InstantLocalization from(final @NonNull String key) throws LocalizationException
     {
-        Localization i18n = new Localization(null, key, null);
+        InstantLocalization i18n = new InstantLocalization(null, key, null);
         i18n.localize();
 
         return i18n;
@@ -133,12 +135,12 @@ public final class Localization implements Serializable
      * Create a localized string given a resource bundle property key (referencing the text to be localized).
      * @param key Resource bundle property key.
      * @param locale Locale.
-     * @return {@link Localization}.
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @return {@link InstantLocalization}.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public static Localization from(final @NonNull String key, final @NonNull Locale locale) throws I18nException
+    public static InstantLocalization from(final @NonNull String key, final @NonNull Locale locale) throws LocalizationException
     {
-        Localization i18n = new Localization(null, key, null);
+        InstantLocalization i18n = new InstantLocalization(null, key, null);
         i18n.localize(locale);
 
         return i18n;
@@ -148,11 +150,11 @@ public final class Localization implements Serializable
      * Return a localized string.
      * @param key Resource bundle property key.
      * @return Localized string.
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public static String asString(final @NonNull String key) throws I18nException
+    public static String asString(final @NonNull String key) throws LocalizationException
     {
-        Localization i18n = new Localization(null, key, null);
+        InstantLocalization i18n = new InstantLocalization(null, key, null);
         i18n.localize();
 
         return i18n.getValue();
@@ -163,11 +165,11 @@ public final class Localization implements Serializable
      * @param key Resource bundle property key.
      * @param locale Locale.
      * @return Localized string.
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public static String asString(final @NonNull String key, final @NonNull Locale locale) throws I18nException
+    public static String asString(final @NonNull String key, final @NonNull Locale locale) throws LocalizationException
     {
-        Localization i18n = new Localization(null, key, null);
+        InstantLocalization i18n = new InstantLocalization(null, key, null);
         i18n.localize(locale);
 
         return i18n.getValue();
@@ -175,15 +177,15 @@ public final class Localization implements Serializable
 
     /**
      * Localize the string (using the current {@link I18nManager} locale).
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public void localize() throws I18nException
+    public void localize() throws LocalizationException
     {
         Locale current = I18nManager.getInstance().getLocale();
 
         if (previousLocalized == null || !previousLocalized.equals(current))
         {
-            I18nManager.getInstance().resolveI18nString(this, reference, current);
+            I18nManager.getInstance().localizeInstantLocalization(this, reference, current);
         }
 
         previousLocalized = current;
@@ -192,13 +194,13 @@ public final class Localization implements Serializable
     /**
      * Localize the string given a locale.
      * @param locale {@link Locale} to set.
-     * @throws I18nException Thrown to indicate an error occurred during the localization process.
+     * @throws LocalizationException Thrown to indicate an error occurred during the localization process.
      */
-    public void localize(final @NonNull Locale locale) throws I18nException
+    public void localize(final @NonNull Locale locale) throws LocalizationException
     {
         if (previousLocalized == null || !previousLocalized.equals(locale))
         {
-            I18nManager.getInstance().resolveI18nString(this, reference, locale);
+            I18nManager.getInstance().localizeInstantLocalization(this, reference, locale);
         }
         previousLocalized = locale;
     }

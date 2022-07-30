@@ -38,7 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
- * Represents a <b>Google</b> free translator.
+ * A <b>Google</b> free translator.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */

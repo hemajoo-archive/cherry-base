@@ -17,8 +17,9 @@ package com.hemajoo.commerce.cherry.base.data.model.person.phone;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
+import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.util.UUID;
 
@@ -45,8 +46,9 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      * @param withRandomId Does a random identifier has to be generated?
      * @param isDefault Is a default phone number?
      * @return Phone number.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IPhoneNumber generate(final boolean withRandomId, final boolean isDefault)
+    public static IPhoneNumber generate(final boolean withRandomId, final boolean isDefault) throws GeneratorException
     {
         IPhoneNumber phone = new PhoneNumber();
         populateBaseFields(phone);
@@ -78,8 +80,9 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      * @param count Number of documents to generate.
      * @return Phone number.
      * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IPhoneNumber generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
+    public static IPhoneNumber generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException, GeneratorException
     {
         IPhoneNumber phone = generate(withRandomId, false);
         populateBaseFields(phone);
@@ -130,18 +133,20 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
     /**
      * Returns a random phone number type.
      * @return Phone number type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static PhoneNumberType getRandomPhoneNumberType()
+    public static PhoneNumberType getRandomPhoneNumberType() throws GeneratorException
     {
-        return (PhoneNumberType) GENERATOR_PHONE_NUMBER_TYPE.gen();
+        return (PhoneNumberType) GENERATOR_PHONE_NUMBER_TYPE.generate();
     }
 
     /**
      * Returns a random phone number category type.
      * @return Phone number category type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static PhoneNumberCategoryType getRandomPhoneNumberCategoryType()
+    public static PhoneNumberCategoryType getRandomPhoneNumberCategoryType() throws GeneratorException
     {
-        return (PhoneNumberCategoryType) GENERATOR_PHONE_NUMBER_CATEGORY_TYPE.gen();
+        return (PhoneNumberCategoryType) GENERATOR_PHONE_NUMBER_CATEGORY_TYPE.generate();
     }
 }

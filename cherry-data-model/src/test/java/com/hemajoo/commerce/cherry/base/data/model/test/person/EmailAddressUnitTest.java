@@ -26,6 +26,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAdd
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressException;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -90,7 +91,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Create an email address with a maximum of attributes")
-    final void testCreateEmailAddressWithMaximalAttributes() throws DataModelEntityException
+    final void testCreateEmailAddressWithMaximalAttributes() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, true);
         IEmailAddress parent = EmailAddressRandomizer.generate(true, true, true, 1);
@@ -124,7 +125,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Add a document")
-    final void testAddDocument() throws DataModelEntityException
+    final void testAddDocument() throws DataModelEntityException, GeneratorException
     {
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
@@ -141,7 +142,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Cannot add a duplicate document")
-    final void testCannotAddDuplicateDocument() throws DataModelEntityException
+    final void testCannotAddDuplicateDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
         IDocument other = DocumentRandomizer.generate(true, false);
@@ -172,7 +173,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Delete a document")
-    final void testDeleteDocument() throws DataModelEntityException
+    final void testDeleteDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document1 = DocumentRandomizer.generate(true, false);
         IDocument document2 = DocumentRandomizer.generate(true, false);
@@ -211,7 +212,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Retrieve a document")
-    final void testRetrieveDocument() throws DataModelEntityException
+    final void testRetrieveDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
 
@@ -239,7 +240,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Check if a document exist")
-    final void testExistDocument() throws DataModelEntityException
+    final void testExistDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
 
@@ -267,7 +268,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Retrieve all documents")
-    final void testRetrieveAllDocuments() throws DataModelEntityException
+    final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
         int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
 
@@ -290,7 +291,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @Test
     @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 email addresses with documents and no content")
-    final void testPerformanceCreateMultipleEmailAddressesWithoutDocumentContent() throws DataModelEntityException
+    final void testPerformanceCreateMultipleEmailAddressesWithoutDocumentContent() throws DataModelEntityException, GeneratorException
     {
         final int count = 1000;
         List<IEmailAddress> list = new ArrayList<>();
@@ -308,7 +309,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @Test
     @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 email addresses with documents and content")
-    final void testPerformanceCreateMultipleEmailAddressesWithDocumentAndContent() throws DataModelEntityException
+    final void testPerformanceCreateMultipleEmailAddressesWithDocumentAndContent() throws DataModelEntityException, GeneratorException
     {
         final int count = 1000;
         List<IEmailAddress> list = new ArrayList<>();

@@ -18,8 +18,9 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
+import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import lombok.experimental.UtilityClass;
-import org.ressec.avocado.core.random.EnumRandomGenerator;
 
 import java.util.UUID;
 
@@ -41,8 +42,9 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      * @param withRandomId Does a random entity identifier has to be generated?
      * @param isDefault Is a default email address?
      * @return Email address.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IEmailAddress generate(final boolean withRandomId, final boolean isDefault)
+    public static IEmailAddress generate(final boolean withRandomId, final boolean isDefault) throws GeneratorException
     {
         IEmailAddress emailAddress = new EmailAddress();
         populateBaseFields(emailAddress);
@@ -68,8 +70,9 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      * @param count Number of documents to generate.
      * @return Email address.
      * @throws DataModelEntityException Thrown to indicate an error occurred while generating a data model entity.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException
+    public static IEmailAddress generate(final boolean withRandomId, final boolean withDocument, final boolean withContent, final int count) throws DataModelEntityException, GeneratorException
     {
         IEmailAddress emailAddress = generate(withRandomId, false);
 
@@ -96,10 +99,11 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     /**
      * Returns a random address type.
      * @return Address type.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static AddressType getRandomAddressType()
+    public static AddressType getRandomAddressType() throws GeneratorException
     {
-        return (AddressType) GENERATOR_ADDRESS_TYPE.gen();
+        return (AddressType) GENERATOR_ADDRESS_TYPE.generate();
     }
 
     /**

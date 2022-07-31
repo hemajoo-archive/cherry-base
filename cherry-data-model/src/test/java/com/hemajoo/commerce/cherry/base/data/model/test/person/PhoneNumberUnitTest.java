@@ -22,6 +22,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.*;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -95,7 +96,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Create a phone number with a maximal set of attributes")
-    final void testCreatePhoneNumberWithMaximalAttributes() throws DataModelEntityException
+    final void testCreatePhoneNumberWithMaximalAttributes() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, true);
         IPhoneNumber parent = PhoneNumberRandomizer.generate(true, true, true, 1);
@@ -134,7 +135,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Add a document")
-    final void testAddDocument() throws DataModelEntityException
+    final void testAddDocument() throws DataModelEntityException, GeneratorException
     {
         IPhoneNumber phone = PhoneNumber.builder()
                 .withNumber(PhoneNumberRandomizer.getRandomNumber())
@@ -151,7 +152,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Cannot add a duplicate document")
-    final void testCannotAddDuplicateDocument() throws DataModelEntityException
+    final void testCannotAddDuplicateDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
         IDocument other = DocumentRandomizer.generate(true, false);
@@ -181,7 +182,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Delete a document")
-    final void testDeleteDocument() throws DataModelEntityException
+    final void testDeleteDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document1 = DocumentRandomizer.generate(true, false);
         IDocument document2 = DocumentRandomizer.generate(true, false);
@@ -217,7 +218,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Retrieve a document")
-    final void testRetrieveDocument() throws DataModelEntityException
+    final void testRetrieveDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
 
@@ -242,7 +243,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Check if a document exist")
-    final void testExistDocument() throws DataModelEntityException
+    final void testExistDocument() throws DataModelEntityException, GeneratorException
     {
         IDocument document = DocumentRandomizer.generate(true, false);
 
@@ -267,7 +268,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
 
     @Test
     @DisplayName("Retrieve all documents")
-    final void testRetrieveAllDocuments() throws DataModelEntityException
+    final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
         int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
 
@@ -287,7 +288,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     @Test
     @Timeout(value = 4000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 phone numbers with documents and no content")
-    final void testPerformanceCreateMultiplePhoneNumbersWithoutDocumentContent() throws DataModelEntityException
+    final void testPerformanceCreateMultiplePhoneNumbersWithoutDocumentContent() throws DataModelEntityException, GeneratorException
     {
         final int count = 1000;
         Set<IPhoneNumber> phones = new HashSet<>();
@@ -305,7 +306,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     @Test
     @Timeout(value = 6000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 phone numbers with documents and content")
-    final void testPerformanceCreateMultiplePhoneNumbersWithDocumentAndContent() throws DataModelEntityException
+    final void testPerformanceCreateMultiplePhoneNumbersWithDocumentAndContent() throws DataModelEntityException, GeneratorException
     {
         final int count = 1000;
         Set<IPhoneNumber> phones = new HashSet<>();

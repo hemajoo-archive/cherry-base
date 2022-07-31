@@ -15,6 +15,7 @@
 package com.hemajoo.commerce.cherry.base.data.model.document;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
+import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -34,8 +35,9 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
      * @param withRandomId Does a random entity identifier has to be generated? <b>False</b> by default.
      * @return Random document.
      * @throws DocumentException Thrown to indicate an error occurred while generating a document.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IDocument generate(final boolean withRandomId) throws DocumentException
+    public static IDocument generate(final boolean withRandomId) throws DocumentException, GeneratorException
     {
         return generate(withRandomId, true);
     }
@@ -46,8 +48,9 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
      * @param withContent Does a content (file) has to be attached to the document?
      * @return Random document.
      * @throws DocumentException Thrown to indicate an error occurred while generating a document.
+     * @throws GeneratorException Thrown to indicate an error occurred trying to generate a random value.
      */
-    public static IDocument generate(final boolean withRandomId, final boolean withContent) throws DocumentException
+    public static IDocument generate(final boolean withRandomId, final boolean withContent) throws DocumentException, GeneratorException
     {
         IDocument document = new Document();
         AbstractDataModelEntityRandomizer.populateBaseFields(document);

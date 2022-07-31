@@ -38,6 +38,7 @@
         <module>cherry-base-commons</module>
         <module>cherry-base-utilities</module>
         <module>cherry-data-model</module>
+        <module>cherry-base-i18n</module>
         <module>cherry-base-coverage</module>
     </modules>
 
@@ -54,7 +55,7 @@
         <test.pattern.integration>**/*IntegrationTest.java</test.pattern.integration>
 
         <!-- Spring overriding properties -->
-        <log4j2.version>2.17.1</log4j2.version> <!-- Forces Spring to use log4j2 version 2.17.1 -->
+        <log4j2.version>2.18.0</log4j2.version> <!-- Forces Spring to use this version of log4j2 -->
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
 
         <!-- Maven plugins version properties. Last update on 2022/03/13 -->
@@ -77,12 +78,11 @@
         <version.spring.boot>2.7.0</version.spring.boot>
 
         <!-- Dependencies version properties -->
-        <version.ressec.avocado>0.1.0</version.ressec.avocado>
         <version.springdoc.openapi>1.6.6</version.springdoc.openapi>
         <version.google.guava>31.1-jre</version.google.guava>
         <version.junit.jupiter>5.8.2</version.junit.jupiter>
         <version.junit.platform.launcher>1.6.2</version.junit.platform.launcher>
-        <version.javafaker>1.0.1</version.javafaker>
+        <version.javafaker>1.0.2</version.javafaker>
         <version.apache.log4j>2.18.0</version.apache.log4j>
         <version.apache.commons.lang.3>3.9</version.apache.commons.lang.3>
         <version.apache.commons.io>2.11.0</version.apache.commons.io>
@@ -110,6 +110,7 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
+        <sonar.java.libraries>target/classes</sonar.java.libraries>
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.projectName>Cherry Base</sonar.projectName>
@@ -170,25 +171,11 @@
         <dependencies>
 
             <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-bom</artifactId>
-                <version>${log4j2.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${version.spring.boot}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter</artifactId>
-                <version>${version.spring.boot}</version>
             </dependency>
 
             <dependency>
@@ -290,12 +277,6 @@
                 <groupId>com.github.lafa.tikaNoExternal</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${version.apache.tika}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.ressec.avocado</groupId>
-                <artifactId>avocado-core</artifactId>
-                <version>${version.ressec.avocado}</version>
             </dependency>
 
         </dependencies>

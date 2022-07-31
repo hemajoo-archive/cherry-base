@@ -33,28 +33,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class EnumLocalizationUnitTest
 {
+    /**
+     * Month 'March' in Italian.
+     */
+    public static final String MONTH_MARCH_ITALIAN = "Marzo";
+
+    /**
+     * Month 'March' in German.
+     */
+    public static final String MONTH_MARCH_GERMAN = "März";
+
     @Test
-    void testLocalizeMonth() throws LocalizationException
+    void testMonthType() throws LocalizationException
     {
-        assertThat(MonthType.MARCH.getName(Locale.ITALIAN)).isEqualTo("Marzo");
+        assertThat(MonthType.MARCH.getName(Locale.ITALIAN)).isEqualTo(MONTH_MARCH_ITALIAN);
         assertThat(MonthType.JANUARY.getName(Locale.FRENCH)).isEqualTo("Janvier");
         assertThat(MonthType.DECEMBER.getName(Locale.GERMAN)).isEqualTo("Dezember");
         assertThat(MonthType.JULY.getName(Locale.forLanguageTag("es"))).isEqualTo("Julio");
     }
 
     @Test
-    void testLocalizeLanguage() throws LocalizationException
+    void testLanguageType() throws LocalizationException
     {
         LanguageType language = LanguageType.BULGARIAN;
-        String description = language.getDescription(Locale.ITALIAN);
-        String name = language.getName(Locale.FRENCH);
+
+        // Static services, by convention not prefixed by: get or set for static services
+        assertThat(LanguageType.definition(LanguageType.BOSNIAN.getLocale())).isNotNull();
+
+
+        assertThat(LanguageType.VIETNAMESE.getName(LanguageType.SPANISH.getLocale())).isNotNull();
+        assertThat(LanguageType.HEBREW.getDescription(LanguageType.CHECHEN.getLocale())).isNotNull();
 
         I18nManager.getInstance().setLocale(Locale.GERMAN);
-        String definition = LanguageType.getDefinition();
-
-        assertThat(MonthType.MARCH.getName(Locale.ITALIAN)).isEqualTo("Marzo");
-
-        System.out.println(LanguageType.HEBREW.getName(Locale.FRENCH));
-        System.out.println(LanguageType.HEBREW.getDescription(Locale.FRENCH));
+        assertThat(MonthType.MARCH.getName(Locale.ITALIAN)).isEqualTo(MONTH_MARCH_ITALIAN);
+        assertThat(MonthType.MARCH.getName()).isEqualTo(MONTH_MARCH_GERMAN);
     }
 }

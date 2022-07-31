@@ -739,7 +739,7 @@ public final class I18nManager
         }
         else
         {
-            LOGGER.warn(String.format("No resource bundle found for bundle: '%s', language: '%s (%s)'! Use of default language: '%s (%s)' instead",
+            LOGGER.warn(String.format("No resource bundle found for bundle: '%s', language: '%s (%s)'. Use of default language: '%s (%s)' instead!",
                     filePath,
                     currentLocale,
                     currentLocale.getDisplayLanguage(),

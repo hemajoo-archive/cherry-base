@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 public @interface I18n
 {
     /**
-     * Resource bundle path and name (optional if type is annotated with the {@link I18nBundle} annotation).
+     * Resource bundle path and name.
      * @return Resource bundle path and name.
      */
     String bundle() default "";

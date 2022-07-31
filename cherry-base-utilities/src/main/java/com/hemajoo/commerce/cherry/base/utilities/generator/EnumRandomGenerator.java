@@ -91,7 +91,8 @@ public final class EnumRandomGenerator
      */
     public Enum<?> generate() throws GeneratorException
     {
-        Enum<?> value;
+        Enum<?> value = null;
+        boolean isValid = false;
 
         if (excludes != null && !excludes.isEmpty())
         {
@@ -102,15 +103,16 @@ public final class EnumRandomGenerator
                         enumClass.getSimpleName()));
             }
 
-            do
+            while (!isValid)
             {
                 value = enumClass.getEnumConstants()[generator.nextInt(min, max)];
                 if (!excludes.contains(value))
                 {
-                    return value;
+                    isValid = true;
                 }
             }
-            while (0 == 0);
+
+            return value;
         }
 
         return enumClass.getEnumConstants()[generator.nextInt(min, max)];

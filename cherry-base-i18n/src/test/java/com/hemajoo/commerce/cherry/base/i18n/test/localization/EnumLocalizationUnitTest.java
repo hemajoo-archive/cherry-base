@@ -53,5 +53,8 @@ class EnumLocalizationUnitTest
         String definition = LanguageType.getDefinition();
 
         assertThat(MonthType.MARCH.getName(Locale.ITALIAN)).isEqualTo("Marzo");
+
+        System.out.println(LanguageType.HEBREW.getName(Locale.FRENCH));
+        System.out.println(LanguageType.HEBREW.getDescription(Locale.FRENCH));
     }
 }

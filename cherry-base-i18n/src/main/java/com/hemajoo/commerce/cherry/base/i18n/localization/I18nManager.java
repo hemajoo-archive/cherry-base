@@ -16,7 +16,6 @@ package com.hemajoo.commerce.cherry.base.i18n.localization;
 
 import com.google.common.collect.Maps;
 import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
-import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18nBundle;
 import com.hemajoo.commerce.cherry.base.i18n.localization.exception.LocalizationException;
 import com.hemajoo.commerce.cherry.base.i18n.localization.internal.LocalizationFieldContext;
 import com.hemajoo.commerce.cherry.base.i18n.localization.internal.LocalizationInvocationContext;
@@ -195,16 +194,16 @@ public final class I18nManager
         }
     }
 
-    /**
-     * Localize a resource.
-     * @param locale Locale.
-     * @return Localized value.
-     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
-     */
-    public String localize(final Locale locale) throws LocalizationException
-    {
-        return localize(null, locale);
-    }
+//    /**
+//     * Localize a resource.
+//     * @param locale Locale.
+//     * @return Localized value.
+//     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
+//     */
+//    public String localize(final Locale locale) throws LocalizationException
+//    {
+//        return localize(null, locale != null ? locale : this.locale);
+//    }
 
     /**
      * Localize a resource.
@@ -213,7 +212,7 @@ public final class I18nManager
      * @return Localized value.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
-    public String localize(final Object instance, final Locale locale) throws LocalizationException
+    public String localize(final @NonNull Object instance, final Locale locale) throws LocalizationException
     {
         LocalizationInvocationContext context = new LocalizationInvocationContext();
         context.setInvocationType(LocalizationInvocationType.UNKNOWN);
@@ -509,7 +508,7 @@ public final class I18nManager
             fillInvocationContext(context, instance, method);
         }
 
-        if (method.getDeclaringClass().isAssignableFrom(LocalizeEnumAware.class)) // Method's class should implement the LocalizeEnumAware interface
+        if (method.getDeclaringClass().isAssignableFrom(LocalizeEnum.class)) // Method's class should implement the LocalizeEnum interface
         {
             fillInvocationContext(context, instance, method);
         }
@@ -536,9 +535,9 @@ public final class I18nManager
         Class<?> declaringClass = method.getDeclaringClass();
         context.setDeclaringClass(declaringClass);
 
-        if (declaringClass.isAnnotationPresent(I18nBundle.class))
+        if (declaringClass.isAnnotationPresent(I18n.class))
         {
-            context.setDeclaringClassAnnotation(declaringClass.getAnnotation(I18nBundle.class));
+            context.setDeclaringClassAnnotation(declaringClass.getAnnotation(I18n.class));
         }
 
         if (instance instanceof Enum<?> value)
@@ -589,7 +588,7 @@ public final class I18nManager
      * @param locale Locale.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
-    private String localizeElement(final Annotation classAnnotation, final Annotation elementAnnotation, final Object instance, final Locale locale) throws LocalizationException
+    private String localizeElement(final Annotation classAnnotation, final Annotation elementAnnotation, final Object instance, final @NonNull Locale locale) throws LocalizationException
     {
         String classBundle = null;
         String classKey = null;
@@ -639,7 +638,7 @@ public final class I18nManager
                 throw new LocalizationException("Element annotated with the I18n annotation must provide a valid 'key' parameter!");
             }
 
-            localized = getKey(bundle != null ? bundle : classBundle, key != null ? key : classKey, locale != null ? locale : Locale.forLanguageTag(locale.getLanguage()));
+            localized = getKey(bundle != null ? bundle : classBundle, key != null ? key : classKey, locale);
         }
         catch (Exception e)
         {
@@ -670,7 +669,6 @@ public final class I18nManager
                 try
                 {
                     expandedBundle = StringExpander.expandVariables(reference != null ? reference : instance, element.getBundle() != null ? element.getBundle() : element.getKey());
-
                     expandedKey = StringExpander.expandVariables(reference != null ? reference : instance, element.getKey());
 
                     if (element.getBundle() != null)

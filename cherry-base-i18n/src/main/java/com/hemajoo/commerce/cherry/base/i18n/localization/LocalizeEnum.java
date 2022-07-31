@@ -26,7 +26,7 @@ import java.util.Locale;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public interface LocalizeEnumAware extends Serializable
+public interface LocalizeEnum extends Serializable
 {
     /**
      * Return the enumerated value localized <b>name</b>.

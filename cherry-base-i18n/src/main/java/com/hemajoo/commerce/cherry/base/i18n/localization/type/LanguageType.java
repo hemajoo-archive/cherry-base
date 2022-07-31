@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * An <b>localized</b> enumeration representing the available <b>languages</b>.
+ * Enumeration providing the several possible values for a <b>language</b> type.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  * @see I18n
@@ -250,7 +250,7 @@ public enum LanguageType
     private final Locale locale;
 
     /**
-     * Creates a {@link LanguageType} entity given its ISO code (2 letters).
+     * Create a {@link LanguageType} entity given its ISO code (2 letters).
      * @param isoCode Language ISO code (2 letters).
      * @return {@link LanguageType}.
      * @throws LanguageException Thrown to indicate that an error occurred while manipulating a language.
@@ -269,7 +269,7 @@ public enum LanguageType
     }
 
     /**
-     * Creates a new language type given its locale.
+     * Create a language type.
      * @param locale Language locale.
      */
     LanguageType(final @NonNull Locale locale)
@@ -278,7 +278,7 @@ public enum LanguageType
     }
 
     /**
-     * Returns the language name using the current locale set.
+     * Return the language name.
      * @return Localized language name.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
@@ -289,7 +289,7 @@ public enum LanguageType
     }
 
     /**
-     * Returns the language name using the given locale.
+     * Return the language name.
      * @param locale Locale.
      * @return Localized language name.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
@@ -297,13 +297,23 @@ public enum LanguageType
     @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.${this}.name")
     public final String getName(final @NonNull Locale locale) throws LocalizationException
     {
-        I18nManager.getInstance().localize(this, locale);
-
-        return null;
+        return I18nManager.getInstance().localize(this, locale);
     }
 
     /**
-     * Returns the language description using the current locale set.
+     * Return the language name.
+     * @param language Language.
+     * @return Localized language name.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
+     */
+    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.${this}.name")
+    public final String getName(final @NonNull LanguageType language) throws LocalizationException
+    {
+        return I18nManager.getInstance().localize(this, language.getLocale());
+    }
+
+    /**
+     * Return the language description.
      * @return Localized language description.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
@@ -314,7 +324,7 @@ public enum LanguageType
     }
 
     /**
-     * Returns the language description using the given locale.
+     * Return the language description.
      * @param locale Locale.
      * @return Localized language description.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
@@ -322,41 +332,53 @@ public enum LanguageType
     @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.${this}.definition")
     public final String getDescription(final @NonNull Locale locale) throws LocalizationException
     {
-        return I18nManager.getInstance().localize(this, I18nManager.getInstance().getLocale());
+        return I18nManager.getInstance().localize(this, locale);
     }
 
     /**
-     * Return the localization of the definition of the term <b>language</b>.
-     * @return Localization.
-     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
-     */
-    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
-    public static String getDefinition() throws LocalizationException
-    {
-        return I18nManager.getInstance().localize(I18nManager.getInstance().getLocale());
-    }
-
-    /**
-     * Return the localization of the definition of the term <b>language</b>.
-     * @param locale Locale.
-     * @return Localization.
-     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
-     */
-    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
-    public static String getDefinition(final @NonNull Locale locale) throws LocalizationException
-    {
-        return I18nManager.getInstance().localize(locale);
-    }
-
-    /**
-     * Return the localization of the definition of the term <b>language</b>.
+     * Return the definition of the term <b>language</b>.
      * @param language Language.
      * @return Localization.
      * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
      */
     @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
-    public static String getDefinition(final @NonNull LanguageType language) throws LocalizationException
+    public String getDescription(final @NonNull LanguageType language) throws LocalizationException
     {
-        return I18nManager.getInstance().localize(language.getLocale());
+        return I18nManager.getInstance().localize(this, language.getLocale());
+    }
+
+    /**
+     * Return the definition of the term <b>language</b>.
+     * @return Localization.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
+     */
+    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
+    public String getDefinition() throws LocalizationException
+    {
+        return I18nManager.getInstance().localize(this, I18nManager.getInstance().getLocale());
+    }
+
+    /**
+     * Return the definition of the term <b>language</b>.
+     * @param locale Locale.
+     * @return Localization.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
+     */
+    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
+    public String getDefinition(final @NonNull Locale locale) throws LocalizationException
+    {
+        return I18nManager.getInstance().localize(this, locale);
+    }
+
+    /**
+     * Return the definition of the term <b>language</b>.
+     * @param language Language.
+     * @return Localization.
+     * @throws LocalizationException Thrown to indicate an error occurred while trying to localize a resource.
+     */
+    @I18n(bundle = LanguageType.RESOURCE_BUNDLE_FILE, key = "language.term.definition")
+    public String getDefinition(final @NonNull LanguageType language) throws LocalizationException
+    {
+        return I18nManager.getInstance().localize(this, language.getLocale());
     }
 }

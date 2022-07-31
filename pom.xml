@@ -38,8 +38,8 @@
         <module>cherry-base-commons</module>
         <module>cherry-base-utilities</module>
         <module>cherry-data-model</module>
-        <module>cherry-base-coverage</module>
         <module>cherry-base-i18n</module>
+        <module>cherry-base-coverage</module>
     </modules>
 
     <properties>
@@ -110,6 +110,7 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
+        <sonar.java.libraries>target/classes</sonar.java.libraries>
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.projectName>Cherry Base</sonar.projectName>
@@ -169,14 +170,6 @@
 
         <dependencies>
 
-<!--            <dependency>-->
-<!--                <groupId>org.apache.logging.log4j</groupId>-->
-<!--                <artifactId>log4j-bom</artifactId>-->
-<!--                <version>${log4j2.version}</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -184,24 +177,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-starter</artifactId>-->
-<!--                <version>${version.spring.boot}</version>-->
-<!--                <exclusions>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>org.springframework.boot</groupId>-->
-<!--                        <artifactId>spring-boot-starter-logging</artifactId>-->
-<!--                    </exclusion>-->
-<!--                </exclusions>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-starter-log4j2</artifactId>-->
-<!--                <version>${version.spring.boot}</version>-->
-<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>

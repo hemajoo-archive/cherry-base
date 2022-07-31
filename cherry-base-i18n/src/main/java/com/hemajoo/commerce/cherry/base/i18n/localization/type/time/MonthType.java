@@ -14,7 +14,7 @@
  */
 package com.hemajoo.commerce.cherry.base.i18n.localization.type.time;
 
-import com.hemajoo.commerce.cherry.base.i18n.localization.LocalizeEnumAware;
+import com.hemajoo.commerce.cherry.base.i18n.localization.LocalizeEnum;
 import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
 
 /**
@@ -25,7 +25,7 @@ import com.hemajoo.commerce.cherry.base.i18n.localization.annotation.I18n;
  * @see I18n
  */
 @I18n(bundle = "i18n/time/month", key = "month.${this}.name")
-public enum MonthType implements LocalizeEnumAware
+public enum MonthType implements LocalizeEnum
 {
     /**
      * January.

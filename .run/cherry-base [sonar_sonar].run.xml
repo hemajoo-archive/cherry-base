@@ -10,6 +10,7 @@
           </option>
           <option name="goals">
             <list>
+              <option value="dependency:copy-dependencies" />
               <option value="verify" />
               <option value="sonar:sonar" />
             </list>

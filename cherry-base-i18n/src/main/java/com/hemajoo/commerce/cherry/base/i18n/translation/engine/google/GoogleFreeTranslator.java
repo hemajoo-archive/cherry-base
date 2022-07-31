@@ -14,15 +14,9 @@
  */
 package com.hemajoo.commerce.cherry.base.i18n.translation.engine.google;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hemajoo.commerce.cherry.base.i18n.translation.Translation;
-import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslationResult;
-import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslationResultSentence;
 import com.hemajoo.commerce.cherry.base.i18n.translation.engine.ITranslator;
 import com.hemajoo.commerce.cherry.base.i18n.translation.exception.TranslationException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.GsonHelper;
-import io.gsonfire.GsonFireBuilder;
 import lombok.NonNull;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -58,21 +52,21 @@ public final class GoogleFreeTranslator implements ITranslator
     /**
      * Gson builder.
      */
-    private final Gson gsonBuilder;
+//    private final Gson gsonBuilder;
 
     /**
      * Creates a new Google translation processor.
      */
     public GoogleFreeTranslator()
     {
-        gsonBuilder = new GsonFireBuilder()
-                .createGsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
-                .setPrettyPrinting()
-                .registerTypeAdapter(ITranslationResult.class, new GoogleTranslationResultDeserializer())
-                .registerTypeAdapter(ITranslationResultSentence.class, new GoogleTranslationResultSentenceDeserializer())
-                .enableComplexMapKeySerialization()
-                .create();
+//        gsonBuilder = new GsonFireBuilder()
+//                .createGsonBuilder()
+//                .setDateFormat("yyyy-MM-dd")
+//                .setPrettyPrinting()
+//                .registerTypeAdapter(ITranslationResult.class, new GoogleTranslationResultDeserializer())
+//                .registerTypeAdapter(ITranslationResultSentence.class, new GoogleTranslationResultSentenceDeserializer())
+//                .enableComplexMapKeySerialization()
+//                .create();
 
         httpClient = HttpClientBuilder.create().build();
     }
@@ -135,15 +129,15 @@ public final class GoogleFreeTranslator implements ITranslator
         return responseString.replace("[\"", "").replace("\"]", "");
     }
 
-    /**
-     * Deserializes the response.
-     * @param response Response.
-     * @return De-serialized {@link ITranslationResult} representing the translation result.
-     */
-    private ITranslationResult deserializeResponse(String response)
-    {
-        return GsonHelper.deserialize(gsonBuilder, response, new TypeToken<ITranslationResult>(){}.getType());
-    }
+//    /**
+//     * Deserializes the response.
+//     * @param response Response.
+//     * @return De-serialized {@link ITranslationResult} representing the translation result.
+//     */
+//    private ITranslationResult deserializeResponse(String response)
+//    {
+//        return GsonHelper.deserialize(gsonBuilder, response, new TypeToken<ITranslationResult>(){}.getType());
+//    }
 
     /**
      * Close the http connection.

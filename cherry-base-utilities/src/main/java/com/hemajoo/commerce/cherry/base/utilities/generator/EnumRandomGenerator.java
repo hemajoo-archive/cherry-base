@@ -16,9 +16,9 @@ package com.hemajoo.commerce.cherry.base.utilities.generator;
 
 import lombok.NonNull;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Generator for random enumerated values.
@@ -35,7 +35,7 @@ public final class EnumRandomGenerator
     /**
      * Random number generator.
      */
-    private final Random generator;
+    private final SecureRandom generator;
 
     /**
      * Minimal value.
@@ -61,7 +61,7 @@ public final class EnumRandomGenerator
         this.enumClass = enumClass;
         this.min = 0;
         this.max = enumClass.getEnumConstants().length - 1;
-        this.generator = new Random();
+        this.generator = new SecureRandom();
     }
 
     /**

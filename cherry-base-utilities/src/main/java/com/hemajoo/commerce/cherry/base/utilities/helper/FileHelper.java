@@ -14,23 +14,26 @@
  */
 package com.hemajoo.commerce.cherry.base.utilities.helper;
 
-import lombok.Cleanup;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Utility class providing convenient services for manipulating <b>files</b>.
@@ -40,6 +43,26 @@ import java.util.Objects;
 @UtilityClass
 public class FileHelper
 {
+    /**
+     * POSIX file attribute for temporary file.
+     */
+    private static final String POSIX_FILE_ATTRIBUTES = "rwx------";
+
+    /**
+     * Temporary dedicated folder.
+     */
+    private static final String TEMPORARY_FOLDER = "/folder";
+
+    /**
+     * Temporary file prefix.
+     */
+    private static final String TEMPORARY_FILE_PREFIX = "_file";
+
+    /**
+     * Temporary file suffix.
+     */
+    private static final String TEMPORARY_FILE_SUFFIX = ".file";
+
     /**
      * Creates the necessary directory file structure contained in the given file path.
      * @param file File.
@@ -58,7 +81,7 @@ public class FileHelper
     public static Path createFileWithDirs(String filePath)
     {
         String directory = filePath.substring(0, filePath.lastIndexOf(File.separator));
-        String filename = filePath.substring(filePath.lastIndexOf(File.separator) + 1, filePath.length());
+        String filename = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
 
         File dir = new File(directory);
         if (!dir.exists())
@@ -76,9 +99,8 @@ public class FileHelper
      * @param filename File name to retrieve.
      * @param type Class type to use to load the file.
      * @return {@link File} representing the retrieved file.
-     * @throws FileException Thrown when an error occurred while trying to retrieve the file.
      */
-    public static File getFile(final @NonNull String filename, final @NonNull Class<?> type) throws FileException
+    public static File getFile(final @NonNull String filename, final @NonNull Class<?> type)
     {
         File file;
         boolean isTemporaryFile = false;
@@ -110,10 +132,10 @@ public class FileHelper
             try
             {
                 // If not successful, then try to load it from a JAR file.
-                @Cleanup
-                InputStream stream = FileHelper.class.getResourceAsStream(filename);
-                Path path = Files.createTempFile("file", ".tjf");
-                Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
+//                @Cleanup
+//                InputStream stream = FileHelper.class.getResourceAsStream(filename);
+                Path path = createTemporaryFile();
+                Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
                 file = path.toFile();
                 isTemporaryFile = true;
             }
@@ -122,10 +144,10 @@ public class FileHelper
                 try
                 {
                     // Still not successful, then try to load it from an URL.
-                    @Cleanup
-                    InputStream stream = new URL(filename).openStream();
-                    Path path = Files.createTempFile("file", ".tjf");
-                    Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
+//                    @Cleanup
+//                    InputStream stream = new URL(filename).openStream();
+                    Path path = createTemporaryFile();
+                    Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
                     file = path.toFile();
                     isTemporaryFile = true;
                 }
@@ -169,6 +191,7 @@ public class FileHelper
     public static String loadFileContentAsString(final @NonNull String filename) throws FileException
     {
         File file = getFile(filename);
+
         try
         {
             return FileUtils.readFileToString(file, StandardCharsets.UTF_8); // This uses the commons-io library to load the file into a string.
@@ -200,7 +223,7 @@ public class FileHelper
         try
         {
             File file = FileHelper.getFile(pathname);
-            if(file != null && file.isFile() && !file.isDirectory())
+            if(file.isFile() && !file.isDirectory())
             {
                 return true;
             }
@@ -211,5 +234,76 @@ public class FileHelper
         }
 
         return false;
+    }
+
+    /**
+     *
+     * @param filename
+     */
+    private File loadFileFromJar(final @NonNull String filename)
+    {
+        File file = null;
+        Path path;
+        boolean isTemporaryFile = false;
+
+        try
+        {
+            path = createTemporaryFile();
+            Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
+            file = path.toFile();
+            isTemporaryFile = true;
+        }
+        catch (IOException ex)
+        {
+            try
+            {
+                // Still not successful, then try to load it from an URL.
+                path = createTemporaryFile();
+                Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                file = path.toFile();
+                isTemporaryFile = true;
+            }
+            catch (Exception exception)
+            {
+                // Try to load it from the file system.
+                file = new File(filename);
+            }
+        }
+        finally
+        {
+            if (isTemporaryFile)
+            {
+                file.deleteOnExit();
+            }
+        }
+
+        return file;
+    }
+
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
+    public static Path createTemporaryFile() throws IOException
+    {
+        File file;
+        Path path;
+
+        if (SystemUtils.IS_OS_UNIX)
+        {
+            FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(POSIX_FILE_ATTRIBUTES));
+            path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX, attr);
+        }
+        else
+        {
+            path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX);
+            file = path.toFile();
+            file.setReadable(true, true);
+            file.setWritable(true, true);
+            file.setExecutable(true, true);
+        }
+
+        return path;
     }
 }

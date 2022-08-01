@@ -132,8 +132,6 @@ class TranslationUnitTest extends AbstractCherryUnitTest
             translated = null;
             original = FAKER.backToTheFuture().quote();
             translated = Translation.translate(original, Locale.ENGLISH, Locale.FRENCH);
-            LOGGER.debug(String.format("BackToTheFuture: (%s) - %s", Locale.ENGLISH, original));
-            LOGGER.debug(String.format("Translation: (%s) - %s", Locale.FRENCH, translated));
             assertThat(translated).isNotNull();
         }
     }
@@ -152,14 +150,11 @@ class TranslationUnitTest extends AbstractCherryUnitTest
                 .withTarget(Locale.FRENCH)
                 .build();
 
-        LOGGER.debug("");
         for (int i = 0; i < COUNT; i++)
         {
             original = FAKER.chuckNorris().fact();
             translation.setText(original);
             translation.translate();
-            LOGGER.debug(String.format("CheckNorris: (%s) - %s", translation.getSourceLocale(), translation.getText()));
-            LOGGER.debug(String.format("Translation: (%s) - %s", translation.getTargetLocale(), translation.getTranslated()));
             assertThat(translation).isNotNull();
         }
     }

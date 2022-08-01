@@ -14,8 +14,8 @@
  */
 package com.hemajoo.commerce.cherry.base.utilities.test.helper;
 
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;

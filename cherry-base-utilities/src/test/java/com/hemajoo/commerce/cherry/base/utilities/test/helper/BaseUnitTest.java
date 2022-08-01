@@ -15,8 +15,8 @@
 package com.hemajoo.commerce.cherry.base.utilities.test.helper;
 
 import com.hemajoo.commerce.cherry.base.commons.test.AbstractCherryUnitTest;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.NonNull;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

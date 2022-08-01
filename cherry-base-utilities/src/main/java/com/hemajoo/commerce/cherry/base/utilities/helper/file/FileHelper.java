@@ -12,7 +12,7 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.helper;
+package com.hemajoo.commerce.cherry.base.utilities.helper.file;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;

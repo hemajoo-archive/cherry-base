@@ -21,9 +21,9 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
-import com.hemajoo.commerce.cherry.base.utilities.helper.StringHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.string.StringHelper;
 import lombok.NonNull;
 
 import java.io.File;

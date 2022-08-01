@@ -18,8 +18,8 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.*;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;

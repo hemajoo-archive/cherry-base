@@ -21,7 +21,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.utilities.generator.UuidGenerator;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;

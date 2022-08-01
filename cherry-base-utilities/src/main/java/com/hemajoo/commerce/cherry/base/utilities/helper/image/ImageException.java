@@ -12,46 +12,45 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.helper;
+package com.hemajoo.commerce.cherry.base.utilities.helper.image;
 
-import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 
 /**
- * Exception thrown to indicate an error occurred while trying to expand a variable string.
+ * Exception thrown to indicate an error occurred while trying to manipulate an image file.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class StringExpanderException extends CherryException
+public class ImageException extends FileException
 {
     /**
-     * Thrown to indicate that an error occurred while trying to expand a variable string.
+     * Thrown to indicate that an error occurred while trying to manipulate an image file.
      *
      * @param exception Parent exception.
      */
-    public StringExpanderException(final Exception exception)
+    public ImageException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred while trying to expand a variable string.
+     * Thrown to indicate that an error occurred while trying to manipulate an image file.
      *
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public StringExpanderException(final String message)
+    public ImageException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred while trying to expand a variable string.
+     * Thrown to indicate that an error occurred while trying to manipulate an image file.
      *
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent exception.
      */
-    public StringExpanderException(final String message, final Exception exception)
+    public ImageException(final String message, final Exception exception)
     {
         super(message, exception);
     }
 }
-

@@ -12,8 +12,9 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.helper;
+package com.hemajoo.commerce.cherry.base.utilities.helper.string;
 
+import com.hemajoo.commerce.cherry.base.utilities.helper.reflection.ReflectionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;

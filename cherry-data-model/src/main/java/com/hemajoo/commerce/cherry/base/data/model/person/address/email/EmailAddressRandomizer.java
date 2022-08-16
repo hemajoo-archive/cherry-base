@@ -20,6 +20,7 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
 import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -112,6 +113,6 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      */
     public boolean getRandomIsDefault()
     {
-        return RANDOM.nextBoolean();
+        return RandomGenerator.nextBoolean();
     }
 }

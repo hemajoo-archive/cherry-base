@@ -33,9 +33,9 @@ public final class EnumRandomGenerator
     private final Class<? extends Enum<?>> enumClass;
 
     /**
-     * Random number generator.
+     * Random data generator.
      */
-    private final SecureRandom generator;
+    private final SecureRandom random;
 
     /**
      * Minimal value.
@@ -61,7 +61,7 @@ public final class EnumRandomGenerator
         this.enumClass = enumClass;
         this.min = 0;
         this.max = enumClass.getEnumConstants().length - 1;
-        this.generator = new SecureRandom();
+        this.random = new SecureRandom();
     }
 
     /**
@@ -105,7 +105,7 @@ public final class EnumRandomGenerator
 
             while (!isValid)
             {
-                value = enumClass.getEnumConstants()[generator.nextInt(min, max)];
+                value = enumClass.getEnumConstants()[ RandomGenerator.nextInt(min, max) ];
                 if (!excludes.contains(value))
                 {
                     isValid = true;
@@ -115,6 +115,6 @@ public final class EnumRandomGenerator
             return value;
         }
 
-        return enumClass.getEnumConstants()[generator.nextInt(min, max)];
+        return enumClass.getEnumConstants()[ RandomGenerator.nextInt(min, max) ];
     }
 }

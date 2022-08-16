@@ -19,6 +19,7 @@ import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModel
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -127,7 +128,7 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      */
     public static boolean getRandomIsDefault()
     {
-        return getRandomBoolean();
+        return RandomGenerator.nextBoolean();
     }
 
     /**

@@ -14,7 +14,6 @@
  */
 package com.hemajoo.commerce.cherry.base.utilities.helper.image;
 
-import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import com.twelvemonkeys.image.ResampleOp;
 import lombok.NonNull;
@@ -99,7 +98,7 @@ public final class ImageHelper
     public static String saveIcon(final @NonNull String sourceIconPath, final ImageScaleType scaleType, final ImageFileType outputType, final @NonNull String targetPath, final @NonNull String targetName) throws ImageException
     {
         boolean result;
-        BufferedImage converted = null;
+        BufferedImage converted;
 
         BufferedImage icon = getIcon(sourceIconPath, scaleType);
 
@@ -111,8 +110,7 @@ public final class ImageHelper
             {
                 switch (outputType)
                 {
-                    case BMP:
-                    case JPEG:
+                    case BMP, JPEG:
                     default:
                         converted = new BufferedImage(icon.getWidth(),icon.getHeight(), BufferedImage.TYPE_INT_RGB);
                         converted.createGraphics().drawImage(icon,0,0,Color.WHITE,null);
@@ -186,12 +184,6 @@ public final class ImageHelper
                     height = 16;
                     break;
 
-                default:
-                case IMAGE_SCALE_32X32:
-                    width = 32;
-                    height = 32;
-                    break;
-
                 case IMAGE_SCALE_64X64:
                     width = 64;
                     height = 64;
@@ -206,6 +198,10 @@ public final class ImageHelper
                     width = 256;
                     height = 256;
                     break;
+
+                default:
+                case IMAGE_SCALE_32X32:
+                    break;
             }
 
             processor = new ResampleOp(width,height, ResampleOp.FILTER_LANCZOS); // A good default filter, see class documentation for more info
@@ -215,7 +211,7 @@ public final class ImageHelper
         {
             throw new ImageException(String.format("Cannot convert icon image: '%s' due to: '%s'", sourcePath, ioe.getMessage()));
         }
-        catch (NullPointerException | FileException e)
+        catch (NullPointerException e)
         {
             throw new ImageException(String.format("Cannot find icon image: '%s'", sourcePath));
         }

@@ -49,11 +49,6 @@ public class FileHelper
     private static final String POSIX_FILE_ATTRIBUTES = "rwx------";
 
     /**
-     * Temporary dedicated folder.
-     */
-    private static final String TEMPORARY_FOLDER = "/folder";
-
-    /**
      * Temporary file prefix.
      */
     private static final String TEMPORARY_FILE_PREFIX = "_file";
@@ -64,7 +59,7 @@ public class FileHelper
     private static final String TEMPORARY_FILE_SUFFIX = ".file";
 
     /**
-     * Creates the necessary directory file structure contained in the given file path.
+     * Create the file and the necessary directory structure of a given file.
      * @param file File.
      * @return Path.
      */
@@ -74,8 +69,8 @@ public class FileHelper
     }
 
     /**
-     * Creates the necessary directory file structure contained in the given file path.
-     * @param filePath Complete file path and name.
+     * Create the file and the necessary directory structure of a given file path.
+     * @param filePath File path and name.
      * @return Path.
      */
     public static Path createFileWithDirs(String filePath)
@@ -93,12 +88,12 @@ public class FileHelper
     }
 
     /**
-     * Returns a file given its filename.
+     * Return a file given its filename.
      * <br>
-     * This service is able to retrieve a file from the classpath, from a jar file or from an url.
+     * This service is able to retrieve a file from the file system, classpath, a jar file or from an url.
      * @param filename File name to retrieve.
      * @param type Class type to use to load the file.
-     * @return {@link File} representing the retrieved file.
+     * @return {@link File} representing the retrieved file if found, <b>null</b> otherwise.
      */
     public static File getFile(final @NonNull String filename, final @NonNull Class<?> type)
     {
@@ -132,8 +127,6 @@ public class FileHelper
             try
             {
                 // If not successful, then try to load it from a JAR file.
-//                @Cleanup
-//                InputStream stream = FileHelper.class.getResourceAsStream(filename);
                 Path path = createTemporaryFile();
                 Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
                 file = path.toFile();
@@ -144,8 +137,6 @@ public class FileHelper
                 try
                 {
                     // Still not successful, then try to load it from an URL.
-//                    @Cleanup
-//                    InputStream stream = new URL(filename).openStream();
                     Path path = createTemporaryFile();
                     Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
                     file = path.toFile();
@@ -170,20 +161,19 @@ public class FileHelper
     }
 
     /**
-     * Returns a file given its filename.
+     * Return a file given its filename.
      * <br>
-     * This service is able to retrieve a file from the classpath, from a jar file or from an url.
+     * This service is able to retrieve a file from the file system, classpath, a jar file or from an url.
      * @param filename File name to retrieve.
-     * @return {@link File} representing the retrieved file.
-     * @throws FileException Thrown when an error occurred while trying to retrieve the file.
+     * @return {@link File} representing the retrieved file if found, <b>null</b> otherwise.
      */
-    public static File getFile(final @NonNull String filename) throws FileException
+    public static File getFile(final @NonNull String filename)
     {
         return getFile(filename, FileHelper.class);
     }
 
     /**
-     * Loads the content of a text file.
+     * Load the content of a text file into a string.
      * @param filename File name to load.
      * @return String representing the content of the file.
      * @throws FileException Thrown when an error occurred while trying to load the file.
@@ -203,7 +193,7 @@ public class FileHelper
     }
 
     /**
-     * Loads a text file given its filename.
+     * Load a text file given its filename.
      * @param filename File name to load.
      * @return List of lines.
      * @throws FileException Thrown when an error occurred while trying to load the file.
@@ -214,94 +204,54 @@ public class FileHelper
     }
 
     /**
-     * Checks if the given file name exist?
+     * Check if the given file name exist?
      * @param pathname File name to check.
      * @return True if the file exist, false otherwise.
      */
     public static boolean existFile(final @NonNull String pathname)
     {
-        try
-        {
-            File file = FileHelper.getFile(pathname);
-            if(file.isFile() && !file.isDirectory())
-            {
-                return true;
-            }
-        }
-        catch (FileException e)
-        {
-            return false;
-        }
-
-        return false;
+        File file = FileHelper.getFile(pathname);
+        return file.isFile() && !file.isDirectory();
     }
 
     /**
-     *
-     * @param filename
+     * Create a temporary file.
+     * @return {@link Path} representing the temporary file path, <b>null</b> otherwise.
+     * @throws FileException Thrown to indicate an error occurred while creating the temporary file.
      */
-    private File loadFileFromJar(final @NonNull String filename)
-    {
-        File file = null;
-        Path path;
-        boolean isTemporaryFile = false;
-
-        try
-        {
-            path = createTemporaryFile();
-            Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
-            file = path.toFile();
-            isTemporaryFile = true;
-        }
-        catch (IOException ex)
-        {
-            try
-            {
-                // Still not successful, then try to load it from an URL.
-                path = createTemporaryFile();
-                Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                file = path.toFile();
-                isTemporaryFile = true;
-            }
-            catch (Exception exception)
-            {
-                // Try to load it from the file system.
-                file = new File(filename);
-            }
-        }
-        finally
-        {
-            if (isTemporaryFile)
-            {
-                file.deleteOnExit();
-            }
-        }
-
-        return file;
-    }
-
-    /**
-     *
-     * @return
-     * @throws IOException
-     */
-    public static Path createTemporaryFile() throws IOException
+    public static Path createTemporaryFile() throws FileException
     {
         File file;
-        Path path;
+        Path path = null;
 
-        if (SystemUtils.IS_OS_UNIX)
+        try
         {
-            FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(POSIX_FILE_ATTRIBUTES));
-            path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX, attr);
+            if (SystemUtils.IS_OS_UNIX)
+            {
+                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(POSIX_FILE_ATTRIBUTES));
+                path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX, attr);
+            }
+            else
+            {
+                path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX);
+                file = path.toFile();
+                if (!file.setReadable(true, true))
+                {
+                    throw new FileException(String.format("Cannot set file: %s as readable!", file.getPath()));
+                }
+                if (!file.setWritable(true, true))
+                {
+                    throw new FileException(String.format("Cannot set file: %s as writable!", file.getPath()));
+                }
+                if (!file.setExecutable(true, true))
+                {
+                    throw new FileException(String.format("Cannot set file: %s as executable!", file.getPath()));
+                }
+            }
         }
-        else
+        catch (IOException e)
         {
-            path = Files.createTempFile(TEMPORARY_FILE_PREFIX, TEMPORARY_FILE_SUFFIX);
-            file = path.toFile();
-            file.setReadable(true, true);
-            file.setWritable(true, true);
-            file.setExecutable(true, true);
+            throw new FileException(e);
         }
 
         return path;

@@ -17,12 +17,10 @@ package com.hemajoo.commerce.cherry.base.data.model.base.random;
 import com.github.javafaker.Faker;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
-import com.hemajoo.commerce.cherry.base.data.model.document.DocumentException;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
 import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
-import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import com.hemajoo.commerce.cherry.base.utilities.helper.string.StringHelper;
 import lombok.NonNull;
@@ -200,25 +198,17 @@ public abstract class AbstractDataModelEntityRandomizer
     /**
      * Return a random test filename.
      * @return Test filename.
-     * @throws DocumentException Thrown in case an error occurred when trying to get a random document filename.
      */
-    public static String getRandomFilename() throws DocumentException
+    public static String getRandomFilename()
     {
-        try
+        if (FILENAMES.isEmpty())
         {
-            if (FILENAMES.isEmpty())
+            // Load the test files.
+            File file = FileHelper.getFile("./media");
+            for (File element : Objects.requireNonNull(file.listFiles()))
             {
-                // Load the test files.
-                File file = FileHelper.getFile("./media");
-                for (File element : Objects.requireNonNull(file.listFiles()))
-                {
-                    FILENAMES.add(element.getAbsolutePath());
-                }
+                FILENAMES.add(element.getAbsolutePath());
             }
-        }
-        catch (FileException e)
-        {
-            throw new DocumentException(e);
         }
 
         return AbstractDataModelEntityRandomizer.getRandomElement(FILENAMES);

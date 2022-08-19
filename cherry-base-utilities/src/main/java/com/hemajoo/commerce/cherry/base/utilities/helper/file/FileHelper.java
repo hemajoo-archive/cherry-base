@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.utilities.helper.file;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -40,6 +41,7 @@ import java.util.Set;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@Log4j2
 @UtilityClass
 public class FileHelper
 {
@@ -255,5 +257,22 @@ public class FileHelper
         }
 
         return path;
+    }
+
+    /**
+     * Dump the content of a file to the console.
+     * @param filename File name.
+     * @throws IOException Thrown in case an error occurred trying to access the file content.
+     */
+    public static void dump(final @NonNull String filename) throws IOException
+    {
+        File file = FileHelper.getFile(filename);
+
+        LOGGER.debug("File name is: ");
+        LOGGER.debug(filename + "\n");
+        LOGGER.debug("URL of file is: ");
+        LOGGER.debug(file.toURI().toURL() + "\n");
+        LOGGER.debug("File content is: ");
+        Files.lines(file.toPath(), StandardCharsets.UTF_8).forEach(LOGGER::debug);
     }
 }

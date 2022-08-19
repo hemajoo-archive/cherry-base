@@ -16,16 +16,12 @@ package com.hemajoo.commerce.cherry.base.utilities.test.helper;
 
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,27 +54,9 @@ class FileHelperUnitTest extends BaseUnitTest
      */
     private static final String FILE_FILE = "file:../doc/devops.md";
 
-    /**
-     * Dump the content of a file to the console.
-     * @param filename File name.
-     * @throws FileException Thrown in case an error occurred trying to find the file.
-     * @throws IOException Thrown in case an error occurred trying to access the file content.
-     */
-    private static void dumpFile(final @NonNull String filename) throws IOException, FileException
-    {
-        File file = FileHelper.getFile(filename);
-
-        LOGGER.debug("File name is: ");
-        LOGGER.debug(filename + "\n");
-        LOGGER.debug("URL of file is: ");
-        LOGGER.debug(file.toURI().toURL() + "\n");
-        LOGGER.debug("File content is: ");
-        Files.lines(file.toPath(), StandardCharsets.UTF_8).forEach(LOGGER::debug);
-    }
-
     @Test
     @DisplayName("Get a file from the classpath")
-    final void testGetFileFromClassPath() throws FileException, IOException
+    final void testGetFileFromClassPath()
     {
         File file = FileHelper.getFile(FILE_CLASSPATH);
         LOGGER.debug(String.format("Getting file: %s from the classpath", FILE_CLASSPATH));
@@ -87,7 +65,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from a JAR file")
-    final void testGetFileFromJar() throws FileException
+    final void testGetFileFromJar()
     {
         File file = FileHelper.getFile(FILE_JAR);
         LOGGER.debug(String.format("Getting file: %s from a JAR file", FILE_JAR));
@@ -97,7 +75,7 @@ class FileHelperUnitTest extends BaseUnitTest
     @Test
     @Timeout(10000)
     @DisplayName("Get a file from an URL")
-    final void testGetFileFromUrl() throws FileException
+    final void testGetFileFromUrl()
     {
         File file = FileHelper.getFile(FILE_URL);
         LOGGER.debug(String.format("Getting file: %s from an URL", FILE_URL));
@@ -106,7 +84,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from a file URL")
-    final void testGetFileFromFile() throws FileException
+    final void testGetFileFromFile()
     {
         File file = FileHelper.getFile(FILE_FILE);
         LOGGER.debug(String.format("Getting file: %s from a file URL", FILE_FILE));
@@ -115,7 +93,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from the file system")
-    final void testGetFileFromFileSystem() throws IOException, FileException
+    final void testGetFileFromFileSystem() throws FileException
     {
         Path path = FileHelper.createTemporaryFile();
         File file = path.toFile();
@@ -135,7 +113,6 @@ class FileHelperUnitTest extends BaseUnitTest
         String content = FileHelper.loadFileContentAsString(FILE_CLASSPATH);
         LOGGER.debug(String.format("Loading file content: %s from the classpath", FILE_CLASSPATH));
         assertThat(content).isNotNull();
-        assertThat(content).isNotNull();
     }
 
     @Test
@@ -144,7 +121,6 @@ class FileHelperUnitTest extends BaseUnitTest
     {
         String content = FileHelper.loadFileContentAsString(FILE_JAR);
         LOGGER.debug(String.format("Loading file content: %s from a JAR file", FILE_JAR));
-        assertThat(content).isNotNull();
         assertThat(content).isNotNull();
     }
 
@@ -156,7 +132,6 @@ class FileHelperUnitTest extends BaseUnitTest
         String content = FileHelper.loadFileContentAsString(FILE_URL);
         LOGGER.debug(String.format("Loading file content: %s from an URL", FILE_URL));
         assertThat(content).isNotNull();
-        assertThat(content).isNotNull();
     }
 
     @Test
@@ -165,7 +140,6 @@ class FileHelperUnitTest extends BaseUnitTest
     {
         String content = FileHelper.loadFileContentAsString(FILE_FILE);
         LOGGER.debug(String.format("Loading file content: %s from a file URL", FILE_FILE));
-        assertThat(content).isNotNull();
         assertThat(content).isNotNull();
     }
 }

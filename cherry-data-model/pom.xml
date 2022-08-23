@@ -13,7 +13,7 @@
 
     <artifactId>cherry-data-model</artifactId>
 
-    <name>Cherry Data Model</name>
+    <name>Cherry Base - Data Model</name>
     <description>Hemajoo's Commerce - Cherry module containing data model entities.</description>
 
     <properties>

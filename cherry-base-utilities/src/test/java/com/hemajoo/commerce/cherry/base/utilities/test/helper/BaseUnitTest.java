@@ -15,7 +15,6 @@
 package com.hemajoo.commerce.cherry.base.utilities.test.helper;
 
 import com.hemajoo.commerce.cherry.base.commons.test.AbstractCherryUnitTest;
-import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.NonNull;
 import org.apache.commons.io.FileUtils;
@@ -75,14 +74,7 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
             }
         }
 
-        try
-        {
-            if(!FileHelper.getFile(filename).isFile())
-            {
-                return false;
-            }
-        }
-        catch (FileException e)
+        if(!FileHelper.getFile(filename).isFile())
         {
             return false;
         }

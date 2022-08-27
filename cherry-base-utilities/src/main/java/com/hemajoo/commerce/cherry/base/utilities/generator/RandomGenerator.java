@@ -5,6 +5,11 @@ import lombok.experimental.UtilityClass;
 
 import java.security.SecureRandom;
 
+/**
+ * Pseudo-random number generator class.
+ * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
+ * @version 1.0.0
+ */
 @UtilityClass
 public final class RandomGenerator
 {
@@ -30,6 +35,7 @@ public final class RandomGenerator
     /**
      * Generate a pseudo-random <b>int</b> in the range [0, max].
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random integer.
      */
     public static int nextInt(final int max)
     {
@@ -40,6 +46,7 @@ public final class RandomGenerator
      * Generate a pseudo-random <b>integer</b> in the range [min, max].
      * @param min The starting value of the range (inclusive).
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random integer.
      */
     public static int nextInt(final int min, final int max)
     {
@@ -51,6 +58,7 @@ public final class RandomGenerator
     /**
      * Generate a pseudo-random <b>long</b> in the range [0, max].
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random long.
      */
     public static long nextLong(final long max)
     {
@@ -64,6 +72,7 @@ public final class RandomGenerator
      * Generate a pseudo-random <b>long</b> in the range [min, max].
      * @param min The starting value of the range (inclusive).
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random long.
      */
     public static long nextLong(final long min, final long max)
     {
@@ -78,6 +87,7 @@ public final class RandomGenerator
     /**
      * Generate a pseudo-random <b>float</b> in the range [0, max].
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random float.
      */
     public static float nextFloat(final float max)
     {
@@ -88,6 +98,7 @@ public final class RandomGenerator
      * Generate a pseudo-random <b>float</b> in the range [min, max].
      * @param min The starting value of the range (inclusive).
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random float.
      */
     public static float nextFloat(final float min, final float max)
     {
@@ -99,6 +110,7 @@ public final class RandomGenerator
     /**
      * Generate a pseudo-random <b>double</b> in the range [0, max].
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random double.
      */
     public static double nextDouble(final double max)
     {
@@ -112,6 +124,7 @@ public final class RandomGenerator
      * Generate a pseudo-random <b>double</b> in the range [min, max].
      * @param min The starting value of the range (inclusive).
      * @param max The ending value of the range (inclusive).
+     * @return Pseudo-random double.
      */
     public static double nextDouble(final double min, final double max)
     {
@@ -125,6 +138,7 @@ public final class RandomGenerator
 
     /**
      * Generate a pseudo-random <b>boolean</b>.
+     * @return Pseudo-random boolean.
      */
     public static boolean nextBoolean()
     {

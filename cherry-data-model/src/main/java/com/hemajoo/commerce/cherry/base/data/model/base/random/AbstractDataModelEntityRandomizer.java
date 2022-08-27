@@ -192,7 +192,7 @@ public abstract class AbstractDataModelEntityRandomizer
      */
     public static <T> T getRandomElement(final List<T> list)
     {
-        return list.get(RandomGenerator.nextInt(0, list.size()));
+        return list.get(RandomGenerator.nextInt(0, list.size() -1));
     }
 
     /**

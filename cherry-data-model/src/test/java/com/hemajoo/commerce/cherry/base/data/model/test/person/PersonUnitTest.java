@@ -27,7 +27,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalA
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.IPhoneNumber;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberRandomizer;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
-import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -305,7 +305,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = Person.builder()
                 .withPersonType(personType)
@@ -334,7 +334,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
 
         for (int i = 0; i < COUNT; i++)
         {
-            list.add(PersonRandomizer.generate(true,false, false, false, true, false, RandomGenerator.nextInt(1, 3)));
+            list.add(PersonRandomizer.generate(true,false, false, false, true, false, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(list).hasSize(COUNT);
@@ -350,7 +350,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
 
         for (int i = 0; i < COUNT; i++)
         {
-            list.add(PersonRandomizer.generate(true,false, false, false, true, true, RandomGenerator.nextInt(1, 3)));
+            list.add(PersonRandomizer.generate(true,false, false, false, true, true, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(list).hasSize(COUNT);
@@ -426,7 +426,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Delete all email addresses")
     final void testDeleteAllEmailAddress() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, true, false, false, false, false, count);
 
@@ -471,7 +471,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all email addresses")
     final void testRetrieveAllEmailAddress() throws DataModelEntityException, GeneratorException
     {
-        int count = RandomGenerator.nextInt(1, 10);
+        int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, true, false, false, false, false, count);
 
@@ -483,7 +483,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Count the email addresses")
     final void testCountEmailAddress() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, true, false, false, false, false, count);
 
@@ -585,7 +585,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Count the postal addresses")
     final void testCountPostalAddress() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, true, false, false, false, count);
 
@@ -724,7 +724,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Delete all postal addresses")
     final void testDeleteAllPostalAddress() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, true, false, false, false, count);
 
@@ -769,7 +769,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all postal addresses")
     final void testRetrieveAllPostalAddress() throws DataModelEntityException, GeneratorException
     {
-        int count = RandomGenerator.nextInt(1, 10);
+        int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, true, false, false, false, count);
 
@@ -816,7 +816,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Count the phone numbers")
     final void testCountPhoneNumbers() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, false, true, false, false, count);
 
@@ -951,7 +951,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Delete all phone numbers")
     final void testDeleteAllPhoneNumbers() throws DataModelEntityException, GeneratorException
     {
-        final int count = RandomGenerator.nextInt(1, 10);
+        final int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, false, true, false, false, count);
 
@@ -996,7 +996,7 @@ class PersonUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all phone numbers")
     final void testRetrieveAllPhoneNumber() throws DataModelEntityException, GeneratorException
     {
-        int count = RandomGenerator.nextInt(1, 10);
+        int count = RandomNumberGenerator.nextInt(1, 10);
 
         IPerson person = PersonRandomizer.generate(true, false, false, true, false, false, count);
 

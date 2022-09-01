@@ -26,7 +26,7 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAdd
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
-import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -270,7 +270,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
-        int count = RandomGenerator.nextInt(1, 20);
+        int count = RandomNumberGenerator.nextInt(1, 20);
 
         IEmailAddress email = EmailAddress.builder()
                 .withEmail(emailAddress)
@@ -300,7 +300,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            list.add(EmailAddressRandomizer.generate(true, true, false, RandomGenerator.nextInt(1, 3)));
+            list.add(EmailAddressRandomizer.generate(true, true, false, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(list).hasSize(count);
@@ -318,7 +318,7 @@ class EmailAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            list.add(EmailAddressRandomizer.generate(true, true, true, RandomGenerator.nextInt(1, 3)));
+            list.add(EmailAddressRandomizer.generate(true, true, true, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(list).hasSize(count);

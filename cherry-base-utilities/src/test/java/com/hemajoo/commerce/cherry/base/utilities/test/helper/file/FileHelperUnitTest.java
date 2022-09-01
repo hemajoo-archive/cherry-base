@@ -12,10 +12,11 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.test.helper;
+package com.hemajoo.commerce.cherry.base.utilities.test.helper.file;
 
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.test.base.BaseUnitTest;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from the classpath")
-    final void testGetFileFromClassPath()
+    final void testGetFileFromClassPath() throws FileException
     {
         File file = FileHelper.getFile(FILE_CLASSPATH);
         LOGGER.debug(String.format("Getting file: %s from the classpath", FILE_CLASSPATH));
@@ -65,7 +66,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from a JAR file")
-    final void testGetFileFromJar()
+    final void testGetFileFromJar() throws FileException
     {
         File file = FileHelper.getFile(FILE_JAR);
         LOGGER.debug(String.format("Getting file: %s from a JAR file", FILE_JAR));
@@ -75,7 +76,7 @@ class FileHelperUnitTest extends BaseUnitTest
     @Test
     @Timeout(10000)
     @DisplayName("Get a file from an URL")
-    final void testGetFileFromUrl()
+    final void testGetFileFromUrl() throws FileException
     {
         File file = FileHelper.getFile(FILE_URL);
         LOGGER.debug(String.format("Getting file: %s from an URL", FILE_URL));
@@ -84,7 +85,7 @@ class FileHelperUnitTest extends BaseUnitTest
 
     @Test
     @DisplayName("Get a file from a file URL")
-    final void testGetFileFromFile()
+    final void testGetFileFromFile() throws FileException
     {
         File file = FileHelper.getFile(FILE_FILE);
         LOGGER.debug(String.format("Getting file: %s from a file URL", FILE_FILE));

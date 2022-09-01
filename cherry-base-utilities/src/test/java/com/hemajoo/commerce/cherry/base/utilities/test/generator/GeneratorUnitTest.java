@@ -14,17 +14,16 @@
  */
 package com.hemajoo.commerce.cherry.base.utilities.test.generator;
 
-import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
-import com.hemajoo.commerce.cherry.base.utilities.test.helper.BaseUnitTest;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.test.base.BaseUnitTest;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Unit test the {@link RandomGenerator} class.
+ * Unit test the {@link RandomNumberGenerator} class.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
@@ -36,6 +35,6 @@ class GeneratorUnitTest extends BaseUnitTest
     final void testGenerateRandomFloatWithInvalidBounds()
     {
         assertThrows(IllegalArgumentException.class, () ->
-                RandomGenerator.nextFloat(1000f, 800f));
+                RandomNumberGenerator.nextFloat(1000f, 800f));
     }
 }

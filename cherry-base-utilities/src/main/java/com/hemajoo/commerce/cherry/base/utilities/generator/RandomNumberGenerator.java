@@ -11,7 +11,7 @@ import java.security.SecureRandom;
  * @version 1.0.0
  */
 @UtilityClass
-public final class RandomGenerator
+public final class RandomNumberGenerator
 {
     /**
      * Secure random number generator.

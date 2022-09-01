@@ -18,9 +18,10 @@ import com.github.javafaker.Faker;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentType;
-import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
-import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomEnumGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import com.hemajoo.commerce.cherry.base.utilities.helper.string.StringHelper;
 import lombok.NonNull;
@@ -51,12 +52,12 @@ public abstract class AbstractDataModelEntityRandomizer
     /**
      * Entity status type enumeration generator.
      */
-    protected static final EnumRandomGenerator GENERATOR_STATUS_TYPE = new EnumRandomGenerator(EntityStatusType.class);
+    protected static final RandomEnumGenerator GENERATOR_STATUS_TYPE = new RandomEnumGenerator(EntityStatusType.class);
 
     /**
      * Document type enumeration generator.
      */
-    protected static final EnumRandomGenerator GENERATOR_DOCUMENT_TYPE = new EnumRandomGenerator(DocumentType.class);
+    protected static final RandomEnumGenerator GENERATOR_DOCUMENT_TYPE = new RandomEnumGenerator(DocumentType.class);
 
     /**
      * Creates a new base entity randomizer.
@@ -139,7 +140,7 @@ public abstract class AbstractDataModelEntityRandomizer
     {
         Set<String> tags = new HashSet<>();
 
-        final int count = RandomGenerator.nextInt(1, 5);
+        final int count = RandomNumberGenerator.nextInt(1, 5);
 
         for (int i = 0; i < count; i++)
         {
@@ -192,14 +193,15 @@ public abstract class AbstractDataModelEntityRandomizer
      */
     public static <T> T getRandomElement(final List<T> list)
     {
-        return list.get(RandomGenerator.nextInt(0, list.size() -1));
+        return list.get(RandomNumberGenerator.nextInt(0, list.size() -1));
     }
 
     /**
      * Return a random test filename.
      * @return Test filename.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    public static String getRandomFilename()
+    public static String getRandomFilename() throws FileException
     {
         if (FILENAMES.isEmpty())
         {

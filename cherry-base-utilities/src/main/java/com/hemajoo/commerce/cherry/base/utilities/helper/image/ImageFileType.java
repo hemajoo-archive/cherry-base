@@ -44,6 +44,11 @@ public enum ImageFileType
     BMP(".bmp"),
 
     /**
+     * Image format is SVG (see: <a href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a>).
+     */
+    SVG(".svg"),
+
+    /**
      * Image format is JPEG (see: <a href="https://en.wikipedia.org/wiki/JPEG">JPEG</a>).
      */
     JPEG(".jpg");

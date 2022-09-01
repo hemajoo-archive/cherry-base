@@ -18,9 +18,9 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
-import com.hemajoo.commerce.cherry.base.utilities.generator.RandomGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomEnumGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -36,7 +36,7 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
     /**
      * Address type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_ADDRESS_TYPE = new EnumRandomGenerator(AddressType.class);
+    private static final RandomEnumGenerator GENERATOR_ADDRESS_TYPE = new RandomEnumGenerator(AddressType.class);
 
     /**
      * Generate a random email address without any document.
@@ -113,6 +113,6 @@ public final class EmailAddressRandomizer extends AbstractDataModelEntityRandomi
      */
     public boolean getRandomIsDefault()
     {
-        return RandomGenerator.nextBoolean();
+        return RandomNumberGenerator.nextBoolean();
     }
 }

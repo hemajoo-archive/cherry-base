@@ -16,7 +16,6 @@ package com.hemajoo.commerce.cherry.base.utilities.generator;
 
 import lombok.NonNull;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import java.util.List;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public final class EnumRandomGenerator
+public final class RandomEnumGenerator
 {
     /**
      * Enumeration class.
@@ -33,19 +32,14 @@ public final class EnumRandomGenerator
     private final Class<? extends Enum<?>> enumClass;
 
     /**
-     * Random data generator.
-     */
-    private final SecureRandom random;
-
-    /**
      * Minimal value.
      */
-    private int min;
+    private final int min;
 
     /**
      * Maximal value.
      */
-    private int max;
+    private final int max;
 
     /**
      * List of excluded values.
@@ -56,20 +50,19 @@ public final class EnumRandomGenerator
      * Create a new enumeration generator.
      * @param enumClass Enumeration class.
      */
-    public EnumRandomGenerator(final @NonNull Class<? extends Enum<?>> enumClass)
+    public RandomEnumGenerator(final @NonNull Class<? extends Enum<?>> enumClass)
     {
         this.enumClass = enumClass;
         this.min = 0;
         this.max = enumClass.getEnumConstants().length - 1;
-        this.random = new SecureRandom();
     }
 
     /**
      * Exclude a value from the generation of possible enumerated values.
      * @param value Enumerated value.
-     * @return {@link EnumRandomGenerator}.
+     * @return {@link RandomEnumGenerator}.
      */
-    public EnumRandomGenerator exclude(final @NonNull Enum<?> value)
+    public RandomEnumGenerator exclude(final @NonNull Enum<?> value)
     {
         if (excludes == null)
         {
@@ -105,7 +98,7 @@ public final class EnumRandomGenerator
 
             while (!isValid)
             {
-                value = enumClass.getEnumConstants()[ RandomGenerator.nextInt(min, max) ];
+                value = enumClass.getEnumConstants()[ RandomNumberGenerator.nextInt(min, max) ];
                 if (!excludes.contains(value))
                 {
                     isValid = true;
@@ -115,6 +108,6 @@ public final class EnumRandomGenerator
             return value;
         }
 
-        return enumClass.getEnumConstants()[ RandomGenerator.nextInt(min, max) ];
+        return enumClass.getEnumConstants()[ RandomNumberGenerator.nextInt(min, max) ];
     }
 }

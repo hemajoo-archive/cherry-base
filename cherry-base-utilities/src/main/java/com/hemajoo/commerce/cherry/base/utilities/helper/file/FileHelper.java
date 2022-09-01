@@ -22,6 +22,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -96,66 +97,133 @@ public class FileHelper
      * @param filename File name to retrieve.
      * @param type Class type to use to load the file.
      * @return {@link File} representing the retrieved file if found, <b>null</b> otherwise.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    public static File getFile(final @NonNull String filename, final @NonNull Class<?> type)
+    public static File getFile(final @NonNull String filename, final @NonNull Class<?> type) throws FileException
     {
-        File file;
-        boolean isTemporaryFile = false;
+        File file = loadFromAbsolutePath(filename);
+        if (file == null)
+        {
+            file = loadFromRelativePath(filename, type);
+            if (file == null)
+            {
+                file = loadFromJarPath(filename, type);
+                if (file == null)
+                {
+                    file = loadFromTempPath(filename);
+                }
+            }
+        }
 
-        // 1 Try to load the given file from the file system
-        file = new File(filename);
+        return file;
+    }
+
+    /**
+     * Load a file given its filename as if it is an absolute path.
+     * @param filename Filename.
+     * @return File if found, <b>null</b> otherwise.
+     */
+    private File loadFromAbsolutePath(final @NonNull String filename)
+    {
+        File file = new File(filename);
         if (file.isFile() && !file.isDirectory())
         {
             return file;
         }
 
-        // Try to load the file from a JAR file.
-        try
-        {
-            URL url = type.getClassLoader().getResource(filename);
-            if (Objects.requireNonNull(url).toString().startsWith("jar:"))
-            {
-                // No chance to get a file handle if the file is located inside a jar!
-                // Throw an exception and force the creation of a temporary file.
-                throw new FileException("");
-            }
+        return null;
+    }
 
-            // Try to load the file from the classpath.
-            String path = Objects.requireNonNull(url).getFile();
-            file = new File(path);
-        }
-        catch (Exception e)
+    /**
+     * Load a file given its filename as if it is an relative path.
+     * @param filename Filename.
+     * @param type Class type.
+     * @return File if found, <b>null</b> otherwise.
+     */
+    private File loadFromRelativePath(final @NonNull String filename, final @NonNull Class<?> type)
+    {
+        URL url = type.getClassLoader().getResource(filename);
+        if (url != null)
         {
             try
             {
-                // If not successful, then try to load it from a JAR file.
-                Path path = createTemporaryFile();
-                Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
+                return new File(url.toURI());
+            }
+            catch (URISyntaxException e)
+            {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Load a file given its filename as if the path is a <b>JAR</b> path.
+     * @param filename Filename.
+     * @return File if found, <b>null</b> otherwise.
+     */
+    private File loadFromJarPath(final @NonNull String filename, final @NonNull Class<?> type) throws FileException
+    {
+        URL url = type.getResource(filename);
+        if (url != null && url.toString().startsWith("jar:"))
+        {
+            // No chance to get a file handle if the file is located inside a jar!
+            // We need to use a temporary folder.
+            return loadFromTempPath(filename);
+        }
+
+        return null;
+    }
+
+    /**
+     * Load a file given its filename as if the path is a temporary folder path.
+     * @param filename Filename.
+     * @return File if found, <b>null</b> otherwise.
+     */
+    private File loadFromTempPath(final @NonNull String filename) throws FileException
+    {
+        boolean isTemporaryFile = false;
+        Path path;
+        File file = null;
+
+        try
+        {
+            // If not successful, then try to load it from a JAR file.
+            path = createTemporaryFile();
+            Files.copy(Objects.requireNonNull(FileHelper.class.getResourceAsStream(filename)), path, StandardCopyOption.REPLACE_EXISTING);
+            file = path.toFile();
+            isTemporaryFile = true;
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                // Still not successful, then try to load it from an URL.
+                path = createTemporaryFile();
+                Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
                 file = path.toFile();
                 isTemporaryFile = true;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                try
+                // Try to load it from the file system.
+                file = new File(filename);
+                if (file.isFile() && !file.isDirectory())
                 {
-                    // Still not successful, then try to load it from an URL.
-                    Path path = createTemporaryFile();
-                    Files.copy(new URL(filename).openStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                    file = path.toFile();
-                    isTemporaryFile = true;
+                    return file;
                 }
-                catch (Exception exception)
+                else
                 {
-                    // Try to load it from the file system.
-                    file = new File(filename);
+                    throw new FileException(String.format("Cannot find file: '%s'!", filename));
                 }
             }
-            finally
+        }
+        finally
+        {
+            if (isTemporaryFile)
             {
-                if (isTemporaryFile)
-                {
-                    file.deleteOnExit();
-                }
+                file.deleteOnExit();
             }
         }
 
@@ -168,8 +236,9 @@ public class FileHelper
      * This service is able to retrieve a file from the file system, classpath, a jar file or from an url.
      * @param filename File name to retrieve.
      * @return {@link File} representing the retrieved file if found, <b>null</b> otherwise.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    public static File getFile(final @NonNull String filename)
+    public static File getFile(final @NonNull String filename) throws FileException
     {
         return getFile(filename, FileHelper.class);
     }
@@ -209,8 +278,9 @@ public class FileHelper
      * Check if the given file name exist?
      * @param pathname File name to check.
      * @return True if the file exist, false otherwise.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    public static boolean existFile(final @NonNull String pathname)
+    public static boolean existFile(final @NonNull String pathname) throws FileException
     {
         File file = FileHelper.getFile(pathname);
         return file.isFile() && !file.isDirectory();
@@ -262,17 +332,24 @@ public class FileHelper
     /**
      * Dump the content of a file to the console.
      * @param filename File name.
-     * @throws IOException Thrown in case an error occurred trying to access the file content.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    public static void dump(final @NonNull String filename) throws IOException
+    public static void dump(final @NonNull String filename) throws FileException
     {
         File file = FileHelper.getFile(filename);
 
-        LOGGER.debug("File name is: ");
-        LOGGER.debug(filename + "\n");
-        LOGGER.debug("URL of file is: ");
-        LOGGER.debug(file.toURI().toURL() + "\n");
-        LOGGER.debug("File content is: ");
-        Files.lines(file.toPath(), StandardCharsets.UTF_8).forEach(LOGGER::debug);
+        try
+        {
+            LOGGER.debug("File name is: ");
+            LOGGER.debug(filename + "\n");
+            LOGGER.debug("URL of file is: ");
+            LOGGER.debug(file.toURI().toURL() + "\n");
+            LOGGER.debug("File content is: ");
+            Files.lines(file.toPath(), StandardCharsets.UTF_8).forEach(LOGGER::debug);
+        }
+        catch (IOException e)
+        {
+            throw new FileException(String.format("Cannot dump file: '%s' due to: %s", filename, e.getMessage()));
+        }
     }
 }

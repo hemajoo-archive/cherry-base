@@ -12,11 +12,13 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.test.helper;
+package com.hemajoo.commerce.cherry.base.utilities.test.base;
 
 import com.hemajoo.commerce.cherry.base.commons.test.AbstractCherryUnitTest;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -26,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -40,46 +41,38 @@ import java.util.UUID;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
+@Log4j2
 public abstract class BaseUnitTest extends AbstractCherryUnitTest
 {
     /**
      * Unit test temporary folder for the run.
      */
-    protected static String testFolder = System.getProperty("java.io.tmpdir") + UUID.randomUUID().toString();
+    protected static String TEST_TEMP_FOLDER = System.getProperty("java.io.tmpdir") + UUID.randomUUID().toString();
 
     /**
      * System specific file separator character.
      */
-    protected static String fileSeparator = System.getProperty("file.separator");
-
-    /**
-     * Random number generator.
-     */
-    protected final Random random = new Random();
+    protected static String FILE_SEPARATOR = System.getProperty("file.separator");
 
     /**
      * Checks if the given file name exist in the test folder?
      * @param filename File name to check.
      * @return True if the file exist, false otherwise.
+     * @throws FileException Thrown to indicate an error occurred while trying to access a file.
      */
-    protected static boolean existFile(final @NonNull String filename)
+    protected static boolean existFile(final @NonNull String filename) throws FileException
     {
-        if (filename.contains(fileSeparator))
+        if (filename.contains(FILE_SEPARATOR))
         {
             String path = FilenameUtils.getPath(filename);
 
-            if (!normalizeFolderName(path).equals(normalizeFolderName(testFolder)))
+            if (!normalizeFolderName(path).equals(normalizeFolderName(TEST_TEMP_FOLDER)))
             {
                 return false;
             }
         }
 
-        if(!FileHelper.getFile(filename).isFile())
-        {
-            return false;
-        }
-
-        return true;
+        return FileHelper.getFile(filename).isFile();
     }
 
     /**
@@ -89,11 +82,11 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
      */
     private static String normalizeFolderName(@NonNull String folderName)
     {
-        if (folderName.startsWith(fileSeparator))
+        if (folderName.startsWith(FILE_SEPARATOR))
         {
             folderName = folderName.substring(1);
         }
-        if (folderName.endsWith(fileSeparator))
+        if (folderName.endsWith(FILE_SEPARATOR))
         {
             folderName = folderName.substring(0, folderName.length() - 1);
         }
@@ -101,38 +94,18 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
         return folderName;
     }
 
-    /**
-     * Initializes the test case.
-     */
     @BeforeAll
-    static void setUpBeforeClass()
+    static void setUpBeforeClass() throws IOException
     {
-        try
-        {
-            Files.createDirectories(Paths.get(testFolder));
-            System.out.printf("Test folder set to: [%s]%n", testFolder);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
+        LOGGER.info(String.format("Created temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
     }
 
-    /**
-     * Finalizes the test case.
-     */
     @AfterAll
-    public static void tearDownAfterClass()
+    public static void tearDownAfterClass() throws IOException
     {
-        try
-        {
-            FileUtils.deleteDirectory(new File(testFolder));
-            System.out.printf("Test folder [%s] deleted%n", testFolder);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
+        LOGGER.info(String.format("Deleted temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
     }
 }
 

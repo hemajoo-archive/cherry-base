@@ -121,6 +121,7 @@ public final class Picture implements IPicture
 
     /**
      * Create a picture from an <b>ImageJ</b> image.
+     * @param imagePlus {@link ImagePlus} instance.
      * @return Image.
      * @throws ImageException Thrown to indicate an error occurred while trying to load the picture.
      * @see ij.ImageJ
@@ -348,6 +349,11 @@ public final class Picture implements IPicture
         LOGGER.debug(String.format("Re-scaled image as width: '%s', height: '%s'", width, height));
     }
 
+    /**
+     * Clone a buffered image.
+     * @param bufferImage Buffered image.
+     * @return Cloned buffered image.
+     */
     public static BufferedImage clone(final @NonNull BufferedImage bufferImage)
     {
         ColorModel colorModel = bufferImage.getColorModel();
@@ -356,6 +362,11 @@ public final class Picture implements IPicture
         return new BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied(), null);
     }
 
+    /**
+     * Return the buffered image from an <b>awt</b> image.
+     * @param image Image.
+     * @return Buffered image if found, <b>null</b> otherwise.
+     */
     public static BufferedImage toBufferedImage(final @NonNull java.awt.Image image)
     {
         val bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -366,6 +377,11 @@ public final class Picture implements IPicture
         return bufferedImage;
     }
 
+    /**
+     * Return the buffered image from an image.
+     * @param image Image.
+     * @return Buffered image if found, <b>null</b> otherwise.
+     */
     public static BufferedImage toBufferedImage(final @NonNull Picture image)
     {
         return toBufferedImage(image.getBufferedImage());

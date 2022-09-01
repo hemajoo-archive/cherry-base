@@ -386,6 +386,11 @@ public final class ImageHelper
         return ImageFileType.valueOf(FilenameUtils.getExtension(pathname).toUpperCase());
     }
 
+    /**
+     * Return the filename without its extension.
+     * @param filename Filename.
+     * @return Filename without extension.
+     */
     public static String removeExtension(final @NonNull String filename)
     {
         int index = filename.lastIndexOf('.');
@@ -397,6 +402,12 @@ public final class ImageHelper
         return filename;
     }
 
+    /**
+     * Replace the file extension with a given extension.
+     * @param filename Filename.
+     * @param imageType Image type.
+     * @return Filename.
+     */
     public static String replaceExtension(final @NonNull String filename, final @NonNull ImageFileType imageType)
     {
         String outputFilename = removeExtension(filename);

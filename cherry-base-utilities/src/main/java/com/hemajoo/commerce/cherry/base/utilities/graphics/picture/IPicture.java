@@ -75,6 +75,7 @@ public interface IPicture
 
     /**
      * Save/update an existing file containing a picture.
+     * @return Filename (including path).
      * @throws ImageException Thrown to indicate an error occurred when trying to save/update a file containing an image.
      */
     String save() throws ImageException;
@@ -82,6 +83,7 @@ public interface IPicture
     /**
      * Save a picture given its filename.
      * @param filename Filename.
+     * @return Filename (including path).
      * @throws ImageException Thrown to indicate an error occurred when trying to save a file containing an image.
      */
     String save(final @NonNull String filename) throws ImageException;
@@ -90,6 +92,7 @@ public interface IPicture
      * Save a picture to a given image type.
      * @param imageType Image file type.
      * @param filename Filename.
+     * @return Filename (including path).
      * @throws ImageException Thrown to indicate an error occurred when trying to save a file containing an image.
      */
     String save(final ImageFileType imageType, final @NonNull String filename) throws ImageException;
@@ -99,6 +102,7 @@ public interface IPicture
      * @param imageType Image file type.
      * @param scaleType Image scaling type.
      * @param filename Filename.
+     * @return Filename (including path).
      * @throws ImageException Thrown to indicate an error occurred when trying to save a file containing an image.
      */
     String save(final ImageFileType imageType, final ImageScaleType scaleType, final @NonNull String filename) throws ImageException;
@@ -109,6 +113,7 @@ public interface IPicture
      * @param width Target image width.
      * @param height Target image height.
      * @param filename Filename.
+     * @return Filename (including path).
      * @throws ImageException Thrown to indicate an error occurred when trying to save a file containing an image.
      */
     String save(final ImageFileType imageType, final int width, final int height, final @NonNull String filename) throws ImageException;

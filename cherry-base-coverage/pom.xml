@@ -39,39 +39,4 @@
 
     </dependencies>
 
-<!--    <build>-->
-
-<!--        <plugins>-->
-
-<!--            &lt;!&ndash; JACOCO: Java Code Coverage. &ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.jacoco</groupId>-->
-<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
-<!--                <version>${version.plugin.maven.jacoco}</version>-->
-<!--                <configuration>-->
-<!--                    <excludes>-->
-<!--                        <exclude>**/media/*</exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>prepare</id>-->
-<!--                        <goals>-->
-<!--                            <goal>prepare-agent</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>report</id>-->
-<!--                        <phase>verify</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>report-aggregate</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
-<!--        </plugins>-->
-
-<!--    </build>-->
-
 </project>

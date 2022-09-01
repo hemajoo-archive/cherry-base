@@ -69,7 +69,6 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
         {
             String path = FilenameUtils.getPath(filename);
 
-//            if (!normalizeFolderName(path).equals(normalizeFolderName(TEST_TEMP_FOLDER)))
             if (!normalizeFolderName(path).equals(normalizeFolderName(TEMPORARY_FOLDER.getAbsolutePath())))
             {
                 return false;
@@ -101,21 +100,13 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
     @BeforeAll
     static void setUpBeforeClass() throws IOException
     {
-//        Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
-//        LOGGER.info(String.format("Create temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
-
-        //Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
-        LOGGER.info(String.format("Create temporary unit test folder: '%s'", TEMPORARY_FOLDER));
+        LOGGER.info(String.format("Temporary unit test folder set to: '%s'", TEMPORARY_FOLDER));
     }
 
     @AfterAll
     public static void tearDownAfterClass() throws IOException
     {
-//        FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
-//        LOGGER.info(String.format("Delete temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
-
-        //FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
-        LOGGER.info(String.format("Delete temporary unit test folder: '%s'", TEMPORARY_FOLDER));
+        // Empty!
     }
 }
 

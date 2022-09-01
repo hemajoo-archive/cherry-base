@@ -433,7 +433,8 @@
                 <version>${version.plugin.maven.jacoco}</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/media/*</exclude>
+                        <exclude>*.jar</exclude>
+                        <exclude>**/media/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

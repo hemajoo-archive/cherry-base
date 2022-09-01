@@ -16,7 +16,6 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
-import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
@@ -25,14 +24,13 @@ import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAdd
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.IEmailAddress;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.*;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -325,7 +323,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
-        int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
+        int count = RandomNumberGenerator.nextInt(1, 20);
 
         IPostalAddress address = generatePostalAddress();
 
@@ -341,7 +339,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    //@Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 postal addresses with documents and no content")
     final void testPerformanceCreateMultiplePostalAddressesWithoutDocumentContent() throws DataModelEntityException, GeneratorException
     {
@@ -352,14 +350,14 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each postal address entity created, we also create:
             // - from 1 to 3 documents
-            addresses.add(PostalAddressRandomizer.generate(true, true, false, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
+            addresses.add(PostalAddressRandomizer.generate(true, true, false, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(addresses).hasSize(count);
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    //@Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 email addresses with documents and content")
     final void testPerformanceCreateMultiplePostalAddressesWithDocumentAndContent() throws DataModelEntityException, GeneratorException
     {
@@ -370,7 +368,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
         {
             // For each email address entity created, we also create:
             // - from 1 to 3 documents
-            addresses.add(PostalAddressRandomizer.generate(true, true, true, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
+            addresses.add(PostalAddressRandomizer.generate(true, true, true, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(addresses).hasSize(count);

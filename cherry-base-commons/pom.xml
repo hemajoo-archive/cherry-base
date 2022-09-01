@@ -13,7 +13,7 @@
 
     <artifactId>cherry-base-commons</artifactId>
 
-    <name>Cherry Base Commons</name>
+    <name>Cherry Base - Commons</name>
     <description>Hemajoo's Commerce - Cherry module containing common entities.</description>
 
     <properties>

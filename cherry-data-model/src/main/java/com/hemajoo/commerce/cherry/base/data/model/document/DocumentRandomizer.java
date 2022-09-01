@@ -16,6 +16,7 @@ package com.hemajoo.commerce.cherry.base.data.model.document;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -64,7 +65,14 @@ public class DocumentRandomizer extends AbstractDataModelEntityRandomizer
 
         if (withContent)
         {
-            document.setContent(AbstractDataModelEntityRandomizer.getRandomFilename());
+            try
+            {
+                document.setContent(AbstractDataModelEntityRandomizer.getRandomFilename());
+            }
+            catch (FileException e)
+            {
+                throw new DocumentException(e);
+            }
         }
 
         document.setTags(FAKER.elderScrolls().creature());

@@ -102,6 +102,8 @@
         <version.amazon.awssdk>2.17.100</version.amazon.awssdk>
         <version.hibernate.validator>7.0.4.Final</version.hibernate.validator>
         <version.jakarta.el>4.0.1</version.jakarta.el>
+        <version.imageio>3.8.3</version.imageio>
+        <version.imagej>1.53t</version.imagej>
 
         <!-- Flyway properties -->
         <flyway.locations>classpath:/db/migration/h2</flyway.locations>
@@ -279,6 +281,19 @@
                 <version>${version.apache.tika}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio</artifactId>
+                <version>${version.imageio}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>net.imagej</groupId>
+                <artifactId>ij</artifactId>
+                <version>${version.imagej}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -418,7 +433,8 @@
                 <version>${version.plugin.maven.jacoco}</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/media/*</exclude>
+                        <exclude>*.jar</exclude>
+                        <exclude>**/media/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

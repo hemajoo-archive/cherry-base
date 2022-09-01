@@ -17,8 +17,9 @@ package com.hemajoo.commerce.cherry.base.data.model.person.phone;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
-import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomEnumGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -34,12 +35,12 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
     /**
      * Phone number type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_PHONE_NUMBER_TYPE = new EnumRandomGenerator(PhoneNumberType.class);
+    private static final RandomEnumGenerator GENERATOR_PHONE_NUMBER_TYPE = new RandomEnumGenerator(PhoneNumberType.class);
 
     /**
      * Phone number category type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_PHONE_NUMBER_CATEGORY_TYPE = new EnumRandomGenerator(PhoneNumberCategoryType.class);
+    private static final RandomEnumGenerator GENERATOR_PHONE_NUMBER_CATEGORY_TYPE = new RandomEnumGenerator(PhoneNumberCategoryType.class);
 
     /**
      * Generate a random phone number without any document.
@@ -127,7 +128,7 @@ public final class PhoneNumberRandomizer extends AbstractDataModelEntityRandomiz
      */
     public static boolean getRandomIsDefault()
     {
-        return getRandomBoolean();
+        return RandomNumberGenerator.nextBoolean();
     }
 
     /**

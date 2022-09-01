@@ -14,7 +14,7 @@
 
     <artifactId>cherry-base-i18n</artifactId>
 
-    <name>Cherry Base I18n</name>
+    <name>Cherry Base - I18n</name>
     <description>Hemajoo's Commerce - Cherry module containing localization and translation features.</description>
 
     <properties>

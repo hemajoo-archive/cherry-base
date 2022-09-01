@@ -16,13 +16,13 @@ package com.hemajoo.commerce.cherry.base.data.model.test.person;
 
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntityException;
-import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.IDocument;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.*;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -270,7 +270,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
     @DisplayName("Retrieve all documents")
     final void testRetrieveAllDocuments() throws DataModelEntityException, GeneratorException
     {
-        int count = AbstractDataModelEntityRandomizer.getRandomInt(1, 20);
+        int count = RandomNumberGenerator.nextInt(1, 20);
 
         IPhoneNumber phone = generatePhoneNumber();
 
@@ -297,7 +297,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
         {
             // For each phone number entity created, we also create:
             // - from 1 to 3 documents
-            phones.add(PhoneNumberRandomizer.generate(true, true, false, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
+            phones.add(PhoneNumberRandomizer.generate(true, true, false, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(phones).hasSize(count);
@@ -315,7 +315,7 @@ class PhoneNumberUnitTest extends AbstractPersonUnitTest
         {
             // For each phone number entity created, we also create:
             // - from 1 to 3 documents
-            phones.add(PhoneNumberRandomizer.generate(true, true, true, AbstractDataModelEntityRandomizer.getRandomInt(1, 3)));
+            phones.add(PhoneNumberRandomizer.generate(true, true, true, RandomNumberGenerator.nextInt(1, 3)));
         }
 
         assertThat(phones).hasSize(count);

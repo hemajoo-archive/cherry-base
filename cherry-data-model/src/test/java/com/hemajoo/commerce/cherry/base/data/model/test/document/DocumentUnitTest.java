@@ -18,8 +18,8 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityStatusType;
 import com.hemajoo.commerce.cherry.base.data.model.base.type.EntityType;
 import com.hemajoo.commerce.cherry.base.data.model.document.*;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileException;
-import com.hemajoo.commerce.cherry.base.utilities.helper.FileHelper;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
+import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -384,7 +384,7 @@ class DocumentUnitTest extends AbstractDocumentUnitTest
     @Test
     @Timeout(value = 8000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 10'000 documents with content")
-    final void testPerformanceCreateMultipleDocumentsWithContent() throws DataModelEntityException
+    final void testPerformanceCreateMultipleDocumentsWithContent() throws DataModelEntityException, FileException
     {
         final int COUNT = 10000;
         List<IDocument> list = new ArrayList<>();

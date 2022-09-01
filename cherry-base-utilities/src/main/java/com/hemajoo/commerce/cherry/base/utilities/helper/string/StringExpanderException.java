@@ -12,44 +12,44 @@
  * Hemajoo Systems Inc.
  * -----------------------------------------------------------------------------------------------
  */
-package com.hemajoo.commerce.cherry.base.utilities.helper;
+package com.hemajoo.commerce.cherry.base.utilities.helper.string;
 
 import com.hemajoo.commerce.cherry.base.commons.exception.CherryException;
 
 /**
- * Exception thrown to indicate an error occurred while trying to manipulate a file.
+ * Exception thrown to indicate an error occurred while trying to expand a variable string.
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse</a>
  * @version 1.0.0
  */
-public class FileException extends CherryException
+public class StringExpanderException extends CherryException
 {
     /**
-     * Thrown to indicate that an error occurred while trying to manipulate a file.
+     * Thrown to indicate that an error occurred while trying to expand a variable string.
      *
      * @param exception Parent exception.
      */
-    public FileException(final Exception exception)
+    public StringExpanderException(final Exception exception)
     {
         super(exception);
     }
 
     /**
-     * Thrown to indicate that an error occurred while trying to manipulate a file.
+     * Thrown to indicate that an error occurred while trying to expand a variable string.
      *
      * @param message Message describing the error being the cause of the raised exception.
      */
-    public FileException(final String message)
+    public StringExpanderException(final String message)
     {
         super(message);
     }
 
     /**
-     * Thrown to indicate that an error occurred while trying to manipulate a file.
+     * Thrown to indicate that an error occurred while trying to expand a variable string.
      *
      * @param message Message describing the error being the cause of the raised exception.
      * @param exception Parent exception.
      */
-    public FileException(final String message, final Exception exception)
+    public StringExpanderException(final String message, final Exception exception)
     {
         super(message, exception);
     }

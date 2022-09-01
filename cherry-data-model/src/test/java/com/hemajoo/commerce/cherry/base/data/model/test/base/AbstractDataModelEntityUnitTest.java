@@ -61,12 +61,20 @@ public abstract class AbstractDataModelEntityUnitTest extends AbstractCherryUnit
     protected EntityStatusType statusType;
 
     @BeforeEach
-    protected void beforeEach() throws DocumentException, GeneratorException
+    protected void beforeEach() throws DocumentException
     {
         name = AbstractDataModelEntityRandomizer.getRandomName();
         description = AbstractDataModelEntityRandomizer.getRandomName();
         reference = AbstractDataModelEntityRandomizer.getRandomName();
         tags = AbstractDataModelEntityRandomizer.getRandomTagList();
-        statusType = AbstractDataModelEntityRandomizer.getRandomStatusType();
+
+        try
+        {
+            statusType = AbstractDataModelEntityRandomizer.getRandomStatusType();
+        }
+        catch (GeneratorException e)
+        {
+            throw new DocumentException(e);
+        }
     }
 }

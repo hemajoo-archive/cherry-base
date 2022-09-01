@@ -156,7 +156,7 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
 
 
     @BeforeEach
-    protected void beforeEach() throws DocumentException, GeneratorException
+    protected void beforeEach() throws DocumentException
     {
         super.beforeEach();
 
@@ -164,30 +164,38 @@ public abstract class AbstractPersonUnitTest extends AbstractDocumentUnitTest
         personFirstName = PersonRandomizer.getRandomFirstName();
         personLastName = PersonRandomizer.getRandomLastName();
         personBirthDate = PersonRandomizer.getRandomBirthDate();
-        personType = PersonRandomizer.getRandomPersonType();
-        genderType = PersonRandomizer.getRandomGenderType();
 
-        // Email address data
-        emailAddress = EmailAddressRandomizer.getRandomEmail();
-        emailAddressType = EmailAddressRandomizer.getRandomAddressType();
-        emailIsDefault = EmailAddressRandomizer.getRandomIsDefault();
+        try
+        {
+            personType = PersonRandomizer.getRandomPersonType();
+            genderType = PersonRandomizer.getRandomGenderType();
 
-        // Postal address data
-        streetName = PostalAddressRandomizer.getRandomStreetName();
-        streetNumber = PostalAddressRandomizer.getRandomStreetNumber();
-        locality = PostalAddressRandomizer.getRandomLocality();
-        countryCode = PostalAddressRandomizer.getRandomCountryCode();
-        zipCode = PostalAddressRandomizer.getRandomZipCode();
-        area = PostalAddressRandomizer.getRandomArea();
-        postalIsDefault = PostalAddressRandomizer.getRandomIsDefault();
-        postalAddressType = PostalAddressRandomizer.getRandomAddressType();
-        postalCategoryAddressType = PostalAddressRandomizer.getRandomPostalAddressType();
+            // Email address data
+            emailAddress = EmailAddressRandomizer.getRandomEmail();
+            emailAddressType = EmailAddressRandomizer.getRandomAddressType();
+            emailIsDefault = EmailAddressRandomizer.getRandomIsDefault();
 
-        // Phone number data
-        phoneNumber = PhoneNumberRandomizer.getRandomNumber();
-        phoneIsDefault = PhoneNumberRandomizer.getRandomIsDefault();
-        phoneNumberType = PhoneNumberRandomizer.getRandomPhoneNumberType();
-        phoneNumberCategoryType = PhoneNumberRandomizer.getRandomPhoneNumberCategoryType();
+            // Postal address data
+            streetName = PostalAddressRandomizer.getRandomStreetName();
+            streetNumber = PostalAddressRandomizer.getRandomStreetNumber();
+            locality = PostalAddressRandomizer.getRandomLocality();
+            countryCode = PostalAddressRandomizer.getRandomCountryCode();
+            zipCode = PostalAddressRandomizer.getRandomZipCode();
+            area = PostalAddressRandomizer.getRandomArea();
+            postalIsDefault = PostalAddressRandomizer.getRandomIsDefault();
+            postalAddressType = PostalAddressRandomizer.getRandomAddressType();
+            postalCategoryAddressType = PostalAddressRandomizer.getRandomPostalAddressType();
+
+            // Phone number data
+            phoneNumber = PhoneNumberRandomizer.getRandomNumber();
+            phoneIsDefault = PhoneNumberRandomizer.getRandomIsDefault();
+            phoneNumberType = PhoneNumberRandomizer.getRandomPhoneNumberType();
+            phoneNumberCategoryType = PhoneNumberRandomizer.getRandomPhoneNumberCategoryType();
+        }
+        catch (GeneratorException e)
+        {
+            throw new DocumentException(e);
+        }
     }
 
     /**

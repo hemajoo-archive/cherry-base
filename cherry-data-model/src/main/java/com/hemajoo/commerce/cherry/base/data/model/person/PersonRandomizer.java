@@ -20,8 +20,8 @@ import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.email.EmailAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.postal.PostalAddressRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.phone.PhoneNumberRandomizer;
-import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomEnumGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -40,12 +40,12 @@ public final class PersonRandomizer extends AbstractDataModelEntityRandomizer
     /**
      * Person type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_PERSON_TYPE = new EnumRandomGenerator(PersonType.class);
+    private static final RandomEnumGenerator GENERATOR_PERSON_TYPE = new RandomEnumGenerator(PersonType.class);
 
     /**
      * Gender type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_GENDER_TYPE = new EnumRandomGenerator(GenderType.class);
+    private static final RandomEnumGenerator GENERATOR_GENDER_TYPE = new RandomEnumGenerator(GenderType.class);
 
     /**
      * Generate a random person without any document nor email address, postal address and phone number.

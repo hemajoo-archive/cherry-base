@@ -18,8 +18,9 @@ import com.hemajoo.commerce.cherry.base.data.model.base.exception.DataModelEntit
 import com.hemajoo.commerce.cherry.base.data.model.base.random.AbstractDataModelEntityRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.document.DocumentRandomizer;
 import com.hemajoo.commerce.cherry.base.data.model.person.address.AddressType;
-import com.hemajoo.commerce.cherry.base.utilities.generator.EnumRandomGenerator;
 import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomEnumGenerator;
+import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
@@ -35,12 +36,12 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
     /**
      * Address type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_ADDRESS_TYPE = new EnumRandomGenerator(AddressType.class);
+    private static final RandomEnumGenerator GENERATOR_ADDRESS_TYPE = new RandomEnumGenerator(AddressType.class);
 
     /**
      * Address category type enumeration generator.
      */
-    private static final EnumRandomGenerator GENERATOR_POSTAL_ADDRESS_TYPE = new EnumRandomGenerator(PostalAddressType.class);
+    private static final RandomEnumGenerator GENERATOR_POSTAL_ADDRESS_TYPE = new RandomEnumGenerator(PostalAddressType.class);
 
     /**
      * Generate a random postal address without any document.
@@ -163,7 +164,7 @@ public final class PostalAddressRandomizer extends AbstractDataModelEntityRandom
      */
     public static boolean getRandomIsDefault()
     {
-        return getRandomBoolean();
+        return RandomNumberGenerator.nextBoolean();
     }
 
     /**

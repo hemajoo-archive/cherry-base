@@ -27,12 +27,10 @@ import com.hemajoo.commerce.cherry.base.utilities.generator.GeneratorException;
 import com.hemajoo.commerce.cherry.base.utilities.generator.RandomNumberGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -341,7 +339,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    //@Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 postal addresses with documents and no content")
     final void testPerformanceCreateMultiplePostalAddressesWithoutDocumentContent() throws DataModelEntityException, GeneratorException
     {
@@ -359,7 +357,7 @@ class PostalAddressUnitTest extends AbstractPersonUnitTest
     }
 
     @Test
-    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    //@Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Create 1'000 email addresses with documents and content")
     final void testPerformanceCreateMultiplePostalAddressesWithDocumentAndContent() throws DataModelEntityException, GeneratorException
     {

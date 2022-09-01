@@ -156,15 +156,15 @@ class PictureUnitTest extends BaseUnitTest
 
         picture.save(); // Update the existing image file
 
-        picture.save(TEST_TEMP_FOLDER + File.separator + "sample_backup"); // Update the existing image with new name
+        picture.save(TEMPORARY_FOLDER + File.separator + "sample_backup"); // Update the existing image with new name
 
         picture.save(
                 ImageFileType.PNG,
-                TEST_TEMP_FOLDER + File.separator + "sample_backup_bmp_as_png.png"); // Update the existing image file in a different format
+                TEMPORARY_FOLDER + File.separator + "sample_backup_bmp_as_png.png"); // Update the existing image file in a different format
 
         picture.save(
                 ImageFileType.PNG,
                 ImageScaleType.IMAGE_SCALE_32X32,
-                TEST_TEMP_FOLDER + File.separator + "sample_backup_bmp_as_png_scale_64x64"); // Update the existing image file, changing the format and the scale
+                TEMPORARY_FOLDER + File.separator + "sample_backup_bmp_as_png_scale_64x64"); // Update the existing image file, changing the format and the scale
     }
 }

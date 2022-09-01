@@ -19,16 +19,13 @@ import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileException;
 import com.hemajoo.commerce.cherry.base.utilities.helper.file.FileHelper;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 /**
  * An abstract class for unit testing that provides some additional functionalities.
@@ -44,10 +41,16 @@ import java.util.UUID;
 @Log4j2
 public abstract class BaseUnitTest extends AbstractCherryUnitTest
 {
+//    /**
+//     * Unit test temporary folder for the run.
+//     */
+//    protected static String TEST_TEMP_FOLDER = System.getProperty("java.io.tmpdir") + UUID.randomUUID().toString();
+
     /**
-     * Unit test temporary folder for the run.
+     * Temporary folder.
      */
-    protected static String TEST_TEMP_FOLDER = System.getProperty("java.io.tmpdir") + UUID.randomUUID().toString();
+    @TempDir
+    protected static File TEMPORARY_FOLDER;
 
     /**
      * System specific file separator character.
@@ -66,7 +69,8 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
         {
             String path = FilenameUtils.getPath(filename);
 
-            if (!normalizeFolderName(path).equals(normalizeFolderName(TEST_TEMP_FOLDER)))
+//            if (!normalizeFolderName(path).equals(normalizeFolderName(TEST_TEMP_FOLDER)))
+            if (!normalizeFolderName(path).equals(normalizeFolderName(TEMPORARY_FOLDER.getAbsolutePath())))
             {
                 return false;
             }
@@ -97,15 +101,21 @@ public abstract class BaseUnitTest extends AbstractCherryUnitTest
     @BeforeAll
     static void setUpBeforeClass() throws IOException
     {
-        Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
-        LOGGER.info(String.format("Created temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
+//        Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
+//        LOGGER.info(String.format("Create temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
+
+        //Files.createDirectories(Paths.get(TEST_TEMP_FOLDER));
+        LOGGER.info(String.format("Create temporary unit test folder: '%s'", TEMPORARY_FOLDER));
     }
 
     @AfterAll
     public static void tearDownAfterClass() throws IOException
     {
-        FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
-        LOGGER.info(String.format("Deleted temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
+//        FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
+//        LOGGER.info(String.format("Delete temporary unit test folder: '%s'", TEST_TEMP_FOLDER));
+
+        //FileUtils.deleteDirectory(new File(TEST_TEMP_FOLDER));
+        LOGGER.info(String.format("Delete temporary unit test folder: '%s'", TEMPORARY_FOLDER));
     }
 }
 

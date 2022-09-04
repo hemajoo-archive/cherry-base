@@ -37,7 +37,7 @@
     <modules>
         <module>cherry-base-commons</module>
         <module>cherry-base-utilities</module>
-        <module>cherry-data-model</module>
+        <module>cherry-base-model</module>
         <module>cherry-base-i18n</module>
         <module>cherry-base-coverage</module>
     </modules>

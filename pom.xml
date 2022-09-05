@@ -113,11 +113,29 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
         <sonar.java.libraries>target/classes</sonar.java.libraries>
+        <sonar.organization>hemajoo-commerce</sonar.organization>
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.projectName>Cherry Base</sonar.projectName>
-        <sonar.organization>hemajoo-commerce</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.exclusions>
+            **/resources/media/**/*
+            **/target/site/**/*
+            **/target/classes/media/**/*
+            **/apidocs/**/*
+            **/test/resources/**/*.jar
+            **/test-classes/media/**/*
+        </sonar.exclusions>
+        <sonar.coverage.exclusions>
+            **/test/java/**/*
+        </sonar.coverage.exclusions>
+        <sonar.java.binaries>
+            **/target/classes
+        </sonar.java.binaries>
+        <sonar.java.libraries>
+            **/target/dependency/*.jar
+        </sonar.java.libraries>
+
     </properties>
 
     <distributionManagement>

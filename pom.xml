@@ -130,7 +130,7 @@
             **/test/java/**/*
         </sonar.coverage.exclusions>
         <sonar.java.binaries>
-            **/target/classes
+            **/target/classes/**/*
         </sonar.java.binaries>
         <sonar.java.libraries>
             **/target/dependency/*.jar

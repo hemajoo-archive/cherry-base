@@ -114,6 +114,12 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@master
         with:
           args: >
+            -Dsonar.organization=hemajoo-commerce
+            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
+            -Dsonar.java.binaries=**/target/classes
+            -Dsonar.java.libraries=**/target/dependency/*.jar
+            -Dsonar.exclusions==**/resources/media/**/*,**/target/site/**/*,**/target/classes/media/**/*,**/apidocs/**/*,**/test/resources/**/*.jar,**/test-classes/media/**/*
+            -Dsonar.coverage.exclusions=**/test/java/**/*
             -Dsonar.coverage.jacoco.xmlReportPaths=./cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

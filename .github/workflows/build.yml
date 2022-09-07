@@ -110,18 +110,14 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
-      - name: Sonar Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        with:
-          args: >
-            -Dsonar.organization=hemajoo-commerce
-            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
+      - name: Static Code Analysis
+        run: mvn -B clean verify sonar:sonar -f pom.xml -Pjava.${{ matrix.Java }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Check the Quality Gate status.
-      - name: Sonar Quality Gate check
+      # Quality Gate status.
+      - name: Sonar Quality Gate
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
         # Force to fail step after specific time.
@@ -129,6 +125,26 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+
+#      - name: Sonar Scan
+#        uses: sonarsource/sonarqube-scan-action@master
+#        with:
+#          args: >
+#            -Dsonar.organization=hemajoo-commerce
+#            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
+#        env:
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#
+#      # Check the Quality Gate status.
+#      - name: Sonar Quality Gate check
+#        id: sonarqube-quality-gate-check
+#        uses: sonarsource/sonarqube-quality-gate-action@master
+#        # Force to fail step after specific time.
+#        timeout-minutes: 5
+#        env:
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
   deploy:
 

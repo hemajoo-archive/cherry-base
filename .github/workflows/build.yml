@@ -111,7 +111,7 @@ jobs:
 
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
       - name: Static Code Analysis
-        run: mvn -B clean verify sonar:sonar -f pom.xml -Pjava.17
+        run: mvn -B clean verify dependency:copy-dependencies sonar:sonar -f pom.xml -Pjava.17
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

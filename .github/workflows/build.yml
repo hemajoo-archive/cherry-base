@@ -112,6 +112,10 @@ jobs:
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
       - name: Sonar Scan
         uses: sonarsource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.organization=hemajoo-commerce
+            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

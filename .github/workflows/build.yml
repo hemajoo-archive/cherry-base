@@ -118,7 +118,7 @@ jobs:
             -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
             -Dsonar.java.binaries=**/target/classes/**/*
             -Dsonar.java.libraries=**/target/dependency/*.jar
-            -Dsonar.exclusions==**/resources/media/**/*,**/target/site/**/*,**/target/classes/media/**/*,**/apidocs/**/*,**/test/resources/**/*.jar,**/test-classes/media/**/*
+            -Dsonar.exclusions==**/resources/media/**/*,**/target/site/**/*,**/target/classes/media/**/*,**/apidocs/**/*,**/test/resources/media/**/*,**/test/resources/**/*.jar,**/test-classes/media/**/*
             -Dsonar.coverage.exclusions=**/test/java/**/*
             -Dsonar.coverage.jacoco.xmlReportPaths=./cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml
         env:

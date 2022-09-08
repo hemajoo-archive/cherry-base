@@ -33,7 +33,13 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>cherry-data-model</artifactId>
+            <artifactId>cherry-base-i18n</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cherry-base-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 

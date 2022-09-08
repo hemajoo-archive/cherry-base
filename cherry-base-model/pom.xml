@@ -11,10 +11,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>cherry-data-model</artifactId>
+    <artifactId>cherry-base-model</artifactId>
 
     <name>Cherry Base - Data Model</name>
-    <description>Hemajoo's Commerce - Cherry module containing data model entities.</description>
+    <description>Hemajoo's Commerce - Cherry module containing base data model entities.</description>
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>

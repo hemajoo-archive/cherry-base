@@ -103,37 +103,11 @@ jobs:
                 "password": "${{ secrets.READ_MAVEN_REGISTRY_GITHUB_TOKEN }}"
             }]
 
-      - name: Analyze with SonarCloud
-        run: mvn -B dependency:copy-dependencies verify sonar:sonar -f pom.xml -Pjava.17
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
-      - name: Sonar Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        with:
-          args: >
-            -Dsonar.organization=hemajoo-commerce
-            -Dsonar.projectKey=com.hemajoo.commerce:cherry-base
-            -Dsonar.java.binaries=**/target/classes
-            -Dsonar.java.libraries=**/target/dependency/*.jar
-            -Dsonar.exclusions=**/target/site/**/*,**/target/classes/media/**/*,**/apidocs/**/*,**/test/resources/**/*.jar,**/test-classes/media/**/*
-            -Dsonar.coverage.exclusions=**/test/java/**/*
-            -Dsonar.coverage.jacoco.xmlReportPaths=./cherry-base-coverage/target/site/jacoco-aggregate/jacoco.xml
+      - name: Static Code Analysis
+        run: mvn -B clean dependency:copy-dependencies verify sonar:sonar -f pom.xml -Pjava.17
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-      # Check the Quality Gate status.
-      - name: Sonar Quality Gate check
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        # Force to fail step after specific time.
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
   deploy:
 
@@ -185,11 +159,6 @@ jobs:
                 "username": "${{ secrets.DEPLOY_MAVEN_REGISTRY_GITHUB_USER }}",
                 "password": "${{ secrets.DEPLOY_MAVEN_REGISTRY_GITHUB_TOKEN }}"
             }]
-
-      #      - name: Info - Display branches references
-      #        run: |
-      #          echo 'GITHUB head branch reference >> ' ${GITHUB_HEAD_REF}
-      #          echo 'GITHUB base branch reference >> ' ${GITHUB_BASE_REF}
 
       - name: Deploy Maven Artifacts
         env:

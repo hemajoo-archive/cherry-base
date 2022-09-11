@@ -65,14 +65,14 @@ public class Document extends DataModelEntity implements IDocument
      * Document file extension.
      */
     @Getter
-    //@Setter
+    @Setter
     private String extension;
 
     /**
      * Document file name.
      */
     @Getter
-    //@Setter
+    @Setter
     @Column(name = "FILENAME")
     private String filename;
 
@@ -93,6 +93,7 @@ public class Document extends DataModelEntity implements IDocument
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Getter
+    @Setter
     @Transient
     private transient String originalFilename; // Only stored until the content of the file is loaded into the content store.
 
@@ -110,7 +111,7 @@ public class Document extends DataModelEntity implements IDocument
      * File content length.
      */
     @Getter
-    //@Setter
+    @Setter
     @ContentLength
     private long contentLength;
 
@@ -118,7 +119,7 @@ public class Document extends DataModelEntity implements IDocument
      * File <b>MIME</b> type.
      */
     @Getter
-    //@Setter
+    @Setter
     @MimeType
     private String mimeType = "text/plain";
 
@@ -126,7 +127,7 @@ public class Document extends DataModelEntity implements IDocument
      * File path of the document in the <b>content store</b>.
      */
     @Getter
-    //@Setter
+    @Setter
     private String contentPath;
 
     /**

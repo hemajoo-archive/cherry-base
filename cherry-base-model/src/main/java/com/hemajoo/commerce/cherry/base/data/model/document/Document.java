@@ -33,10 +33,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -266,6 +264,25 @@ public class Document extends DataModelEntity implements IDocument
     }
 
     @Override
+    public void setContent(final @NonNull MultipartFile multipartFile) throws DocumentException
+    {
+        try
+        {
+            InputStream stream = new ByteArrayInputStream(multipartFile.getBytes());
+
+            this.setContent(stream, multipartFile.getName());
+            this.setContentLength(multipartFile.getBytes().length);
+            this.setFilename(Objects.requireNonNullElse(multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : multipartFile.getName(), "unknown filename!"));
+            this.setExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
+            this.setMimeType(FileHelper.getTika().detect(stream));
+        }
+        catch (IOException e)
+        {
+            throw new DocumentException(e);
+        }
+    }
+
+    @Override
     public final void setContent(final @NonNull File file) throws DocumentException
     {
         setContent(file.getAbsolutePath());
@@ -277,7 +294,7 @@ public class Document extends DataModelEntity implements IDocument
      * @param absolutePath Absolute path of the file.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
-    private void setContent(final @NonNull InputStream inputStream, final @NonNull String absolutePath) throws DocumentException
+    public void setContent(final @NonNull InputStream inputStream, final @NonNull String absolutePath) throws DocumentException
     {
         try
         {

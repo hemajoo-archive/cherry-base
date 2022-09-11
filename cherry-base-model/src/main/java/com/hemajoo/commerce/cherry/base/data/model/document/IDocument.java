@@ -109,10 +109,22 @@ public interface IDocument extends IDataModelEntity
     String getExtension();
 
     /**
+     * Set the extension.
+     * @param extension Extension.
+     */
+    void setExtension(final @NonNull String extension);
+
+    /**
      * Return the document filename.
      * @return Document filename.
      */
     String getFilename();
+
+    /**
+     * Set the filename.
+     * @param filename Filename.
+     */
+    void setFilename(final @NonNull String filename);
 
     /**
      * Return the document original filename.
@@ -121,10 +133,22 @@ public interface IDocument extends IDataModelEntity
     String getOriginalFilename();
 
     /**
+     * Set the original filename.
+     * @param filename Original filename.
+     */
+    void setOriginalFilename(final @NonNull String filename);
+
+    /**
      * Return the document content identifier.
      * @return Document content identifier.
      */
     String getContentId();
+
+    /**
+     * Set the content identifier.
+     * @param contentId Content identifier.
+     */
+    void setContentId(final @NonNull String contentId);
 
     /**
      * Return the document content length.
@@ -133,14 +157,32 @@ public interface IDocument extends IDataModelEntity
     long getContentLength();
 
     /**
+     * Set the content length (in bytes).
+     * @param length Content length.
+     */
+    void setContentLength(final long length);
+
+    /**
      * Return the document mime type.
      * @return Document mime type.
      */
     String getMimeType();
 
     /**
+     * Set the mime type.
+     * @param mimeType Mime type.
+     */
+    void setMimeType(final @NonNull String mimeType);
+
+    /**
      * Return the document content path.
      * @return Document content path.
      */
     String getContentPath();
+
+    /**
+     * Set the content path.
+     * @param contentPath Content path.
+     */
+    void setContentPath(final @NonNull String contentPath);
 }

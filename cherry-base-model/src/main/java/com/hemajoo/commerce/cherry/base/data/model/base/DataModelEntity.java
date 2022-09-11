@@ -69,7 +69,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     @Setter
     @Id
     @Type(type = "uuid-char") // Allow displaying in the DB the UUID as a string instead of a binary field!
-    @GenericGenerator(name = "cherry-uuid-gen", strategy = "com.hemajoo.commerce.cherry.server.commons.utility.UuidGenerator")
+    @GenericGenerator(name = "cherry-uuid-gen", strategy = "com.hemajoo.commerce.cherry.base.utilities.generator.UuidGenerator")
     @GeneratedValue(generator = "cherry-uuid-gen")
     private UUID id;
 

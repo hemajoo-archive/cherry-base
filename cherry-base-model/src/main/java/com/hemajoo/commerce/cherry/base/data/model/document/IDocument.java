@@ -17,6 +17,7 @@ package com.hemajoo.commerce.cherry.base.data.model.document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hemajoo.commerce.cherry.base.data.model.base.IDataModelEntity;
 import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
@@ -89,18 +90,33 @@ public interface IDocument extends IDataModelEntity
     InputStream getContent();
 
     /**
-     * Set the content of the document.
+     * Set a content to the document.
      * @param file File representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull File file) throws DocumentException;
 
     /**
-     * Set the content of the document.
+     * Set a content to the document.
      * @param filename File name representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull String filename) throws DocumentException;
+
+    /**
+     * Set a content to the document.
+     * @param multipartFile Multipart file.
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
+     */
+    void setContent(final @NonNull MultipartFile multipartFile) throws DocumentException;
+
+    /**
+     * Set a content to the document.
+     * @param stream Input stream representing the content of the document.
+     * @param filename File name.
+     * @throws DocumentException Thrown in case an error occurred while setting the document content.
+     */
+    void setContent(final @NonNull InputStream stream, final @NonNull String filename) throws DocumentException;
 
     /**
      * Return the document extension.

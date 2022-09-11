@@ -19,6 +19,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.tika.Tika;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,11 @@ import java.util.Set;
 @UtilityClass
 public class FileHelper
 {
+    /**
+     * Tika object.
+     */
+    private static final Tika TIKA = new Tika();
+
     /**
      * POSIX file attribute for temporary file.
      */
@@ -351,5 +357,14 @@ public class FileHelper
         {
             throw new FileException(String.format("Cannot dump file: '%s' due to: %s", filename, e.getMessage()));
         }
+    }
+
+    /**
+     * Return a <b>Tika</b> instance.
+     * @return {@link Tika} instance.
+     */
+    public static Tika getTika()
+    {
+        return TIKA;
     }
 }

@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.*;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -271,7 +272,7 @@ public class Document extends DataModelEntity implements IDocument
 
             this.setContent(stream, multipartFile.getName());
             this.setContentLength(multipartFile.getBytes().length);
-            this.setFilename(multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : multipartFile.getName());
+            this.setFilename(Objects.requireNonNullElse(multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : multipartFile.getName(), "unknown filename!"));
             this.setExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
             this.setMimeType(FileHelper.getTika().detect(stream));
         }

@@ -84,39 +84,38 @@ public interface IDocument extends IDataModelEntity
     void setDocumentType(final DocumentType type);
 
     /**
-     * Return the content (file) of this document.
+     * Return the content of the document.
      * @return Document content as an input stream.
      */
     InputStream getContent();
 
     /**
-     * Set a content to the document.
+     * Set the content of a document given a file.
      * @param file File representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull File file) throws DocumentException;
 
     /**
-     * Set a content to the document.
+     * Set the content of a document given a filename.
      * @param filename File name representing the content (file) to attach to the document.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull String filename) throws DocumentException;
 
     /**
-     * Set a content to the document.
+     * Set the content of a document given a multipart file.
      * @param multipartFile Multipart file.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
     void setContent(final @NonNull MultipartFile multipartFile) throws DocumentException;
 
     /**
-     * Set a content to the document.
+     * Set the content of a document given an input stream.
      * @param stream Input stream representing the content of the document.
-     * @param filename File name.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
-    void setContent(final @NonNull InputStream stream, final @NonNull String filename) throws DocumentException;
+    void setContent(final @NonNull InputStream stream) throws DocumentException;
 
     /**
      * Return the document extension.

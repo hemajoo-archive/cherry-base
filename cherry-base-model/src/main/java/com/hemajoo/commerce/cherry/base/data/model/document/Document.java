@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.*;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -244,23 +243,29 @@ public class Document extends DataModelEntity implements IDocument
     @Override
     public final void setContent(final @NonNull String filename) throws DocumentException
     {
+        File file = null;
+        InputStream stream = null;
+
         try
         {
-            File file = FileHelper.getFile(filename);
+            file = FileHelper.getFile(filename);
             if (file == null)
             {
                 throw new DocumentException(String.format("Cannot find file: '%s'", filename));
             }
 
-            try (FileInputStream stream = new FileInputStream(file))
-            {
-                setContent(stream, file.getAbsolutePath());
-            }
+            stream = new FileInputStream(file);
         }
         catch (Exception e)
         {
             throw new DocumentException(e);
         }
+
+        detectMimeType(stream);
+        setExtension(FilenameUtils.getExtension(file.getAbsolutePath()));
+        setFilename(FilenameUtils.getName(file.getAbsolutePath()));
+        setContent(stream);
+        setOriginalFilename(file.getAbsolutePath());
     }
 
     @Override
@@ -268,13 +273,13 @@ public class Document extends DataModelEntity implements IDocument
     {
         try
         {
-            InputStream stream = new ByteArrayInputStream(multipartFile.getBytes());
+            this.setContent(new ByteArrayInputStream(multipartFile.getBytes()));
 
-            this.setContent(stream, multipartFile.getName());
-            this.setContentLength(multipartFile.getBytes().length);
-            this.setFilename(Objects.requireNonNullElse(multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : multipartFile.getName(), "unknown filename!"));
-            this.setExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
-            this.setMimeType(FileHelper.getTika().detect(stream));
+            String name = multiPartFile.getOriginalFilename() != null ? multiPartFile.getOriginalFilename() : multiPartFile.getName();
+            if (name != null)
+            {
+                setOriginalFilename(name);
+            }
         }
         catch (IOException e)
         {
@@ -291,17 +296,13 @@ public class Document extends DataModelEntity implements IDocument
     /**
      * Set the document content.
      * @param inputStream Input stream.
-     * @param absolutePath Absolute path of the file.
      * @throws DocumentException Thrown in case an error occurred while setting the document content.
      */
-    public void setContent(final @NonNull InputStream inputStream, final @NonNull String absolutePath) throws DocumentException
+    public void setContent(final @NonNull InputStream inputStream) throws DocumentException
     {
         try
         {
-            detectMimeType(absolutePath);
-            this.originalFilename = absolutePath;
-            this.filename = FilenameUtils.getName(originalFilename);
-            this.extension = FilenameUtils.getExtension(filename);
+            detectMimeType(inputStream);
             this.content = inputStream;
             this.contentLength = inputStream.available();
         }

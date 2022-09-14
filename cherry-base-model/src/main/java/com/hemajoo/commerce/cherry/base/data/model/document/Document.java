@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.*;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -244,21 +243,29 @@ public class Document extends DataModelEntity implements IDocument
     @Override
     public final void setContent(final @NonNull String filename) throws DocumentException
     {
+        File file = null;
+        InputStream stream = null;
+
         try
         {
-            File file = FileHelper.getFile(filename);
+            file = FileHelper.getFile(filename);
             if (file == null)
             {
                 throw new DocumentException(String.format("Cannot find file: '%s'", filename));
             }
 
-            setContent(new FileInputStream(file));
-            setOriginalFilename(file.getAbsolutePath());
+            stream = new FileInputStream(file);
         }
         catch (Exception e)
         {
             throw new DocumentException(e);
         }
+
+        detectMimeType(stream);
+        setExtension(FilenameUtils.getExtension(file.getAbsolutePath()));
+        setFilename(FilenameUtils.getName(file.getAbsolutePath()));
+        setContent(stream);
+        setOriginalFilename(file.getAbsolutePath());
     }
 
     @Override

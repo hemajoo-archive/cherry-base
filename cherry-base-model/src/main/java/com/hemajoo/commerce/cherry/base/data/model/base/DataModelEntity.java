@@ -220,7 +220,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
 
     @JsonIgnore
     @Override
-    public final <T extends IDataModelEntity> Set<T> getDocuments()
+    public <T extends IDataModelEntity> Set<T> getDocuments()
     {
         if (entityType == EntityType.MEDIA)
         {
@@ -231,35 +231,35 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final <T extends IDataModelEntity> T getDocument(final @NonNull IDocument document)
+    public <T extends IDataModelEntity> T getDocument(final @NonNull IDocument document)
     {
         Optional<Document> element = documents.stream().filter(e -> e.equals(document)).findFirst();
         return element.isEmpty() ? null : (T) element.get();
     }
 
     @Override
-    public final <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name)
+    public <T extends IDataModelEntity> T getDocumentByName(final @NonNull String name)
     {
         Optional<Document> document = documents.stream().filter(e -> e.getName().equals(name)).findFirst();
         return document.isEmpty() ? null : (T) document.get();
     }
 
     @Override
-    public final <T extends IDataModelEntity> T getDocumentById(final @NonNull String uuid)
+    public <T extends IDataModelEntity> T getDocumentById(final @NonNull String uuid)
     {
         Optional<Document> document = documents.stream().filter(e -> e.getId().toString().equals(uuid)).findFirst();
         return document.isEmpty() ? null : (T) document.get();
     }
 
     @Override
-    public final <T extends IDataModelEntity> T getDocumentById(final @NonNull UUID uuid)
+    public <T extends IDataModelEntity> T getDocumentById(final @NonNull UUID uuid)
     {
         Optional<Document> document = documents.stream().filter(e -> e.getId().toString().equals(uuid.toString())).findFirst();
         return document.isEmpty() ? null : (T) document.get();
     }
 
     @Override
-    public final <T extends IDataModelEntity> boolean existDocument(final @NonNull T document)
+    public <T extends IDataModelEntity> boolean existDocument(final @NonNull T document)
     {
         if (document.getId() != null)
         {
@@ -272,25 +272,25 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final boolean existDocumentById(final @NonNull UUID id)
+    public boolean existDocumentById(final @NonNull UUID id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().equals(id));
     }
 
     @Override
-    public final boolean existDocumentById(final @NonNull String id)
+    public boolean existDocumentById(final @NonNull String id)
     {
         return documents.stream().anyMatch(doc -> doc.getId().toString().equals(id));
     }
 
     @Override
-    public final boolean existDocumentByName(final @NonNull String name)
+    public boolean existDocumentByName(final @NonNull String name)
     {
         return documents.stream().anyMatch(doc -> doc.getName().equals(name));
     }
 
     @Override
-    public final <T extends IDataModelEntity> void addDocument(final @NonNull T document) throws DataModelEntityException
+    public <T extends IDataModelEntity> void addDocument(final @NonNull T document) throws DataModelEntityException
     {
         if (entityType == EntityType.DOCUMENT && document.getEntityType() == EntityType.DOCUMENT)
         {
@@ -317,7 +317,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final <T extends IDataModelEntity> boolean deleteDocument(final @NonNull T document)
+    public <T extends IDataModelEntity> boolean deleteDocument(final @NonNull T document)
     {
         if (document.getId() != null)
         {
@@ -330,25 +330,25 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final boolean deleteDocumentById(final @NonNull String id)
+    public boolean deleteDocumentById(final @NonNull String id)
     {
         return documents.removeIf(doc -> doc.getId().toString().equals(id));
     }
 
     @Override
-    public final boolean deleteDocumentById(final @NonNull UUID id)
+    public boolean deleteDocumentById(final @NonNull UUID id)
     {
         return documents.removeIf(doc -> doc.getId().equals(id));
     }
 
     @Override
-    public final boolean deleteDocumentByName(final @NonNull String name)
+    public boolean deleteDocumentByName(final @NonNull String name)
     {
         return documents.removeIf(doc -> doc.getName().equals(name));
     }
 
     @Override
-    public final void deleteAllDocuments() throws DataModelEntityException
+    public void deleteAllDocuments() throws DataModelEntityException
     {
         for (IDocument document : documents)
         {
@@ -359,19 +359,19 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final Set<String> getTags()
+    public Set<String> getTags()
     {
         return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
     }
 
     @Override
-    public final String getTagsAsString()
+    public String getTagsAsString()
     {
         return tags;
     }
 
     @Override
-    public final void addTag(String tag)
+    public void addTag(String tag)
     {
         if (StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().noneMatch(element -> element.equals(tag)))
         {
@@ -380,7 +380,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void addTags(final String... tags)
+    public void addTags(final String... tags)
     {
         if (tags != null)
         {
@@ -392,7 +392,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void addTags(final Set<String> tags)
+    public void addTags(final Set<String> tags)
     {
         if (tags != null)
         {
@@ -404,7 +404,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void deleteTag(String tag)
+    public void deleteTag(String tag)
     {
         Set<String> sourceTags = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
         Set<String> targetTags = new HashSet<>();
@@ -421,13 +421,13 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final void deleteAllTags()
+    public void deleteAllTags()
     {
         tags = null;
     }
 
     @Override
-    public final String getRandomTag() throws DataModelEntityException
+    public String getRandomTag() throws DataModelEntityException
     {
         Set<String> tagList = StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR);
 
@@ -448,13 +448,13 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final boolean existTag(String tag)
+    public boolean existTag(String tag)
     {
         return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).stream().anyMatch(element -> element.equals(tag));
     }
 
     @Override
-    public final int getTagCount()
+    public int getTagCount()
     {
         return StringHelper.convertStringValuesAsSet(tags, TAG_SEPARATOR).size();
     }

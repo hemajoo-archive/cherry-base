@@ -72,6 +72,29 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Content Store: REST -->
+        <dependency>
+            <groupId>com.github.paulcwarren</groupId>
+            <artifactId>spring-content-rest-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Spring Content Store: File System -->
+        <dependency>
+            <groupId>com.github.paulcwarren</groupId>
+            <artifactId>spring-content-fs-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Spring Content Store: Amazon S3 -->
+        <dependency>
+            <groupId>com.github.paulcwarren</groupId>
+            <artifactId>content-s3-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.paulcwarren</groupId>
+            <artifactId>spring-content-s3</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>

@@ -184,19 +184,19 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final IIdentity getIdentity()
+    public IIdentity getIdentity()
     {
         return Identity.from(entityType, id);
     }
 
     @Override
-    public final <T extends IDataModelEntity> T getParent()
+    public <T extends IDataModelEntity> T getParent()
     {
         return (T) parent;
     }
 
     @Override
-    public final <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
+    public <T extends IDataModelEntity> void setParent(final T parent) throws DataModelEntityException
     {
         if (parent == this)
         {
@@ -213,7 +213,7 @@ public class DataModelEntity extends AbstractStatusEntity implements IDataModelE
     }
 
     @Override
-    public final int getDocumentCount()
+    public int getDocumentCount()
     {
         return documents == null ? 0 : documents.size();
     }
